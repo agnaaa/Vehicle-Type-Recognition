@@ -12,12 +12,15 @@ import cv2
 @st.cache_resource
 def load_models():
     yolo_model = YOLO("model/best.pt")
-    # safe_mode=False agar bisa dimuat di TensorFlow 3.13+
-    classifier = tf.keras.models.load_model("model/classifier_model.h5", safe_mode=False)
+
+    try:
+        # coba load dengan TensorFlow baru
+        classifier = tf.keras.models.load_model("model/classifier_model.h5", safe_mode=False, compile=False)
+    except Exception as e:
+        st.error(f"Gagal memuat model klasifikasi: {e}")
+        classifier = None
+
     return yolo_model, classifier
-
-
-yolo_model, classifier = load_models()
 
 # ==========================
 # UI
@@ -50,3 +53,4 @@ if uploaded_file is not None:
         class_index = np.argmax(prediction)
         st.write("### Hasil Prediksi:", class_index)
         st.write("Probabilitas:", float(np.max(prediction)))
+
