@@ -9,13 +9,10 @@ import cv2
 # ==========================
 # Load Models
 # ==========================
-@st.cache_resourceimport 
-import streamlit as st
-
 @st.cache_resource
 def load_models():
     yolo_model = YOLO("model/best.pt")
-    # Tambahkan safe_mode=False agar model bisa dimuat di TensorFlow 3.13+
+    # safe_mode=False agar bisa dimuat di TensorFlow 3.13+
     classifier = tf.keras.models.load_model("model/classifier_model.h5", safe_mode=False)
     return yolo_model, classifier
 
@@ -52,6 +49,4 @@ if uploaded_file is not None:
         prediction = classifier.predict(img_array)
         class_index = np.argmax(prediction)
         st.write("### Hasil Prediksi:", class_index)
-
-        st.write("Probabilitas:", np.max(prediction))
-
+        st.write("Probabilitas:", float(np.max(prediction)))
