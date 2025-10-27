@@ -30,10 +30,17 @@ def load_models():
 # ==========================
 # UI
 # ==========================
-# Tambahkan Custom CSS
+# ============================================================
+# KONFIGURASI DASAR APLIKASI
+# ============================================================
+st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
+
+# ============================================================
+# TAMBAHKAN GAYA CSS
+# ============================================================
 st.markdown("""
     <style>
-    /* Warna background lembut */
+    /* Background lembut */
     .stApp {
         background-color: #fceef5;
     }
@@ -73,85 +80,69 @@ st.markdown("""
         box-shadow: 0px 4px 8px rgba(255, 192, 203, 0.3);
     }
 
-    /* Sidebar (kalau ada) */
+    /* Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #f9e1ec;
     }
-    </style>
-""", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("### Deteksi Jenis")
-    st.markdown("<h1 class='pink-text'>Kendaraan AI</h1>", unsafe_allow_html=True)
-    st.write("Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.")
-    st.button("🚀 Coba Sekarang")
-    st.button("📖 Pelajari Lebih Lanjut")
-
-with col2:
-    st.markdown("### Demo Cepat")
-    uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        st.image(uploaded_file, caption="Gambar yang diunggah", use_column_width=True)
-    else:
-        st.info("Tidak ada gambar diunggah. Upload file di atas untuk mencoba.")
-
-if selected == "Home":
-    st.markdown("""
-        <style>
-        h2, h3 { color: #e75480; }        /* warna judul pastel pink */
-        hr { border: 1px solid #f8cdda; }  /* garis pemisah warna ungu muda */
-        </style>
-    """, unsafe_allow_html=True)
-
-    # === Konten halaman home ===
-    st.markdown("<h1 style='text-align:center;'>Selamat Datang di Aplikasi Deteksi Kendaraan</h1>", unsafe_allow_html=True)
-
-# =============== KONFIGURASI DASAR APP ===============
-st.set_page_config(page_title="AI Image Detection", layout="wide")
-
-# =============== GAYA CSS TAMBAHAN ===============
-st.markdown("""
-    <style>
-    h1, h2, h3 { color: #1c1c1e; }
-    .pink { color: #e75480; }
+    /* Elemen umum */
+    h2, h3 { color: #e75480; }
     hr { border: 1px solid #f8cdda; }
-    .center { text-align: center; }
-    .metric-box {
+
+    /* Box metrik & fitur */
+    .metric-box, .feature-box {
         background-color: #fff;
         border-radius: 16px;
         padding: 25px;
         text-align: center;
         box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
-    .feature-box {
-        background-color: #fff;
-        border-radius: 16px;
-        padding: 25px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        height: 100%;
-    }
+
     .section {
         padding-top: 40px;
         padding-bottom: 40px;
     }
+
+    .center { text-align: center; }
     </style>
 """, unsafe_allow_html=True)
 
-# =============== NAVBAR (SIMPLE SELECTBOX) ===============
+# ============================================================
+# NAVBAR / MENU
+# ============================================================
 menu = ["Home", "Classification", "Model Performance", "Model Info", "About Project"]
 selected = st.sidebar.selectbox("Pilih Halaman:", menu)
 
-# =============== HALAMAN HOME ===============
+# ============================================================
+# HALAMAN HOME
+# ============================================================
 if selected == "Home":
-    # Bagian Atas
-    st.markdown("<h1 class='center pink'>Jenis Kendaraan yang Dapat Dideteksi</h1>", unsafe_allow_html=True)
+
+    # Bagian Header atas
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### Deteksi Jenis")
+        st.markdown("<h1 class='pink-text'>Kendaraan AI</h1>", unsafe_allow_html=True)
+        st.write("Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.")
+        st.button("🚀 Coba Sekarang")
+        st.button("📖 Pelajari Lebih Lanjut")
+
+    with col2:
+        st.markdown("### Demo Cepat")
+        uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
+        if uploaded_file is not None:
+            st.image(uploaded_file, caption="Gambar yang diunggah", use_container_width=True)
+        else:
+            st.info("Tidak ada gambar diunggah. Upload file di atas untuk mencoba.")
+
+    st.write("---")
+
+    # Bagian showcase kendaraan
+    st.markdown("<h1 class='center pink-text'>Jenis Kendaraan yang Dapat Dideteksi</h1>", unsafe_allow_html=True)
     st.markdown("<p class='center'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
     st.write("")
 
-    # Grid 4 kendaraan
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.image("https://cdn.pixabay.com/photo/2017/03/27/13/28/auto-2179220_1280.jpg", use_container_width=True)
@@ -173,12 +164,11 @@ if selected == "Home":
         st.markdown("### Bus")
         st.caption("Bus kota, bus antar kota, dan kendaraan angkutan umum")
 
-    st.write("")
     st.write("---")
 
-    # Bagian Statistik
+    # Bagian Performa Model
     st.markdown("<div class='section'></div>", unsafe_allow_html=True)
-    st.markdown("<h2 class='center pink'>Performa Model Kami</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='center pink-text'>Performa Model Kami</h2>", unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -190,12 +180,11 @@ if selected == "Home":
     with col4:
         st.markdown("<div class='metric-box'><h3>99.9%</h3><p>Uptime</p></div>", unsafe_allow_html=True)
 
-    st.write("")
     st.write("---")
 
-    # Bagian Mengapa Memilih Kami
+    # Bagian Keunggulan
     st.markdown("<div class='section'></div>", unsafe_allow_html=True)
-    st.markdown("<h2 class='center pink'>Mengapa Memilih Platform Kami?</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='center pink-text'>Mengapa Memilih Platform Kami?</h2>", unsafe_allow_html=True)
     st.markdown("<p class='center'>Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
@@ -211,3 +200,21 @@ if selected == "Home":
     # Footer
     st.markdown("<br><hr><p style='text-align:center; color:#888;'>© 2025 AI Vehicle Detection | Dibangun dengan ❤️ menggunakan Streamlit</p>", unsafe_allow_html=True)
 
+# ============================================================
+# HALAMAN LAIN (BIAR GA ERROR SAAT DIPILIH)
+# ============================================================
+elif selected == "Classification":
+    st.header("Halaman Klasifikasi")
+    st.info("Fitur ini akan menampilkan hasil deteksi kendaraan dari gambar yang diunggah.")
+
+elif selected == "Model Performance":
+    st.header("Performa Model")
+    st.write("Halaman ini berisi metrik evaluasi dan hasil pengujian model.")
+
+elif selected == "Model Info":
+    st.header("Informasi Model")
+    st.write("Menjelaskan arsitektur dan detail model AI yang digunakan.")
+
+elif selected == "About Project":
+    st.header("Tentang Proyek")
+    st.write("Aplikasi ini dikembangkan untuk mendemonstrasikan sistem deteksi kendaraan berbasis AI.")
