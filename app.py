@@ -185,11 +185,7 @@ elif selected == "Classification":
 # ===============================
 # 🌸 Halaman: Model Performance
 # ===============================
-elif page == "Model Performance":
-    import pandas as pd
-    import plotly.express as px
-    import streamlit as st
-
+elif selected == "Model Performance":
     # 🌸 CSS Styling (background pink pastel)
     st.markdown("""
         <style>
@@ -239,10 +235,8 @@ elif page == "Model Performance":
         </style>
     """, unsafe_allow_html=True)
 
-    # 🌸 Judul & Deskripsi
     st.markdown("<h1 style='text-align:center;'>Performa Model AI</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center;'>Evaluasi komprehensif performa model deteksi gambar dengan berbagai metrik dan analisis mendalam yang cantik dan mudah dipahami.</p>", unsafe_allow_html=True)
-    st.write("")
 
     # 🌸 Kartu metrik utama
     col1, col2, col3, col4 = st.columns(4)
