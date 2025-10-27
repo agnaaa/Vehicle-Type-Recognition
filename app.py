@@ -30,7 +30,9 @@ def load_models():
 
 # ==========================
 # UI
-# 🌸 Konfigurasi Halaman
+# ============================================
+# 🌸 KONFIGURASI HALAMAN
+# ============================================
 st.set_page_config(page_title="AI Image Detection", layout="wide")
 
 # 🌸 CSS Styling — background pink soft pastel
@@ -71,7 +73,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🌸 Navbar
+
+# ============================================
+# 🌸 NAVBAR
+# ============================================
 selected = option_menu(
     menu_title=None,
     options=["Home", "Classification", "Model Performance", "Model Info", "About Project"],
@@ -94,7 +99,10 @@ selected = option_menu(
     },
 )
 
-# 🌸 Logo di kiri atas
+
+# ============================================
+# 🌸 LOGO / JUDUL
+# ============================================
 st.markdown("""
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
         <span style="font-size:22px; font-weight:600;">🖼️ <span style="color:#f472b6;">AI Image Detection</span></span>
@@ -102,9 +110,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# =========================
-#       HOME PAGE
-# =========================
+# ============================================
+# 🌸 HOME PAGE
+# ============================================
 if selected == "Home":
     st.markdown("<h1 style='text-align:left;'>🚗 Deteksi Kendaraan AI</h1>", unsafe_allow_html=True)
     st.write("Platform berbasis deep learning yang mampu mendeteksi berbagai jenis kendaraan seperti mobil, motor, truk, dan bus dengan akurasi tinggi serta tampilan menarik.")
@@ -142,23 +150,10 @@ if selected == "Home":
         with [col1, col2, col3, col4][i]:
             st.markdown(f"<div class='card'><h2>{metrics[i][0]}</h2><p>{metrics[i][1]}</p></div>", unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.markdown("<h2 style='text-align:center;'>Mengapa Memilih Kami?</h2>", unsafe_allow_html=True)
-    col1, col2, col3, col4 = st.columns(4)
-    keunggulan = [
-        ("🎯 Deteksi Akurat", "Akurasi hingga 98.2% dengan deep learning."),
-        ("⚡ Pemrosesan Cepat", "Identifikasi gambar <50ms per deteksi."),
-        ("🔒 Keamanan Tinggi", "Data gambar terenkripsi end-to-end."),
-        ("🌐 API Global", "Integrasi REST API mudah dan cepat.")
-    ]
-    for i in range(4):
-        with [col1, col2, col3, col4][i]:
-            st.markdown(f"<div class='card'><h4>{keunggulan[i][0]}</h4><p>{keunggulan[i][1]}</p></div>", unsafe_allow_html=True)
 
-
-# =========================
-#   CLASSIFICATION PAGE
-# =========================
+# ============================================
+# 🌸 CLASSIFICATION PAGE
+# ============================================
 elif selected == "Classification":
     st.title("🧠 Klasifikasi Gambar AI")
     st.write("Upload gambar dan biarkan AI menganalisis serta mengklasifikasikan objek kendaraan dengan akurasi tinggi.")
@@ -182,9 +177,9 @@ elif selected == "Classification":
             st.markdown("<div style='padding:20px; background:#f9fafb; border-radius:10px; text-align:center;'>Upload gambar untuk melihat hasil klasifikasi.</div>", unsafe_allow_html=True)
 
 
-# =========================
-#   MODEL PERFORMANCE PAGE
-# =========================
+# ============================================
+# 🌸 MODEL PERFORMANCE PAGE
+# ============================================
 elif selected == "Model Performance":
     st.markdown("<h1 style='text-align:center;'>📊 Model Performance</h1>", unsafe_allow_html=True)
     st.write("Analisis performa model deteksi kendaraan berdasarkan hasil pengujian dan evaluasi metrik utama.")
@@ -214,33 +209,9 @@ elif selected == "Model Performance":
                       paper_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown("---")
-    st.markdown("<h3 style='text-align:center;'>🔢 Confusion Matrix</h3>", unsafe_allow_html=True)
-    cm_data = pd.DataFrame({
-        "Mobil": [930, 25, 10, 5],
-        "Motor": [20, 920, 15, 10],
-        "Truck": [8, 12, 910, 20],
-        "Bus": [7, 9, 10, 925]
-    }, index=["Mobil", "Motor", "Truck", "Bus"])
-    fig2 = px.imshow(cm_data, text_auto=True, color_continuous_scale="pink",
-                     title="Visualisasi Confusion Matrix")
-    fig2.update_layout(margin=dict(l=40, r=40, t=60, b=40),
-                       plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
-    st.plotly_chart(fig2, use_container_width=True)
-
-    st.markdown("""
-        <div style='background:linear-gradient(90deg,#f8bbd0,#ec407a);
-                    border-radius:15px;padding:25px;text-align:center;color:white;'>
-            <h3>💡 Insight</h3>
-            <p>Model deteksi kendaraan menunjukkan performa tinggi dengan akurasi mencapai 98.2% 
-            serta distribusi prediksi yang seimbang di seluruh kelas kendaraan.</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-
-# =========================
-#   MODEL INFO PAGE
-# =========================
+# ============================================
+# 🌸 MODEL INFO & ABOUT
+# ============================================
 elif selected == "Model Info":
     st.title("ℹ️ Informasi Model")
     st.write("""
@@ -250,10 +221,6 @@ elif selected == "Model Info":
         untuk meningkatkan generalisasi model.
     """)
 
-
-# =========================
-#   ABOUT PROJECT PAGE
-# =========================
 elif selected == "About Project":
     st.title("📘 Tentang Proyek")
     st.write("""
