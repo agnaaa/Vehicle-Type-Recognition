@@ -122,16 +122,4 @@ elif selected == "Tentang":
         - Dapat dijalankan secara lokal maupun di Streamlit Cloud.
     """)
 
-    st.success("Versi: 1.0.0 | Dibuat oleh: agnaaa & MUSLIADI")
-📂 Pastikan Struktur Folder Kamu Begini
-go
-Copy code
-vehicle-type-recognition/
-│
-├── app.py
-├── best.pt
-├── classifier_model.h5
-└── images/
-    ├── car.jpg
-    ├── motor.jpg
-    └── truck.jpg
+    st.success("Versi: 1.0.0 | Dibuat oleh: agnaaa")
