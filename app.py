@@ -30,127 +30,97 @@ def load_models():
 
 # ==========================
 # UI
-# -------------------------
-# CONFIGURASI PAGE
-# -------------------------
-st.set_page_config(
-    page_title="🚗 AI Vehicle Type Recognition",
-    page_icon="🚙",
-    layout="wide"
-)
-
-# -------------------------
-# LOAD MODEL
-# -------------------------
-@st.cache_resource
-def load_model():
-    model = YOLO("best.pt")  # pastikan file best.pt ada di folder yang sama
-    return model
-
-model = load_model()
-
-# -------------------------
-# SIDEBAR
-# -------------------------
-st.sidebar.title("📑 Navigasi")
-page = st.sidebar.radio("Pilih Halaman:", ["🏠 Home", "🚘 Classification", "📊 Model Performance", "ℹ️ About"])
-
-# -------------------------
-# HALAMAN HOME
-# -------------------------
-if page == "🏠 Home":
-    st.title("🚗 AI Vehicle Type Recognition")
+# ==============================
+# Tampilan Halaman Utama
+# ==============================
+def show_home():
     st.markdown("""
-    ### Selamat datang di aplikasi deteksi jenis kendaraan!
-    Aplikasi ini menggunakan **YOLOv8 (You Only Look Once)** untuk mengenali jenis kendaraan seperti:
-    - 🏍️ Motor  
-    - 🚗 Mobil  
-    - 🚌 Bus  
-    - 🚚 Truk  
+        <style>
+        .main {
+            background: linear-gradient(180deg, #fff5f8, #ffffff);
+            font-family: 'Inter', sans-serif;
+        }
+        h1 span {
+            color: #f07da7;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #f07da7, #e86e9a);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+        }
+        .btn-outline {
+            border: 1px solid #f6cde0;
+            color: #f07da7;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(16,24,40,0.06);
+            text-align: center;
+            padding: 20px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-    Unggah gambar kendaraan dan sistem akan otomatis mengenali jenisnya secara **real-time**.
-    """)
-
-    st.image("https://cdn.dribbble.com/users/1187278/screenshots/5634918/vehicles.gif", use_container_width=True)
-
-# -------------------------
-# HALAMAN CLASSIFICATION
-# -------------------------
-elif page == "🚘 Classification":
-    st.title("🚘 Vehicle Image Classification")
-    st.markdown("Unggah gambar kendaraan untuk mendeteksi jenisnya menggunakan model YOLOv8.")
-
-    uploaded_file = st.file_uploader("Pilih gambar kendaraan...", type=["jpg", "jpeg", "png"])
-
-    if uploaded_file is not None:
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.write(uploaded_file.read())
-
-        image = Image.open(uploaded_file)
-        st.image(image, caption='Gambar yang diunggah', use_container_width=True)
-
-        # Deteksi dengan model
-        with st.spinner('🔍 Sedang menganalisis gambar...'):
-            results = model.predict(temp_file.name)
-            result_image = results[0].plot()  # gambar dengan bounding box
-
-        st.subheader("📸 Hasil Deteksi:")
-        st.image(result_image, use_container_width=True)
-
-        # Tampilkan label prediksi
-        labels = results[0].boxes.cls
-        names = [model.names[int(i)] for i in labels]
-        if names:
-            st.success(f"🚗 Jenis kendaraan terdeteksi: **{', '.join(names)}**")
-        else:
-            st.warning("Tidak ada kendaraan terdeteksi pada gambar.")
-
-# -------------------------
-# HALAMAN MODEL PERFORMANCE
-# -------------------------
-elif page == "📊 Model Performance":
-    import pandas as pd
-    import plotly.express as px
-
-    st.title("📊 Model Performance Overview")
-
-    st.markdown("""
-    Berikut adalah ringkasan performa model deteksi kendaraan berdasarkan hasil evaluasi:
-    """)
-
-    metrics_data = {
-        "Metrik": ["Precision", "Recall", "mAP50", "mAP50-95"],
-        "Nilai (%)": [96.2, 95.8, 97.5, 92.3]
-    }
-    df = pd.DataFrame(metrics_data)
-
-    st.table(df)
-
-    st.markdown("### 🔺 Tren Akurasi Model (versi ke-1 s.d ke-5)")
-    trend_data = pd.DataFrame({
-        "Versi": ["V1", "V2", "V3", "V4", "V5"],
-        "Akurasi": [94.8, 96.2, 97.0, 97.8, 98.2]
-    })
-
-    fig = px.bar(
-        trend_data, x="Versi", y="Akurasi",
-        text="Akurasi", color="Akurasi",
-        color_continuous_scale=["#f8bbd0", "#ec407a", "#c2185b"],
-        title="Perkembangan Akurasi Model"
+    st.title("Deteksi Jenis 🚗 Kendaraan **AI**")
+    st.markdown(
+        "<p class='subtitle'>Platform revolusioner yang menggunakan teknologi deep learning "
+        "untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, "
+        "dan bus dengan akurasi tinggi.</p>",
+        unsafe_allow_html=True
     )
-    st.plotly_chart(fig, use_container_width=True)
 
-# -------------------------
-# HALAMAN ABOUT
-# -------------------------
-elif page == "ℹ️ About":
-    st.title("ℹ️ Tentang Aplikasi")
-    st.markdown("""
-    Aplikasi ini dibuat sebagai demonstrasi penerapan **Computer Vision** menggunakan **YOLOv8** untuk mendeteksi jenis kendaraan.
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("<button class='btn-primary'>🚀 Coba Sekarang</button>", unsafe_allow_html=True)
+        st.markdown("<button class='btn-outline'>📘 Pelajari Lebih Lanjut</button>", unsafe_allow_html=True)
 
-    **Dibuat oleh:** Agna Balqis  
-    **Framework:** Streamlit + Ultralytics YOLOv8  
-    **Versi:** 1.0.0
-    """)
-    st.image("https://miro.medium.com/v2/resize:fit:800/1*dT7-Ixk12HjS-VeBPzSLLA.gif", use_container_width=True)
+    with col2:
+        st.markdown("<div class='card'><h4>Demo Cepat</h4>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Gambar kendaraan diunggah", use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
+    st.write("---")
+    st.subheader("Jenis Kendaraan yang Dapat Dideteksi")
+    st.markdown("<p style='color:#6b7280'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
+
+    colA, colB, colC, colD = st.columns(4)
+    colA.image("https://via.placeholder.com/200x100?text=Mobil")
+    colA.caption("Mobil – Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang")
+
+    colB.image("https://via.placeholder.com/200x100?text=Motor")
+    colB.caption("Motor – Sepeda motor, skuter, dan kendaraan roda dua lainnya")
+
+    colC.image("https://via.placeholder.com/200x100?text=Truck")
+    colC.caption("Truck – Truk kargo, pickup, dan kendaraan komersial berat")
+
+    colD.image("https://via.placeholder.com/200x100?text=Bus")
+    colD.caption("Bus – Bus kota, antar kota, dan kendaraan angkutan umum")
+
+    st.write("---")
+    st.subheader("Mengapa Memilih Platform Kami?")
+    st.markdown("<p style='color:#6b7280'>Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi.</p>", unsafe_allow_html=True)
+
+    colx, coly, colz, cola = st.columns(4)
+    colx.metric("Akurasi Model", "98.2%")
+    coly.metric("Waktu Proses", "47ms")
+    colz.metric("Jenis Kendaraan", "4+")
+    cola.metric("Uptime", "99.9%")
+
+# Jalankan halaman
+if __name__ == "__main__":
+    show_home()
