@@ -182,104 +182,69 @@ elif selected == "Classification":
             st.markdown("<div style='padding:20px; background:#f9fafb; border-radius:10px; text-align:center;'>Upload gambar untuk melihat hasil klasifikasi.</div>", unsafe_allow_html=True)
 
 
-# =========================
-#   MODEL PERFORMANCE PAGE
-# =========================
-elif selected == "Model Performance":
-    st.title("📊 Model Performance")
-    st.write("Berikut adalah performa model deteksi kendaraan kami berdasarkan hasil pengujian.")
-
-    col1, col2, col3, col4 = st.columns(4)
-    metrics = [
-        ("98.2%", "Accuracy"),
-        ("97.8%", "Precision"),
-        ("96.9%", "Recall"),
-        ("97.3%", "F1-Score")
-    ]
-    for i in range(4):
-        with [col1, col2, col3, col4][i]:
-            st.markdown(f"<div class='card'><h2>{metrics[i][0]}</h2><p>{metrics[i][1]}</p></div>", unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("<h3 style='text-align:center;'>📈 Grafik Akurasi Model</h3>", unsafe_allow_html=True)
-    st.image("https://i.imgur.com/6nJ4R2y.png", caption="Grafik Akurasi Model", use_container_width=True)
-
-    st.markdown("---")
-    st.markdown("<h3 style='text-align:center;'>🔍 Confusion Matrix</h3>", unsafe_allow_html=True)
-    st.image("https://i.imgur.com/jn2Q5Ft.png", caption="Confusion Matrix", use_container_width=True)
-
-
-# =========================
-#   MODEL INFO PAGE
-# =========================
-elif selected == "Model Info":
-    st.title("ℹ️ Informasi Model")
-    st.write("""
-        Model AI Image Detection ini dibangun menggunakan arsitektur **Convolutional Neural Network (CNN)** 
-        dengan optimisasi menggunakan algoritma **Adam Optimizer** serta fungsi aktivasi **ReLU dan Softmax**.  
-        Dataset terdiri dari berbagai jenis kendaraan seperti mobil, motor, truk, dan bus yang telah melalui proses augmentasi untuk meningkatkan generalisasi model.
-    """)
-
-
-# =========================
-#   ABOUT PROJECT PAGE
-# =========================
-elif selected == "About Project":
-    st.title("📘 Tentang Proyek")
-    st.write("""
-        Proyek ini dikembangkan untuk mendemonstrasikan penerapan teknologi **Deep Learning** 
-        dalam bidang **Computer Vision** khususnya untuk mendeteksi jenis kendaraan.  
-        Aplikasi ini menggunakan Streamlit sebagai framework antarmuka interaktif dan model dilatih menggunakan TensorFlow/Keras.
-    """)
-
+# ===============================
+# 🌸 Halaman: Model Performance
+# ===============================
 elif page == "Model Performance":
+    import pandas as pd
+    import plotly.express as px
+    import streamlit as st
+
+    # 🌸 CSS Styling
     st.markdown("""
         <style>
             [data-testid="stAppViewContainer"] {
                 background: linear-gradient(180deg, #ffe6f0 0%, #fff0f5 100%);
             }
+            h1, h2, h3, h4 {
+                color: #c2185b;
+            }
             .metric-card {
                 background: white;
-                border-radius: 16px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-                padding: 20px;
+                border-radius: 20px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                padding: 25px;
                 text-align: center;
                 transition: all 0.3s ease;
             }
             .metric-card:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.12);
             }
             .metric-value {
-                font-size: 32px;
-                font-weight: 700;
+                font-size: 34px;
+                font-weight: bold;
                 color: #c2185b;
+                margin-bottom: 5px;
             }
             .metric-label {
-                font-size: 15px;
                 color: #6e6e6e;
+                font-size: 15px;
             }
             .section {
                 background: white;
                 border-radius: 20px;
                 padding: 25px;
+                margin-top: 20px;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-                margin-bottom: 25px;
             }
             .footer {
                 background: linear-gradient(90deg, #f48fb1, #ec407a);
-                border-radius: 15px;
-                padding: 25px;
+                border-radius: 20px;
+                padding: 35px;
                 text-align: center;
                 color: white;
+                margin-top: 30px;
             }
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h1 style='text-align:center; color:#c2185b;'>Performa Model AI</h1>", unsafe_allow_html=True)
+    # 🌸 Judul & Deskripsi
+    st.markdown("<h1 style='text-align:center;'>Performa Model AI</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center;'>Evaluasi komprehensif performa model deteksi gambar dengan berbagai metrik dan analisis mendalam yang cantik dan mudah dipahami.</p>", unsafe_allow_html=True)
+    st.write("")
 
-    # Kartu metrik utama
+    # 🌸 Kartu metrik utama
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown("<div class='metric-card'><div class='metric-value'>98.2%</div><div class='metric-label'>Akurasi Model</div></div>", unsafe_allow_html=True)
@@ -290,21 +255,28 @@ elif page == "Model Performance":
     with col4:
         st.markdown("<div class='metric-card'><div class='metric-value'>97.1%</div><div class='metric-label'>F1-Score</div></div>", unsafe_allow_html=True)
 
-    # Tren performa model
-    st.markdown("### Tren Performa")
+    # 🌸 Grafik Tren Akurasi
+    st.markdown("### 📈 Grafik Akurasi Model")
     trend_data = pd.DataFrame({
         "Versi": ["V1", "V2", "V3", "V4", "V5"],
-        "Akurasi": [94.5, 96.0, 97.0, 97.8, 98.2]
+        "Akurasi": [94.8, 96.2, 97.0, 97.8, 98.2]
     })
-    fig = px.bar(trend_data, x="Versi", y="Akurasi", text="Akurasi",
-                 color="Akurasi", color_continuous_scale=["#f8bbd0","#f06292","#ad1457"])
+    fig = px.bar(
+        trend_data, x="Versi", y="Akurasi", text="Akurasi",
+        color="Akurasi", color_continuous_scale=["#f8bbd0", "#ec407a", "#ad1457"]
+    )
     fig.update_traces(texttemplate='%{text}%', textposition='outside')
-    fig.update_layout(yaxis_title="Akurasi (%)", xaxis_title=None,
-                      coloraxis_showscale=False, plot_bgcolor='rgba(0,0,0,0)')
+    fig.update_layout(
+        yaxis_title="Akurasi (%)",
+        xaxis_title=None,
+        coloraxis_showscale=False,
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Confusion Matrix
-    st.markdown("### Confusion Matrix")
+    # 🌸 Confusion Matrix
+    st.markdown("### 🔢 Confusion Matrix")
     cm_data = pd.DataFrame({
         "Hewan": [850, 15, 5, 10],
         "Kendaraan": [12, 910, 8, 5],
@@ -313,9 +285,15 @@ elif page == "Model Performance":
     }, index=["Hewan", "Kendaraan", "Makanan", "Objek"])
     fig2 = px.imshow(cm_data, text_auto=True, color_continuous_scale="pink",
                      title="Visualisasi Confusion Matrix")
+    fig2.update_layout(
+        margin=dict(l=40, r=40, t=60, b=40),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)'
+    )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Kecepatan & Resource Usage
+    # 🌸 Kecepatan & Resource Usage
+    st.markdown("### ⚙️ Statistik Kinerja")
     colA, colB, colC = st.columns(3)
     with colA:
         st.markdown("<div class='section'><h4 style='color:#c2185b;'>Kecepatan Inferensi</h4><h2>47ms</h2><p>Rata-rata waktu pemrosesan per gambar</p></div>", unsafe_allow_html=True)
@@ -324,8 +302,8 @@ elif page == "Model Performance":
     with colC:
         st.markdown("<div class='section'><h4 style='color:#c2185b;'>Resource Usage</h4><p>GPU: 35% — CPU: 30% — RAM: 12GB/32GB</p></div>", unsafe_allow_html=True)
 
-    # Tabel perbandingan model
-    st.markdown("### Perbandingan dengan Model Lain")
+    # 🌸 Perbandingan Model
+    st.markdown("### 📊 Perbandingan dengan Model Lain")
     comparison = pd.DataFrame({
         "Model": ["AI Image Detection (Ours)", "ResNet-50", "EfficientNet-B3", "Vision Transformer", "MobileNet-V3"],
         "Akurasi": ["98.2%", "94.1%", "96.8%", "97.5%", "91.2%"],
@@ -335,7 +313,7 @@ elif page == "Model Performance":
     })
     st.dataframe(comparison, use_container_width=True)
 
-    # Insight performa
+    # 🌸 Insight Footer
     st.markdown("""
         <div class='footer'>
             <h3>Insight Performa</h3>
