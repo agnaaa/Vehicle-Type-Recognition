@@ -30,6 +30,11 @@ def load_models():
 # ==========================
 # UI
 # ======================================
+# Konfigurasi Halaman
+# ======================================
+st.set_page_config(page_title="Vehicle Type Recognition", page_icon="🚗", layout="wide")
+
+# ======================================
 # Sidebar Menu
 # ======================================
 with st.sidebar:
@@ -61,26 +66,26 @@ if selected == "Home":
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        try:
+        if os.path.exists("images/car.jpg"):
             st.image("images/car.jpg", use_container_width=True)
-        except Exception:
-            st.warning("Gambar mobil tidak ditemukan. Pastikan file `images/car.jpg` ada.")
+        else:
+            st.warning("⚠️ Gambar mobil tidak ditemukan. Pastikan file `images/car.jpg` ada di folder `images`.")
         st.markdown("**Mobil**")
         st.caption("Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang")
 
     with col2:
-        try:
+        if os.path.exists("images/motor.jpg"):
             st.image("images/motor.jpg", use_container_width=True)
-        except Exception:
-            st.warning("Gambar motor tidak ditemukan. Pastikan file `images/motor.jpg` ada.")
+        else:
+            st.warning("⚠️ Gambar motor tidak ditemukan. Pastikan file `images/motor.jpg` ada di folder `images`.")
         st.markdown("**Motor**")
         st.caption("Sepeda motor, skuter, dan kendaraan roda dua lainnya")
 
     with col3:
-        try:
+        if os.path.exists("images/truck.jpg"):
             st.image("images/truck.jpg", use_container_width=True)
-        except Exception:
-            st.warning("Gambar truk tidak ditemukan. Pastikan file `images/truck.jpg` ada.")
+        else:
+            st.warning("⚠️ Gambar truk tidak ditemukan. Pastikan file `images/truck.jpg` ada di folder `images`.")
         st.markdown("**Truk**")
         st.caption("Truk barang dan kendaraan niaga berat")
 
@@ -118,3 +123,15 @@ elif selected == "Tentang":
     """)
 
     st.success("Versi: 1.0.0 | Dibuat oleh: agnaaa & MUSLIADI")
+📂 Pastikan Struktur Folder Kamu Begini
+go
+Copy code
+vehicle-type-recognition/
+│
+├── app.py
+├── best.pt
+├── classifier_model.h5
+└── images/
+    ├── car.jpg
+    ├── motor.jpg
+    └── truck.jpg
