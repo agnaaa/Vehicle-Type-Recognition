@@ -210,3 +210,4 @@ if selected == "Home":
 
     # Footer
     st.markdown("<br><hr><p style='text-align:center; color:#888;'>© 2025 AI Vehicle Detection | Dibangun dengan ❤️ menggunakan Streamlit</p>", unsafe_allow_html=True)
+
