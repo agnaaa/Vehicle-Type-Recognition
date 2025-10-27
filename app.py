@@ -208,3 +208,130 @@ with col3:
     st.markdown('<div class="card"><b>Keamanan Tinggi</b><p class="sub">Data dienkripsi dengan aman end-to-end.</p></div>', unsafe_allow_html=True)
 with col4:
     st.markdown('<div class="card"><b>API Global</b><p class="sub">Integrasi mudah melalui REST API.</p></div>', unsafe_allow_html=True)
+
+# ========================
+# Konfigurasi Halaman
+# ========================
+st.set_page_config(
+    page_title="Klasifikasi Gambar AI",
+    page_icon="🖼️",
+    layout="wide"
+)
+
+# ========================
+# CSS Styling
+# ========================
+st.markdown("""
+    <style>
+    body {
+        background-color: #fdf5f8 !important;
+    }
+    [data-testid="stAppViewContainer"] {
+        background-color: #fdf5f8;
+    }
+    [data-testid="stHeader"] {
+        background-color: rgba(255,255,255,0);
+    }
+
+    /* Navbar */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 1rem 3rem;
+        box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    .nav-left {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #d63384;
+    }
+    .nav-right a {
+        margin-left: 2rem;
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+    }
+    .nav-right a:hover, .active {
+        color: #d63384;
+    }
+
+    /* Card Styling */
+    .card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        min-height: 300px;
+    }
+
+    .stButton>button {
+        background-color: #d63384;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.3rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #e754a5;
+        color: white;
+    }
+
+    h1, h2, h3 {
+        color: #212529;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# ========================
+# Navbar
+# ========================
+st.markdown("""
+<div class="navbar">
+    <div class="nav-left">🖼️ AI Image Detection</div>
+    <div class="nav-right">
+        <a href="#">Home</a>
+        <a class="active" href="#">Classification</a>
+        <a href="#">Model Performance</a>
+        <a href="#">Model Info</a>
+        <a href="#">About Project</a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ========================
+# Header
+# ========================
+st.markdown("## Klasifikasi Gambar AI")
+st.write("Upload gambar dan biarkan AI kami menganalisis serta mengklasifikasi objek dalam gambar dengan akurasi tinggi.")
+
+# ========================
+# Bagian Upload & Hasil
+# ========================
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("Upload Gambar")
+    uploaded_file = st.file_uploader("Pilih atau Drop Gambar", type=["jpg", "jpeg", "png", "webp"])
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Gambar yang diunggah", use_column_width=True)
+    else:
+        st.info("Mendukung JPG, PNG, WebP hingga 10MB")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("Hasil Klasifikasi")
+    if uploaded_file:
+        st.success("✅ Hasil: Mobil (98.2% confidence)")
+    else:
+        st.warning("Upload dan analisis gambar untuk melihat hasil klasifikasi")
+    st.markdown('</div>', unsafe_allow_html=True)
