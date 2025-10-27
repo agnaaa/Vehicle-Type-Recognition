@@ -314,15 +314,16 @@ elif page == "Model Performance":
     st.dataframe(comparison, use_container_width=True)
 
     # 🌸 Insight Footer
-    st.markdown("""
-        <div class='footer'>
-            <h3>Insight Performa</h3>
-            <p>Model kami mencapai keseimbangan optimal antara akurasi, kecepatan, dan efisiensi resource. 
-            Dengan desain arsitektur yang inovatif, kami berhasil melampaui performa model-model terdahulu sambil mempertahankan pengalaman pengguna yang luar biasa.</p>
-            <div style='display:flex; justify-content:space-around; margin-top:20px;'>
-                <div>🏆 <b>Akurasi Terbaik</b><br>98.2% pada benchmark</div>
-                <div>⚡ <b>Kecepatan Optimal</b><br>47ms inference time</div>
-                <div>💎 <b>Efisiensi Tinggi</b><br>Resource usage minimal</div>
-            </div>
+   st.markdown("""
+    <div class='footer'>
+        <h3>Insight Performa</h3>
+        <p>Model kami mencapai keseimbangan optimal antara akurasi, kecepatan, dan efisiensi resource. 
+        Dengan desain arsitektur yang inovatif, kami berhasil melampaui performa model-model terdahulu sambil mempertahankan pengalaman pengguna yang luar biasa.</p>
+        <div style='display:flex; justify-content:space-around; margin-top:20px;'>
+            <div>🏆 <b>Akurasi Terbaik</b><br>98.2% pada benchmark</div>
+            <div>⚡ <b>Kecepatan Optimal</b><br>47ms inference time</div>
+            <div>💎 <b>Efisiensi Tinggi</b><br>Resource usage minimal</div>
         </div>
-    """, unsafe_allow_html=True)
+    </div>
+""", unsafe_allow_html=True)
+
