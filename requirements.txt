@@ -6,6 +6,5 @@ numpy
 pandas
 pillow
 joblib
-
-
+streamlit-option-menu
 
