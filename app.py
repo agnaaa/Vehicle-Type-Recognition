@@ -17,14 +17,14 @@ from streamlit_option_menu import option_menu
 # ==========================
 @st.cache_resource
 def load_models():
-    yolo_model = YOLO("model/best.pt")
+    from ultralytics import YOLO
+    yolo_model = YOLO("best.pt")
 
     try:
-        # coba load dengan TensorFlow baru
-        classifier = tf.keras.models.load_model("model/classifier_model.h5", safe_mode=False, compile=False)
+        classifier = tf.keras.models.load_model("model/classifier_model.h5")
     except Exception as e:
-        st.error(f"Gagal memuat model klasifikasi: {e}")
-        classifier = None
+        st.warning(f"⚠️ Gagal memuat classifier model: {e}")
+        classifier = None  # supaya app tetap jalan
 
     return yolo_model, classifier
 
@@ -153,3 +153,4 @@ elif page == "ℹ️ About":
     **Versi:** 1.0.0
     """)
     st.image("https://miro.medium.com/v2/resize:fit:800/1*dT7-Ixk12HjS-VeBPzSLLA.gif", use_container_width=True)
+
