@@ -37,7 +37,6 @@ st.set_page_config(page_title="Vehicle Type Recognition", page_icon="🚗", layo
 
 # ======================================
 # Sidebar Menu
-# ======================================
 with st.sidebar:
     selected = option_menu(
         menu_title="Menu Utama",
@@ -124,4 +123,5 @@ elif selected == "Tentang":
     """)
 
     st.success("Versi: 1.0.0 | Dibuat oleh: agnaaa")
+
 
