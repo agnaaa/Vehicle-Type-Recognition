@@ -29,200 +29,185 @@ def load_models():
 
 # ==========================
 # UI
-# ============================================================
-# BASIC CONFIG
-# ============================================================
-st.set_page_config(page_title="AI Vehicle Detection", page_icon="🚗", layout="wide")
+# ==========================
+# KONFIGURASI DASAR
+# ==========================
+st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
-# ============================================================
-# GLOBAL CSS (pastel theme, cards, buttons)
-# ============================================================
+# ==========================
+# CUSTOM CSS
+# ==========================
 st.markdown("""
     <style>
-    /* page bg */
-    .stApp { background-color: #fff6f9; }
+    .stApp {
+        background-color: #fceef5;
+    }
 
-    /* headings */
-    h1, h2, h3 { color: #1e1e1e; font-weight:700; }
-    .pink-text { color: #e75480; font-weight:700; }
-    .center { text-align:center; }
+    h1 {
+        color: #1e1e1e;
+        font-weight: 900;
+    }
 
-    /* primary button */
-    div.stButton > button {
-        background-color: #ff6f91;
+    .pink-text {
+        color: #e75480;
+        font-weight: bold;
+    }
+
+    div.stButton > button:first-child {
+        background-color: #ff5fa2;
         color: white;
         border-radius: 10px;
-        padding: 8px 18px;
-        font-weight:600;
+        border: none;
+        padding: 0.6em 1.2em;
+        font-weight: 600;
     }
-    div.stButton > button:hover { background-color:#ff85a1; }
 
-    /* uploader box style */
+    div.stButton > button:first-child:hover {
+        background-color: #e74b8b;
+    }
+
     .stFileUploader {
-        background: #ffffff;
-        border-radius:12px;
-        padding:10px;
-        border: 2px dashed #ffd7e6;
+        background-color: white;
+        padding: 1em;
+        border: 2px dashed #ff9ac0;
+        border-radius: 15px;
+        box-shadow: 0px 4px 8px rgba(255, 192, 203, 0.3);
     }
 
-    /* vehicle card */
-    .vehicle-card {
-        background-color: #fff;
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    section[data-testid="stSidebar"] {
+        background-color: #f9e1ec;
+    }
+
+    h1, h2, h3 {
+        color: #1c1c1e;
+    }
+
+    .pink {
+        color: #e75480;
+    }
+
+    hr {
+        border: 1px solid #f8cdda;
+    }
+
+    .center {
         text-align: center;
     }
-    .vehicle-img {
-        width:100%;
-        height:150px;
-        object-fit:cover;
-        border-radius:10px;
-    }
-    .vehicle-title { font-weight:700; margin-top:10px; }
-    .vehicle-desc { color:#666; font-size:14px; }
 
-    hr { border:1px solid #f8cdda; margin:30px 0; }
-    section[data-testid="stSidebar"] { background-color: #f9e1ec; }
+    .metric-box {
+        background-color: #fff;
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .feature-box {
+        background-color: #fff;
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+
+    .section {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
-# NAVIGATION (SIDEBAR SELECTBOX — safe, no external deps)
-# ============================================================
+# ==========================
+# NAVIGASI / MENU
+# ==========================
 menu = ["Home", "Classification", "Model Performance", "Model Info", "About Project"]
 selected = st.sidebar.selectbox("Pilih Halaman:", menu)
 
-# ============================================================
-# HOME PAGE
-# ============================================================
+# ==========================
+# HALAMAN HOME
+# ==========================
 if selected == "Home":
-    # HERO (two columns)
-    left, right = st.columns([2, 1])
+    col1, col2 = st.columns(2)
 
-    with left:
+    with col1:
         st.markdown("### Deteksi Jenis")
         st.markdown("<h1 class='pink-text'>Kendaraan AI</h1>", unsafe_allow_html=True)
         st.write("Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.")
-        st.write("")
-        c1, c2 = st.columns([0.4,0.4])
-        with c1:
-            st.button("🚀 Coba Sekarang")
-        with c2:
-            st.button("📖 Pelajari Lebih Lanjut")
+        st.button("🚀 Coba Sekarang")
+        st.button("📖 Pelajari Lebih Lanjut")
 
-    with right:
+    with col2:
         st.markdown("### Demo Cepat")
-        uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=['jpg','jpeg','png'])
+        uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
         if uploaded_file is not None:
-            st.image(uploaded_file, caption="Preview gambar", use_column_width=True)
-            st.success("Gambar siap dianalisis (contoh: integrasikan model inference di sini).")
+            st.image(uploaded_file, caption="Gambar yang diunggah", use_container_width=True)
         else:
             st.info("Tidak ada gambar diunggah. Upload file di atas untuk mencoba.")
 
     st.write("---")
 
-    # VEHICLE CARDS (4 columns)
-    st.markdown("<h2 class='center'>Jenis Kendaraan yang Dapat Dideteksi</h2>", unsafe_allow_html=True)
-    st.markdown("<p class='center' style='color:#666;'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
+    # ==========================
+    # Jenis Kendaraan
+    # ==========================
+    st.markdown("<h1 class='center'>Jenis Kendaraan yang Dapat Dideteksi</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='center'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
 
-    v1, v2, v3, v4 = st.columns(4)
-    with v1:
-        st.markdown("""
-            <div class="vehicle-card">
-                <img src="https://cdn.pixabay.com/photo/2017/03/27/13/28/auto-2179220_640.jpg" class="vehicle-img">
-                <div class="vehicle-title">Mobil</div>
-                <div class="vehicle-desc">Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang</div>
-            </div>
-        """, unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.image("images/car.jpg", use_container_width=True)
+        st.markdown("### Mobil")
+        st.caption("Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang")
 
-    with v2:
-        st.markdown("""
-            <div class="vehicle-card">
-                <img src="https://cdn.pixabay.com/photo/2018/08/02/00/50/motorcycle-3575557_640.jpg" class="vehicle-img">
-                <div class="vehicle-title">Motor</div>
-                <div class="vehicle-desc">Sepeda motor, skuter, dan kendaraan roda dua lainnya</div>
-            </div>
-        """, unsafe_allow_html=True)
+    with col2:
+        st.image("images/motor.jpg", use_container_width=True)
+        st.markdown("### Motor")
+        st.caption("Sepeda motor, skuter, dan kendaraan roda dua lainnya")
 
-    with v3:
-        st.markdown("""
-            <div class="vehicle-card">
-                <img src="https://cdn.pixabay.com/photo/2014/12/27/15/40/truck-581173_640.jpg" class="vehicle-img">
-                <div class="vehicle-title">Truck</div>
-                <div class="vehicle-desc">Truk kargo, pickup, dan kendaraan komersial berat</div>
-            </div>
-        """, unsafe_allow_html=True)
+    with col3:
+        st.image("images/truck.jpg", use_container_width=True)
+        st.markdown("### Truck")
+        st.caption("Truk kargo, pickup, dan kendaraan komersial berat")
 
-    with v4:
-        st.markdown("""
-            <div class="vehicle-card">
-                <img src="https://cdn.pixabay.com/photo/2016/11/29/02/53/bus-1868313_640.jpg" class="vehicle-img">
-                <div class="vehicle-title">Bus</div>
-                <div class="vehicle-desc">Bus kota, bus antar kota, dan kendaraan angkutan umum</div>
-            </div>
-        """, unsafe_allow_html=True)
+    with col4:
+        st.image("images/bus.jpg", use_container_width=True)
+        st.markdown("### Bus")
+        st.caption("Bus kota, bus antar kota, dan kendaraan angkutan umum")
 
-    st.write("")
     st.write("---")
 
-    # PERFORMANCE METRICS
-    st.markdown("<h2 class='center'>Performa Model Kami</h2>", unsafe_allow_html=True)
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Akurasi Model", "98.2%")
-    m2.metric("Waktu Proses", "47 ms")
-    m3.metric("Jenis Kendaraan", "4+")
-    m4.metric("Uptime", "99.9%")
+    # ==========================
+    # Performa Model
+    # ==========================
+    st.markdown("<h2 class='center pink'>Performa Model Kami</h2>", unsafe_allow_html=True)
 
-    st.write("")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown("<div class='metric-box'><h3>98.2%</h3><p>Akurasi Model</p></div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown("<div class='metric-box'><h3>47ms</h3><p>Waktu Proses</p></div>", unsafe_allow_html=True)
+    with col3:
+        st.markdown("<div class='metric-box'><h3>4+</h3><p>Jenis Kendaraan</p></div>", unsafe_allow_html=True)
+    with col4:
+        st.markdown("<div class='metric-box'><h3>99.9%</h3><p>Uptime</p></div>", unsafe_allow_html=True)
+
     st.write("---")
 
-    # WHY CHOOSE US
-    st.markdown("<h2 class='center'>Mengapa Memilih Platform Kami?</h2>", unsafe_allow_html=True)
-    st.markdown("<p class='center' style='color:#666;'>Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
+    # ==========================
+    # Mengapa Memilih Kami
+    # ==========================
+    st.markdown("<h2 class='center pink'>Mengapa Memilih Platform Kami?</h2>", unsafe_allow_html=True)
+    st.markdown("<p class='center'>Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi</p>", unsafe_allow_html=True)
 
-    f1, f2, f3, f4 = st.columns(4)
-    f1.markdown("<div class='vehicle-card'><h3>Deteksi Akurat</h3><p>Akurasi tinggi dengan model deep learning</p></div>", unsafe_allow_html=True)
-    f2.markdown("<div class='vehicle-card'><h3>Pemrosesan Cepat</h3><p>Identifikasi dalam waktu singkat</p></div>", unsafe_allow_html=True)
-    f3.markdown("<div class='vehicle-card'><h3>Keamanan Tinggi</h3><p>Proses data dengan enkripsi</p></div>", unsafe_allow_html=True)
-    f4.markdown("<div class='vehicle-card'><h3>API Global</h3><p>Mudah diintegrasikan melalui REST API</p></div>", unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown("<div class='feature-box'><h3>Deteksi Akurat</h3><p>Akurasi hingga 98.2% dalam mengenali jenis kendaraan dengan deep learning</p></div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown("<div class='feature-box'><h3>Pemrosesan Cepat</h3><p>Identifikasi kendaraan dalam waktu kurang dari 50ms</p></div>", unsafe_allow_html=True)
+    with col3:
+        st.markdown("<div class='feature-box'><h3>Keamanan Tinggi</h3><p>Data gambar kendaraan diproses dengan enkripsi end-to-end</p></div>", unsafe_allow_html=True)
+    with col4:
+        st.markdown("<div class='feature-box'><h3>API Global</h3><p>Akses mudah melalui REST API untuk integrasi sistem traffic management</p></div>", unsafe_allow_html=True)
 
-    st.markdown("<br><hr><p style='text-align:center;color:#888;'>© 2025 AI Vehicle Detection | Agna Balqis</p>", unsafe_allow_html=True)
-
-# ============================================================
-# CLASSIFICATION PAGE (minimal, ready for model inference)
-# ============================================================
-elif selected == "Classification":
-    st.header("Klasifikasi Kendaraan")
-    st.write("Unggah gambar untuk melakukan prediksi jenis kendaraan.")
-    file = st.file_uploader("Upload gambar (jpg/png)", type=["jpg","jpeg","png"])
-    if file:
-        st.image(file, use_column_width=True)
-        if st.button("Jalankan Prediksi"):
-            st.info("Placeholder: jalankan fungsi inference model di sini.")
-            # contoh: pred = model.predict(process_image(file)); st.success(pred)
-
-# ============================================================
-# MODEL PERFORMANCE (placeholder)
-# ============================================================
-elif selected == "Model Performance":
-    st.header("Performa Model")
-    st.write("Metrik, confusion matrix, dan visualisasi model akan ditampilkan di sini.")
-    st.write("- Accuracy: 98.2%")
-    st.write("- Precision: 97.8%")
-    st.write("- Recall: 98.5%")
-
-# ============================================================
-# MODEL INFO (placeholder)
-# ============================================================
-elif selected == "Model Info":
-    st.header("Informasi Model")
-    st.write("Arsitektur: CNN (TensorFlow/Keras) — dilatih pada dataset 4 kelas (mobil,motor,truck,bus).")
-
-# ============================================================
-# ABOUT PROJECT / ABOUT US
-# ============================================================
-elif selected == "About Project":
-    st.header("Tentang Proyek")
-    st.markdown("Dikembangkan oleh **Agna Balqis**. Proyek: Vehicle Type Recognition (mobil, motor, truck, bus).")
-    st.markdown("- Teknologi: Python, Streamlit, TensorFlow")
+    # Footer
+    st.markdown("<br><hr><p style='text-align:center; color:#888;'>© 2025 AI Vehicle Detection | Dibangun dengan ❤️ menggunakan Streamlit</p>", unsafe_allow_html=True)
