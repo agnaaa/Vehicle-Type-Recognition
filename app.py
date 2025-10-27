@@ -29,6 +29,7 @@ def load_models():
 # ==========================
 # UI
 # ==========================
+# -----------------------------
 # SETUP HALAMAN
 # -----------------------------
 st.set_page_config(page_title="Vehicle Type Recognition", page_icon="🚗", layout="wide")
@@ -155,34 +156,4 @@ elif menu == "About Us":
     """)
 
     st.info("Terima kasih telah mengunjungi situs ini! 🚀")
-📄 File: requirements.txt
-Tambahkan file ini di repo kamu supaya bisa di-deploy di Streamlit Cloud tanpa error:
 
-nginx
-Copy code
-streamlit
-numpy
-pandas
-pillow
-joblib
-scikit-learn
-matplotlib
-🧾 File: README.md
-Isi singkat biar repo GitHub kamu terlihat rapi:
-
-markdown
-Copy code
-# 🚘 Vehicle Type Recognition
-
-A Streamlit-based web app for classifying vehicle types (car, motorbike, bus, truck) using machine learning.
-
-## Features
-- Upload vehicle images and get classification results instantly
-- Model performance comparison (GaussianNB, MultinomialNB, BernoulliNB)
-- Explanation of how the model works
-- “About Us” section introducing the developer (Agna Balqis)
-
-## How to Run
-```bash
-pip install -r requirements.txt
-streamlit run app.py
