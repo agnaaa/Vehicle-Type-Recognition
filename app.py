@@ -10,6 +10,7 @@ from PIL import Image
 import time
 import joblib
 import os
+from streamlit_option_menu import option_menu
 
 # ==========================
 # Load Models
@@ -123,3 +124,4 @@ elif selected == "Tentang":
     """)
 
     st.success("Versi: 1.0.0 | Dibuat oleh: agnaaa")
+
