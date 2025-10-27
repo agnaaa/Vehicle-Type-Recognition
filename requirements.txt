@@ -1,6 +1,9 @@
 streamlit
-tensorflow
-ultralytics
-pillow
-opencv-python-headless
 numpy
+pandas
+pillow
+joblib
+scikit-learn
+matplotlib
+
+
