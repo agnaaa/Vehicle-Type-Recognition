@@ -7,4 +7,4 @@ pandas
 pillow
 joblib
 streamlit-option-menu
-
+plotly
