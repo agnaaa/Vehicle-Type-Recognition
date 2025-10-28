@@ -18,13 +18,24 @@ from streamlit_option_menu import option_menu
 @st.cache_resource
 def load_models():
     from ultralytics import YOLO
+    import tensorflow as tf
+
     yolo_model = YOLO("best.pt")
 
     try:
-        classifier = tf.keras.models.load_model("model/classifier_model.h5")
+        classifier = tf.keras.models.load_model("model/classifier_model.h5", compile=False)
+
+        # FIX: Kalau model punya 2 input tensor, kita pakai cuma 1
+        if isinstance(classifier.input, (list, tuple)) and len(classifier.input) > 1:
+            st.warning("⚠️ Model classifier memiliki 2 input, hanya digunakan input pertama agar tidak error.")
+            classifier = tf.keras.Model(
+                inputs=classifier.input[0],
+                outputs=classifier.output
+            )
+
     except Exception as e:
         st.warning(f"⚠️ Gagal memuat classifier model: {e}")
-        classifier = None  # supaya app tetap jalan
+        classifier = None  # biar app tetap jalan meskipun model gagal dimuat
 
     return yolo_model, classifier
 
@@ -355,3 +366,4 @@ cola.metric("Uptime", "99.9%")
 
 st.write("")
 st.markdown("© 2025 AI Image Detection — Built for demo", unsafe_allow_html=True)
+
