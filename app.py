@@ -42,23 +42,15 @@ from PIL import Image
 from ultralytics import YOLO
 import webbrowser
 # =============================
-# Konfigurasi Halaman
+# KONFIGURASI & TAMPILAN
 # =============================
 st.set_page_config(page_title="AI Vehicle Detection", page_icon="🚗", layout="wide")
 
-# =============================
-# CSS Styling
-# =============================
 st.markdown("""
 <style>
 html, body, [class*="st-"], .main {
     background-color: #fdeff4 !important;
     font-family: 'Poppins', sans-serif;
-    animation: fadeIn 1s ease-in-out;
-}
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
 }
 .brand {font-weight:800;font-size:30px;color:#111827;display:flex;align-items:center;gap:10px;}
 .brand .logo {width:42px;height:42px;border-radius:10px;background:linear-gradient(90deg,#f07da7,#e86e9a);
@@ -70,13 +62,12 @@ html, body, [class*="st-"], .main {
 .vehicle-grid, .features-grid {display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
 .vehicle-card, .feature-card {width:280px;text-align:center;padding:30px;border-radius:20px;
     background:white;box-shadow:0 8px 24px rgba(16,24,40,0.08);}
-.feature-card p {font-size:18px;}
 footer {text-align:center;color:#6b7280;margin-top:60px;padding-bottom:20px;font-size:18px;}
 </style>
 """, unsafe_allow_html=True)
 
 # =============================
-# Navigasi Halaman
+# NAVBAR
 # =============================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
@@ -98,24 +89,15 @@ with col3:
 st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1px;background:#f3d7e0' />", unsafe_allow_html=True)
 
 # =============================
-# Load YOLO Model
+# LOAD YOLO MODEL
 # =============================
-model_paths = ["model/best.pt", "best.pt"]
-
-model = None
-for p in model_paths:
-    if Path(p).exists():
-        try:
-            model = YOLO(p)
-            model.names = ['mobil', 'motor', 'truk', 'bus']
-            st.success(f"✅ Model YOLO berhasil dimuat dari: {p}")
-            break
-        except Exception as e:
-            st.error(f"⚠️ Gagal memuat model dari {p}: {e}")
-
-if model is None:
-    st.error("❌ Tidak dapat menemukan atau memuat model YOLO. Pastikan file 'best.pt' ada di folder 'model/' atau di folder utama.")
+model_path = Path("model/best.pt")
+if not model_path.exists():
+    st.error("❌ Gagal memuat model YOLO. Pastikan file 'model/best.pt' ada di folder 'model/'.")
     st.stop()
+
+model = YOLO(str(model_path))
+model.names = ['mobil', 'motor', 'truk', 'bus']
 
 # ===========================================================
 # ========================= HOME ============================
@@ -130,12 +112,11 @@ if st.session_state.page == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
     col_btn = st.columns([1,1,1])
     with col_btn[1]:
         if st.button("🚗 Coba Sekarang", use_container_width=True):
             st.session_state.page = "Classification"
+            st.rerun()
 
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
     st.markdown("""
@@ -192,23 +173,18 @@ elif st.session_state.page == "Classification":
             <p>1️⃣ Upload gambar kendaraan<br>2️⃣ Klik tombol <b>Analisis Gambar</b><br>3️⃣ Lihat hasil deteksi dan tingkat kepercayaannya</p>
         </div>
         """, unsafe_allow_html=True)
-
 # ===========================================================
 # ====================== ABOUT PROJECT ======================
 # ===========================================================
 elif st.session_state.page == "About Project":
     st.markdown('<h2 style="text-align:center;">Tentang Proyek AI Vehicle Detection</h2>', unsafe_allow_html=True)
-
     st.markdown("""
     <div style="text-align:center;color:#6b7280;font-size:20px;max-width:900px;margin:auto;">
-        Sistem deteksi kendaraan berbasis AI ini dikembangkan untuk mendukung analitik transportasi, keamanan lalu lintas,
-        dan sistem transportasi cerdas masa depan. 
+        Sistem deteksi kendaraan berbasis AI ini dikembangkan untuk mendukung analitik transportasi,
+        keamanan lalu lintas, dan sistem transportasi cerdas masa depan.
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # Foto Agna
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;">', unsafe_allow_html=True)
     try:
@@ -221,20 +197,12 @@ elif st.session_state.page == "About Project":
                 untuk menghadirkan pengalaman terbaik bagi pengguna di bidang teknologi deteksi kendaraan.
             </p>
         """, unsafe_allow_html=True)
-
+        
         wa_url = "https://wa.me/6289669727601"
-        st.markdown(f"""
-        <a href="{wa_url}" target="_blank">
-            <button style="background:#e75480;color:white;border:none;padding:14px 28px;border-radius:14px;font-size:18px;cursor:pointer;">
-                💬 Tertarik Berkolaborasi? Hubungi Pengembang
-            </button>
-        </a>
-        """, unsafe_allow_html=True)
+        if st.button("💬 Tertarik Berkolaborasi? Hubungi Pengembang", use_container_width=True):
+            st.markdown(f"<meta http-equiv='refresh' content='0; url={wa_url}'>", unsafe_allow_html=True)
     except:
         st.warning("⚠️ Foto pengembang tidak ditemukan. Pastikan file '6372789C-781F-4439-AE66-2187B96D6952.jpeg' ada di folder yang sama dengan app.py.")
-
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('<footer>© 2025 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
 
-
-
+    st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
