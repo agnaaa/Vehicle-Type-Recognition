@@ -35,15 +35,18 @@ def load_models():
 # ==============================
 # Konfigurasi halaman
 # ==============================
-st.set_page_config(page_title="AI Image Detection", layout="wide")
+st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
 # ==============================
-# CSS untuk styling
+# CSS STYLING
 # ==============================
 st.markdown("""
     <style>
         body {
             background-color: #fdeff4;
+        }
+        .main {
+            background-color: #fdeff4 !important;
         }
         /* Navbar */
         .navbar {
@@ -63,7 +66,7 @@ st.markdown("""
             cursor: pointer;
             padding: 8px 18px;
             border-radius: 8px;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
         .nav-item:hover {
             background-color: #f7d6e2;
@@ -73,23 +76,25 @@ st.markdown("""
             color: #e75480;
             box-shadow: 0px 4px 10px rgba(231,84,128,0.15);
         }
-        /* Hero Section */
+        /* Hero section */
         .hero {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 50px 70px;
+            padding: 60px 80px;
+            background-color: #fdeff4;
         }
         .hero-text h1 {
             font-size: 42px;
             font-weight: 800;
+            color: #333;
         }
         .hero-text span {
             color: #e75480;
         }
         .hero-text p {
-            font-size: 16px;
-            color: #444;
+            font-size: 17px;
+            color: #555;
             margin-bottom: 30px;
         }
         .hero-button {
@@ -105,7 +110,7 @@ st.markdown("""
         .hero-button:hover {
             background-color: #d74471;
         }
-        /* Section title */
+        /* Section */
         .section-title {
             text-align: center;
             font-size: 28px;
@@ -151,14 +156,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
 # ==============================
-# Navbar Manual
+# Navbar manual
 # ==============================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
 st.markdown('<div class="navbar">', unsafe_allow_html=True)
-
 cols = st.columns([1,1,1])
 pages = ["Home", "Classification", "About Project"]
 
@@ -168,7 +173,6 @@ for i, page in enumerate(pages):
         if st.button(page, key=f"nav_{page}", use_container_width=True):
             st.session_state.page = page
             st.rerun()
-
 st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -182,7 +186,7 @@ if st.session_state.page == "Home":
         st.markdown("""
             <div class="hero-text">
                 <h1>Deteksi Jenis <span>Kendaraan AI</span></h1>
-                <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
+                <p>Platform cerdas berbasis teknologi deep learning yang mampu mengenali berbagai jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -191,7 +195,7 @@ if st.session_state.page == "Home":
             st.rerun()
 
     with col2:
-        st.image("https://cdn-icons-png.flaticon.com/512/1995/1995574.png", width=280)
+        st.image("https://i.ibb.co/z24KjvP/train-illustration.png", width=400)  # gambar kereta besar
 
     # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
