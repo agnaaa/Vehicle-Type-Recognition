@@ -119,9 +119,8 @@ if st.session_state.page == "Home":
         </div>
         """, unsafe_allow_html=True)
         if st.button("🚗 Coba Sekarang"):
-            st.session_state.page = "Classification"
-            st.experimental_rerun()
-
+    st.session_state.page = "Classification"
+    st.rerun()
     with right:
         st.image("https://i.ibb.co/dLcRb8G/train.png", use_container_width=True)
 
