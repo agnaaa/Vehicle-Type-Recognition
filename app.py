@@ -200,7 +200,7 @@ elif st.session_state.page == "About Project":
     </div>
     """, unsafe_allow_html=True)
 
-    # FOTO AGNA (pakai st.image agar tampil)
+    # FOTO AGNA
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;">', unsafe_allow_html=True)
     try:
@@ -213,6 +213,12 @@ elif st.session_state.page == "About Project":
                 untuk menghadirkan pengalaman terbaik bagi pengguna di bidang teknologi deteksi kendaraan.
             </p>
         """, unsafe_allow_html=True)
+        
+        # Tombol Hubungi via WhatsApp
+        wa_url = "https://wa.me/6289669727601"
+        if st.button("💬 Tertarik Berkolaborasi? Hubungi Pengembang", use_container_width=True):
+            st.markdown(f"<meta http-equiv='refresh' content='0; url={wa_url}'>", unsafe_allow_html=True)
+
     except:
         st.warning("⚠️ Foto pengembang tidak ditemukan. Pastikan file '6372789C-781F-4439-AE66-2187B96D6952.jpeg' ada di folder yang sama dengan app.py.")
     st.markdown('</div>', unsafe_allow_html=True)
