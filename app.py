@@ -32,88 +32,95 @@ def load_models():
 # ==========================
 # UI
 # -------------------------
-# Page config
+# Config
 # -------------------------
 st.set_page_config(page_title="AI Image Detection", layout="wide")
 
 # -------------------------
-# Styles (pink soft pastel + components)
+# CSS: styling + make radio look like navbar
 # -------------------------
 st.markdown(
     """
     <style>
     :root{
         --pink-soft: #fdeef4;
-        --accent-pink: #ec5c9a;
-        --accent-pink-strong: #e75480;
-        --card-shadow: rgba(16,24,40,0.06);
+        --accent: #ec5c9a;
+        --accent-strong: #e75480;
     }
-    /* app bg */
+
+    /* app background */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(180deg, var(--pink-soft) 0%, #ffffff 100%) !important;
     }
-    /* header / top spacing removal */
-    header {background: transparent}
-    /* NAVBAR VISUAL */
-    .top-nav {
-        width: 100%;
+
+    /* hide top streamlit header and menu for cleaner look */
+    header {display:none}
+
+    /* NAVBAR - we style the radio group to look like a nav */
+    .nav-container {
+        width:100%;
         display:flex;
-        justify-content:space-between;
-        align-items:center;
+        justify-content:center;
         background: white;
-        padding: 12px 36px;
+        padding:10px 24px;
+        border-radius:10px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-        border-radius: 8px;
-        margin-bottom: 18px;
+        margin-bottom:18px;
     }
-    .brand {font-weight:800; color:#222; display:flex; align-items:center; gap:10px}
-    .brand .logo {
-        width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent-pink),var(--accent-pink-strong));
-        display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;
+    /* Radiogroup styling: works across streamlit versions by targeting role radiogroup labels */
+    div[role="radiogroup"] > label {
+        display:inline-block;
+        margin: 0 12px;
+        padding:8px 16px;
+        border-radius:10px;
+        font-weight:600;
+        cursor:pointer;
+        color:#333;
     }
-    .nav-links {display:flex; gap:18px; align-items:center;}
-    .nav-link {
-        padding:8px 14px;border-radius:8px;color:#333;text-decoration:none;font-weight:600;
-    }
-    .nav-link.active {
-        background: linear-gradient(180deg,#fde3ec, #fff);
-        color: var(--accent-pink-strong);
-        box-shadow: 0 4px 14px rgba(231,81,120,0.08);
+    /* Active radio looks like selected nav item */
+    div[role="radiogroup"] > label[aria-checked="true"] {
+        background: linear-gradient(180deg,#fde3ec,#fff);
+        color: var(--accent-strong);
+        box-shadow: 0 6px 18px rgba(231,81,120,0.08);
     }
 
     /* HERO */
     .hero {
-        display:flex; gap:30px; align-items:center; padding:48px 56px; flex-wrap:wrap;
+        display:flex;
+        gap:40px;
+        align-items:center;
+        padding:48px 56px;
+        flex-wrap:wrap;
     }
-    .hero-left { flex: 1 1 480px; max-width: 680px; }
+    .hero-left { flex:1 1 480px; max-width:720px; }
     .hero-left h1 { font-size:48px; margin:0; line-height:1; color:#1f2937; font-weight:800;}
-    .hero-left h1 .accent { color: var(--accent-pink-strong); display:block; }
-    .hero-left p { color:#6b7280; margin-top:18px; font-size:16px; line-height:1.6; max-width:520px;}
+    .hero-left h1 .accent { color: var(--accent-strong); display:block; }
+    .hero-left p { color:#6b7280; margin-top:18px; font-size:16px; line-height:1.6; max-width:560px;}
     .hero-buttons { margin-top:26px; display:flex; gap:14px; align-items:center; }
 
     .btn-gradient {
         background: linear-gradient(90deg, #f07da7, #e86e9a);
-        color: white; padding:12px 22px; border-radius:12px; font-weight:700; border:none; box-shadow: 0 8px 20px rgba(231,81,120,0.12);
+        color: white; padding:12px 22px; border-radius:12px; font-weight:700; border:none; text-decoration:none;
+        box-shadow: 0 8px 20px rgba(231,81,120,0.12);
     }
     .btn-outline {
-        border: 2px solid #f6cde0; color: var(--accent-pink-strong); padding:10px 20px; border-radius:12px; background:transparent; font-weight:700;
+        border: 2px solid #f6cde0; color: var(--accent-strong); padding:10px 20px; border-radius:12px; background:transparent; font-weight:700;
     }
 
-    /* Upload card on right */
+    /* upload card */
     .upload-card {
         background: white; border-radius:14px; padding:26px; width:420px; text-align:center;
         box-shadow: 0 14px 30px rgba(16,24,40,0.06);
     }
-    .upload-card h4 { margin:6px 0 12px 0; color:#111; font-weight:700;}
     .upload-placeholder {
         border:2px dashed #f6cde0; border-radius:12px; padding:34px; color:#b88a9f; margin:12px 0;
     }
     .upload-choose {
-        background: #fdeef8; color: var(--accent-pink-strong); padding:8px 12px; border-radius:8px; display:inline-block; margin-top:8px; font-weight:700;
+        background: #fdeef8; color: var(--accent-strong); padding:8px 12px; border-radius:8px; display:inline-block; margin-top:8px; font-weight:700;
     }
 
-    /* VEHICLE CARDS ROW */
-    .vehicle-row { padding: 48px 64px; }
+    /* vehicle cards */
+    .vehicle-row { padding: 36px 64px; }
     .vehicle-grid { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; }
     .vehicle-card {
         background:white; width:260px; border-radius:12px; padding:18px; text-align:center; box-shadow: 0 12px 28px rgba(16,24,40,0.04);
@@ -122,76 +129,57 @@ st.markdown(
     .vehicle-card h4 { margin:12px 0 6px 0; color:#222; }
     .vehicle-card p { color:#6b7280; font-size:14px; margin:0; }
 
-    /* Stats */
+    /* stats */
     .stats { display:flex; gap:40px; justify-content:center; padding:36px 0; }
     .stat { text-align:center; color:#1f2937; }
     .stat .dot { width:56px;height:56px;border-radius:50%; background: linear-gradient(180deg,#f6cde0,#f2b6d9); margin:auto; box-shadow:0 8px 20px rgba(231,81,120,0.06); }
     .stat h3 { margin:12px 0 6px 0; font-size:22px; font-weight:800; }
     .stat p { margin:0; color:#6b7280; }
 
-    /* Features row */
-    .features { padding:48px 64px; text-align:center; }
+    /* features */
+    .features { padding:36px 64px; text-align:center; }
     .features-grid { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; }
     .feature-card { width:260px; background:white; border-radius:12px; padding:22px; text-align:center; box-shadow: 0 12px 28px rgba(16,24,40,0.04); }
     .feature-card .icon { width:56px;height:56px;border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; background:linear-gradient(180deg,#f7cfe0,#f1a1c6); color:white; font-weight:700; }
     .feature-card h4 { margin:8px 0; }
     .feature-card p { color:#6b7280; font-size:14px; }
 
-    /* floating talk */
+    /* floating talk button */
     .talk-float { position: fixed; bottom: 24px; right: 24px; background: linear-gradient(135deg,#c2185b,#e91e63); color:white; padding:12px 20px; border-radius:28px; box-shadow:0 10px 30px rgba(0,0,0,0.15); font-weight:700; text-decoration:none; }
 
-    /* hide default Streamlit radio we use for internal navigation */
-    .stRadio { display:none !important; }
-    /* also hide other automatically inserted labels if any */
-    .css-1aumxhk { display:none !important; } /* best-effort fallback */
-
-    /* small responsive */
     @media (max-width:900px) {
         .hero { padding:28px 18px; flex-direction:column; align-items:flex-start; }
         .upload-card { width:100%; max-width:420px; }
-        .top-nav { padding:10px 12px; }
     }
+
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # -------------------------
-# Internal navigation control: hidden radio (we'll hide it with CSS)
+# Navigation control (radio)
 # -------------------------
 nav = st.radio("", ["Home", "Classification", "About Project"], index=0, horizontal=True, label_visibility="collapsed")
 st.session_state['page'] = nav  # keep consistent
 
-# -------------------------
-# NAVBAR VISUAL (HTML)
-# -------------------------
-# We display a visual navbar (styled), but navigation logic is controlled by the hidden radio above.
-home_active = "active" if st.session_state['page'] == "Home" else ""
-cls_active = "active" if st.session_state['page'] == "Classification" else ""
-about_active = "active" if st.session_state['page'] == "About Project" else ""
-
+# Show the styled nav container (visual)
 st.markdown(
-    f"""
-    <div class="top-nav">
-        <div class="brand">
-            <div class="logo">ID</div>
-            <div style="font-weight:800;">AI Image Detection</div>
-        </div>
-        <div class="nav-links">
-            <a class="nav-link {home_active}" onclick="document.querySelectorAll('input[type=radio]')[0].click()">Home</a>
-            <a class="nav-link {cls_active}" onclick="document.querySelectorAll('input[type=radio]')[1].click()">Classification</a>
-            <a class="nav-link {about_active}" onclick="document.querySelectorAll('input[type=radio]')[2].click()">About Project</a>
-        </div>
+    """
+    <div class="nav-container">
+       <div style="width:100%;max-width:1100px;">
+           <!-- the radio is above; this block only for spacing/visual (radio labels are styled by CSS) -->
+       </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
 # -------------------------
-# PAGE: HOME
+# PAGE: Home
 # -------------------------
 if st.session_state['page'] == "Home":
-    # HERO: left text, right upload card
+    # Hero
     st.markdown(
         """
         <div class="hero">
@@ -199,7 +187,7 @@ if st.session_state['page'] == "Home":
                 <h1>Deteksi Jenis <span class="accent">Kendaraan AI</span></h1>
                 <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
                 <div class="hero-buttons">
-                    <a class="btn-gradient" href="javascript:document.querySelectorAll('input[type=radio]')[1].click()">🚀 Coba Sekarang</a>
+                    <a class="btn-gradient" href="javascript:void(0)" onclick="document.querySelectorAll('input[type=radio]')[1].click()">🚀 Coba Sekarang</a>
                     <a class="btn-outline" href="#features">📘 Pelajari Lebih Lanjut</a>
                 </div>
             </div>
@@ -217,7 +205,7 @@ if st.session_state['page'] == "Home":
         unsafe_allow_html=True,
     )
 
-    # VEHICLE CARDS
+    # Vehicle cards
     st.markdown(
         """
         <div class="vehicle-row">
@@ -251,7 +239,7 @@ if st.session_state['page'] == "Home":
         unsafe_allow_html=True,
     )
 
-    # STATS
+    # Stats
     st.markdown(
         """
         <div class="stats">
@@ -264,7 +252,7 @@ if st.session_state['page'] == "Home":
         unsafe_allow_html=True,
     )
 
-    # FEATURES
+    # Features
     st.markdown(
         """
         <div id="features" class="features">
@@ -299,7 +287,7 @@ if st.session_state['page'] == "Home":
     )
 
 # -------------------------
-# PAGE: CLASSIFICATION
+# PAGE: Classification
 # -------------------------
 elif st.session_state['page'] == "Classification":
     st.markdown(
@@ -312,14 +300,13 @@ elif st.session_state['page'] == "Classification":
         unsafe_allow_html=True,
     )
 
+    # layout with two cards (we'll add real uploader below)
     st.markdown(
         """
         <div style="display:flex; gap:32px; justify-content:center; padding:40px; flex-wrap:wrap;">
             <div style="width:420px; background:white; border-radius:12px; padding:26px; box-shadow:0 12px 30px rgba(16,24,40,0.06);">
                 <h4 style="margin:0 0 10px 0;">Upload Gambar</h4>
                 <p style="color:#6b7280; margin-top:0;">Pilih atau Drop Gambar (JPG, PNG, WebP hingga 10MB)</p>
-                <!-- using real uploader below in python -->
-                <div style="height:10px"></div>
             </div>
 
             <div style="width:420px; background:white; border-radius:12px; padding:26px; box-shadow:0 12px 30px rgba(16,24,40,0.06);">
@@ -331,20 +318,20 @@ elif st.session_state['page'] == "Classification":
         unsafe_allow_html=True,
     )
 
-    # actual python file uploader placed after the static HTML blocks
-    col_left, col_right = st.columns([1, 1])
-    with col_left:
+    # Actual uploader in python (below the HTML cards)
+    left_col, right_col = st.columns([1, 1])
+    with left_col:
         uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="cls_upload")
         if uploaded_file:
-            bytes_data = uploaded_file.getvalue()
-            image = Image.open(io.BytesIO(bytes_data))
-            st.image(image, caption="Gambar yang diunggah", use_column_width=True)
-            # placeholder for classification result
-            st.success("Hasil: Mobil (contoh) — Confidence: 97.8%")
-    with col_right:
-        st.empty()  # keep right column placeholder
+            img_bytes = uploaded_file.getvalue()
+            img = Image.open(io.BytesIO(img_bytes))
+            st.image(img, caption="Gambar yang diunggah", use_column_width=True)
+            # placeholder for real classification logic:
+            st.success("Hasil contoh: 🚗 Mobil — Confidence 97.8%")
+    with right_col:
+        st.empty()
 
-    # examples row
+    # example images row
     st.markdown(
         """
         <div style="text-align:center; margin-top:30px;">
@@ -373,7 +360,7 @@ elif st.session_state['page'] == "Classification":
     )
 
 # -------------------------
-# PAGE: ABOUT (simple)
+# PAGE: About Project
 # -------------------------
 else:
     st.markdown(
@@ -387,6 +374,6 @@ else:
     )
 
 # -------------------------
-# floating talk with us
+# Floating talk button
 # -------------------------
 st.markdown('<a class="talk-float" href="#">💬 Talk with Us</a>', unsafe_allow_html=True)
