@@ -17,24 +17,18 @@ import random
 # ==========================
 # Load Models
 # ==========================
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions
-import numpy as np
-
 @st.cache_resource
-def load_imagenet_model():
-    model = MobileNetV2(weights="imagenet")
-    return model
-if uploaded_file:
-    img = Image.open(uploaded_file).convert("RGB").resize((224, 224))
-    x = np.array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
+def load_models():
+    from ultralytics import YOLO
+    yolo_model = YOLO("best.pt")
 
-    model = load_imagenet_model()
-    preds = model.predict(x)
-    label = decode_predictions(preds, top=1)[0][0][1]
-    st.success(f"Hasil Prediksi AI: {label}")
+    try:
+        classifier = tf.keras.models.load_model("model/classifier_model.h5")
+    except Exception as e:
+        st.warning(f"⚠️ Gagal memuat classifier model: {e}")
+        classifier = None  # supaya app tetap jalan
+
+    return yolo_model, classifier
 
 # ==========================
 # UI
@@ -363,4 +357,5 @@ elif st.session_state.page == "About Project":
     yang mampu mengenali berbagai jenis kendaraan dari gambar dengan akurasi tinggi.  
     Desain lembut dengan tema **pink pastel** agar nyaman dilihat 🌸.
     """)
+
 
