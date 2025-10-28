@@ -172,8 +172,9 @@ elif st.session_state.page == "Classification":
         else:
             st.info("Hasil prediksi akan muncul di sini setelah kamu upload gambar.")
 
-# Bagian About Project 
-
+# ===============================
+# BAGIAN ABOUT PROJECT (Final, tested)
+# ===============================
 elif st.session_state.page == "About Project":
     st.markdown('<h2 style="text-align:center;">Tentang Proyek AI Vehicle Detection</h2>', unsafe_allow_html=True)
 
@@ -186,7 +187,7 @@ elif st.session_state.page == "About Project":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Visi & Misi
+    # VISI & MISI
     st.markdown("""
     <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:20px;">
         <div class="feature-card" style="width:400px;">
@@ -203,14 +204,14 @@ elif st.session_state.page == "About Project":
     """, unsafe_allow_html=True)
 
     # ======================================
-    # PENGEMBANG (Foto + Deskripsi Samping)
+    # PENGEMBANG (foto muncul di kiri)
     # ======================================
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
     <div style="display:flex;align-items:center;justify-content:center;gap:50px;flex-wrap:wrap;margin-top:30px;">
         <div>
-            <img src="6372789C-781F-4439-AE66-2187B96D6952.jpeg" 
+            <img src="app/static/6372789C-781F-4439-AE66-2187B96D6952.jpeg" 
                  style="width:260px;height:260px;border-radius:50%;object-fit:cover;
                         box-shadow:0 10px 30px rgba(0,0,0,0.15);">
         </div>
@@ -218,31 +219,36 @@ elif st.session_state.page == "About Project":
             <h3 style="font-size:30px;margin-bottom:5px;color:#111827;">Agna Balqis</h3>
             <p style="color:#e75480;font-weight:600;font-size:20px;margin-bottom:10px;">Lead AI Developer</p>
             <p style="color:#6b7280;font-size:18px;">
-                Mengembangkan sistem AI dan antarmuka pengguna dengan dedikasi tinggi untuk menciptakan
-                pengalaman deteksi kendaraan yang cerdas, cepat, dan ramah pengguna.
+                Membangun sistem AI dan antarmuka pengguna dengan fokus pada akurasi, efisiensi, serta kemudahan penggunaan.
+                Menggabungkan teknologi modern untuk menciptakan pengalaman deteksi kendaraan yang cerdas dan interaktif.
             </p>
+            <br>
+            <a href="https://wa.me/6289669727601" target="_blank"
+               style="background:#e75480;color:white;font-weight:600;padding:12px 22px;
+                      border-radius:10px;text-decoration:none;font-size:16px;">
+                💬 Hubungi Agna
+            </a>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     # ======================================
-    # BAGIAN KOLABORASI (seperti contoh kamu)
+    # BAGIAN KOLABORASI (tanpa "lihat repository")
     # ======================================
     st.markdown("""
-    <div style="background:linear-gradient(90deg,#ef5ea2,#ea7fb2);padding:40px;border-radius:25px;
+    <div style="background:linear-gradient(90deg,#f8a8c2,#f07da7);padding:40px;border-radius:25px;
                 text-align:center;margin-top:80px;color:white;max-width:900px;margin-left:auto;margin-right:auto;">
         <h2 style="font-weight:800;font-size:34px;">Tertarik Berkolaborasi?</h2>
         <p style="font-size:18px;max-width:700px;margin:10px auto 30px;">
-            Kami selalu terbuka untuk kolaborasi penelitian, partnership, atau diskusi tentang implementasi teknologi AI 
-            dalam proyek Anda. Mari bersama-sama menciptakan masa depan yang lebih cerdas!
+            Kami terbuka untuk kolaborasi riset, proyek AI, atau pengembangan sistem Vision AI.
+            Mari bersama menciptakan solusi teknologi yang lebih cerdas dan berdampak!
         </p>
-        <a href="mailto:research.ai.vehicle@gmail.com" 
+        <a href="https://wa.me/6289669727601" target="_blank"
            style="background:white;color:#e75480;font-weight:700;padding:14px 28px;border-radius:12px;
                   text-decoration:none;font-size:18px;display:inline-flex;align-items:center;gap:10px;">
-            ✉️ Hubungi Tim Research
+            💬 Hubungi Tim Research
         </a>
     </div>
     """, unsafe_allow_html=True)
 
-    # Footer
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
