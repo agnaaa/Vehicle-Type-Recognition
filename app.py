@@ -30,9 +30,6 @@ def load_models():
 
 # ==========================
 # UI
-import streamlit as st
-from PIL import Image
-
 # =============================
 # PAGE CONFIG
 # =============================
@@ -83,25 +80,7 @@ st.markdown("""
         padding-bottom: 4px;
     }
 
-    /* Button */
-    .btn-primary {
-        background-color: #ec5c9a;
-        color: white;
-        font-weight: 600;
-        padding: 0.8rem 1.8rem;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-    }
-    .btn-outline {
-        border: 2px solid #f4b7d0;
-        background: none;
-        color: #ec5c9a;
-        font-weight: 600;
-        padding: 0.8rem 1.8rem;
-        border-radius: 10px;
-        cursor: pointer;
-    }
+    /* Cards */
     .upload-card, .result-card {
         background: white;
         padding: 2rem;
@@ -110,6 +89,15 @@ st.markdown("""
         width: 100%;
         text-align: center;
     }
+    .example-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem;
+        box-shadow: 0 8px 25px rgba(236,92,154,0.1);
+        text-align: center;
+    }
+
+    /* Floating button */
     .talk-btn {
         position: fixed;
         bottom: 25px;
@@ -123,13 +111,6 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(236,92,154,0.4);
     }
     .talk-btn:hover { background-color: #e34c8f; }
-    .example-card {
-        background: white;
-        border-radius: 15px;
-        padding: 1rem;
-        box-shadow: 0 8px 25px rgba(236,92,154,0.1);
-        text-align: center;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -160,40 +141,48 @@ st.markdown(f"""
 # HOME PAGE
 # =============================
 if menu == "Home":
-    st.markdown("""
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:5rem 6rem 3rem 6rem;">
-        <div style="max-width:600px;">
-            <h1 style="font-size:48px; font-weight:800; color:#1f2937;">Deteksi Jenis <br><span style="color:#ec5c9a;">Kendaraan AI</span></h1>
+    # Hero Section
+    col1, col2 = st.columns([1.2, 1])
+    with col1:
+        st.markdown("""
+        <div style="margin-top:4rem;">
+            <h1 style="font-size:48px; font-weight:800; color:#1f2937;">
+                Deteksi Jenis <br><span style="color:#ec5c9a;">Kendaraan AI</span>
+            </h1>
             <p style="font-size:16px; color:#6b7280; margin-top:1rem; line-height:1.6;">
-            Platform revolusioner yang menggunakan teknologi deep learning 
+            Platform revolusioner yang menggunakan teknologi <b>deep learning</b> 
             untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, 
-            motor, truck, dan bus dengan akurasi tinggi.</p>
+            motor, truk, dan bus dengan akurasi tinggi.
+            </p>
         </div>
-        <div class="upload-card">
-            <h4>Demo Cepat</h4>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("<div class='upload-card'><h4>Demo Cepat</h4>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
+        if uploaded_file:
+            img = Image.open(uploaded_file)
+            st.image(img, caption="Gambar kendaraan diunggah", use_container_width=True)
+            st.success("✅ Gambar berhasil diunggah (Demo).")
+        else:
+            st.info("Silakan upload gambar kendaraan (JPG/PNG) untuk demo deteksi.")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
-    if uploaded_file:
-        img = Image.open(uploaded_file)
-        st.image(img, caption="Gambar kendaraan diunggah", use_container_width=True)
-        st.success("✅ Gambar berhasil diunggah (Demo).")
-
-    st.markdown("</div></div>", unsafe_allow_html=True)
-
+    # Divider
     st.write("---")
+
+    # Vehicle Detection Section
     st.markdown("""
         <div style='text-align:center; margin-top:4rem;'>
-            <h2>Jenis Kendaraan yang Dapat Dideteksi</h2>
+            <h2 style="color:#1f2937;">Jenis Kendaraan yang Dapat Dideteksi</h2>
             <p style='color:#6b7280;'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>
         </div>
     """, unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.image("https://i.ibb.co/FXBvZZ7/car.png", caption="Mobil")
-    col2.image("https://i.ibb.co/gWQhNsc/motorcycle.png", caption="Motor")
-    col3.image("https://i.ibb.co/F8y2Csx/truck.png", caption="Truck")
-    col4.image("https://i.ibb.co/NrQL8cp/bus.png", caption="Bus")
+    col1.image("https://i.ibb.co/FXBvZZ7/car.png", caption="Mobil", use_container_width=True)
+    col2.image("https://i.ibb.co/gWQhNsc/motorcycle.png", caption="Motor", use_container_width=True)
+    col3.image("https://i.ibb.co/F8y2Csx/truck.png", caption="Truk", use_container_width=True)
+    col4.image("https://i.ibb.co/NrQL8cp/bus.png", caption="Bus", use_container_width=True)
 
     st.write("---")
     col_a, col_b, col_c, col_d = st.columns(4)
@@ -208,7 +197,7 @@ if menu == "Home":
 elif menu == "Classification":
     st.markdown("""
     <div style='text-align:center; margin-top:2rem;'>
-        <h2>Klasifikasi Gambar AI</h2>
+        <h2 style="color:#1f2937;">Klasifikasi Gambar AI</h2>
         <p style='color:#6b7280;'>Upload gambar dan biarkan AI kami menganalisis serta mengklasifikasi objek dalam gambar.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -216,7 +205,7 @@ elif menu == "Classification":
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<div class='upload-card'><h4>Upload Gambar</h4>", unsafe_allow_html=True)
-        uploaded = st.file_uploader("Pilih atau Drop Gambar", type=["jpg", "jpeg", "png"])
+        uploaded = st.file_uploader("Pilih atau Drop Gambar", type=["jpg", "jpeg", "png"], key="class_upload")
         st.markdown("</div>", unsafe_allow_html=True)
     with col2:
         st.markdown("<div class='result-card'><h4>Hasil Klasifikasi</h4>", unsafe_allow_html=True)
@@ -237,6 +226,6 @@ elif menu == "Classification":
     c4.image("https://i.ibb.co/4VvX8PW/apple.png", caption="Buah")
 
 # =============================
-# TALK BUTTON
+# FLOATING TALK BUTTON
 # =============================
 st.markdown("""<a class="talk-btn" href="#">💬 Talk with Us</a>""", unsafe_allow_html=True)
