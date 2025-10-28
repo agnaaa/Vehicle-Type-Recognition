@@ -160,6 +160,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
 # =============================
 # NAVBAR
 # =============================
@@ -175,6 +176,7 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
 
 # =============================
 # HERO SECTION
@@ -205,10 +207,109 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+# =============================
+# SECTION: Jenis Kendaraan
+# =============================
+st.write("---")
+st.markdown("""
+    <div style='text-align:center; margin-top:4rem;'>
+        <h2>Jenis Kendaraan yang Dapat Dideteksi</h2>
+        <p style='color:#6b7280;'>
+            Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.image("https://i.ibb.co/FXBvZZ7/car.png", use_container_width=True)
+    st.markdown("<p style='text-align:center; font-weight:600;'>Mobil</p>", unsafe_allow_html=True)
+    st.caption("Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang")
+
+with col2:
+    st.image("https://i.ibb.co/gWQhNsc/motorcycle.png", use_container_width=True)
+    st.markdown("<p style='text-align:center; font-weight:600;'>Motor</p>", unsafe_allow_html=True)
+    st.caption("Sepeda motor, skuter, dan kendaraan roda dua lainnya")
+
+with col3:
+    st.image("https://i.ibb.co/F8y2Csx/truck.png", use_container_width=True)
+    st.markdown("<p style='text-align:center; font-weight:600;'>Truck</p>", unsafe_allow_html=True)
+    st.caption("Truk kargo, pickup, dan kendaraan komersial berat")
+
+with col4:
+    st.image("https://i.ibb.co/NrQL8cp/bus.png", use_container_width=True)
+    st.markdown("<p style='text-align:center; font-weight:600;'>Bus</p>", unsafe_allow_html=True)
+    st.caption("Bus kota, bus antar kota, dan kendaraan angkutan umum")
+
+
+# =============================
+# SECTION: Model Performance Stats
+# =============================
+st.write("---")
+col_a, col_b, col_c, col_d = st.columns(4)
+col_a.metric("Akurasi Model", "98.2%")
+col_b.metric("Waktu Proses", "47ms")
+col_c.metric("Jenis Kendaraan", "4+")
+col_d.metric("Uptime", "99.9%")
+
+
+# =============================
+# SECTION: Mengapa Memilih Kami
+# =============================
+st.write("---")
+st.markdown("""
+    <div style='text-align:center; margin-top:3rem;'>
+        <h2>Mengapa Memilih Platform Kami?</h2>
+        <p style='color:#6b7280;'>
+            Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+col_x, col_y, col_z, col_w = st.columns(4)
+
+with col_x:
+    st.markdown("""
+        <div style='background:white; border-radius:15px; padding:1.5rem; 
+                    box-shadow:0 10px 25px rgba(236,92,154,0.1); text-align:center;'>
+            <h4>🎯 Deteksi Akurat</h4>
+            <p style='color:#6b7280;'>Akurasi hingga 98.2% dalam mengenali jenis kendaraan dengan teknologi deep learning.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col_y:
+    st.markdown("""
+        <div style='background:white; border-radius:15px; padding:1.5rem; 
+                    box-shadow:0 10px 25px rgba(236,92,154,0.1); text-align:center;'>
+            <h4>⚡ Pemrosesan Cepat</h4>
+            <p style='color:#6b7280;'>Identifikasi kendaraan dalam waktu kurang dari 50ms.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col_z:
+    st.markdown("""
+        <div style='background:white; border-radius:15px; padding:1.5rem; 
+                    box-shadow:0 10px 25px rgba(236,92,154,0.1); text-align:center;'>
+            <h4>🔒 Keamanan Tinggi</h4>
+            <p style='color:#6b7280;'>Data gambar kendaraan diproses dengan enkripsi end-to-end.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col_w:
+    st.markdown("""
+        <div style='background:white; border-radius:15px; padding:1.5rem; 
+                    box-shadow:0 10px 25px rgba(236,92,154,0.1); text-align:center;'>
+            <h4>🌐 API Global</h4>
+            <p style='color:#6b7280;'>Akses mudah melalui REST API untuk integrasi sistem traffic management.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+
 # =============================
 # FOOTER BUTTON
 # =============================
 st.markdown("""
 <a class="talk-btn" href="#">💬 Talk with Us</a>
 """, unsafe_allow_html=True)
-
