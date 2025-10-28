@@ -181,25 +181,47 @@ elif st.session_state.page == "Classification":
 # ========================= ABOUT PROJECT =========================
 elif st.session_state.page == "About Project":
     st.markdown('<h2 style="text-align:center;">Tentang Proyek AI Vehicle Detection</h2>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align:center;color:#6b7280;font-size:20px;max-width:900px;margin:auto;">Sistem deteksi kendaraan berbasis AI yang dikembangkan untuk mendukung analitik transportasi dan smart traffic.</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="text-align:center;color:#6b7280;font-size:20px;max-width:900px;margin:auto;">'
+        'Sistem deteksi kendaraan berbasis kecerdasan buatan (AI) ini dikembangkan untuk mendukung analitik transportasi, '
+        'monitoring lalu lintas, dan mendukung sistem Smart City dengan kemampuan mengenali berbagai jenis kendaraan secara otomatis.'
+        '</p>',
+        unsafe_allow_html=True
+    )
 
+    # ====== VISI & MISI ======
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="about-box"><h3>Misi Kami</h3><p>Menghadirkan teknologi AI yang efisien dan akurat untuk mendeteksi kendaraan.</p></div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="about-box">'
+            '<h3>Misi Kami</h3>'
+            '<p>Menghadirkan solusi AI yang efisien, akurat, dan mudah diintegrasikan ke berbagai sistem transportasi. '
+            'Kami berkomitmen untuk menciptakan teknologi yang membantu meningkatkan keselamatan, efisiensi, dan pengelolaan lalu lintas secara berkelanjutan.</p>'
+            '</div>',
+            unsafe_allow_html=True
+        )
     with c2:
-        st.markdown('<div class="about-box"><h3>Visi Kami</h3><p>Menjadi solusi Vision AI terbaik di bidang transportasi cerdas.</p></div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="about-box">'
+            '<h3>Visi Kami</h3>'
+            '<p>Menjadi pelopor dalam pengembangan teknologi Vision AI di bidang transportasi cerdas, '
+            'serta memberikan kontribusi nyata dalam menciptakan lingkungan transportasi yang lebih aman, ramah lingkungan, dan berbasis data.</p>'
+            '</div>',
+            unsafe_allow_html=True
+        )
 
-    # ==================== Bagian Pengembang ====================
+    # ====== BAGIAN PENGEMBANG ======
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:40px;">
-        <img src="1A6E5775-CBC8-4F64-BF37-F0803031F8CF.jpeg" 
+        <img src="4DEAC639-DF5E-40E2-8595-6FCF9CD1B8F6.jpeg"
              style="width:330px;height:330px;border-radius:50%;object-fit:cover;
              box-shadow:0 12px 32px rgba(0,0,0,0.12);margin-bottom:20px;">
         <h3 style="font-size:30px;margin:0;color:#111827;">Agna Balqis</h3>
         <p style="color:#e75480;font-weight:600;font-size:20px;margin:4px 0;">Lead AI Developer</p>
-        <p style="color:#6b7280;max-width:600px;">Mengembangkan model AI dan merancang tampilan visual proyek ini dengan penuh dedikasi.</p>
+        <p style="color:#6b7280;max-width:600px;">Mengembangkan model AI dan merancang tampilan visual proyek ini dengan penuh dedikasi, 
+        memadukan teknologi deep learning dan desain antarmuka modern agar sistem ini mudah digunakan dan tampak profesional.</p>
     </div>
     """, unsafe_allow_html=True)
 
