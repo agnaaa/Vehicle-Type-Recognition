@@ -98,17 +98,21 @@ st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1p
 # =============================
 # Load YOLO Model
 # =============================
-from pathlib import Path
+model_paths = ["model/best.pt", "best.pt"]
 
-model_path = Path("model/best.pt")
-if not model_path.exists():
-    model_path = Path("best.pt")
+model = None
+for p in model_paths:
+    if Path(p).exists():
+        try:
+            model = YOLO(p)
+            model.names = ['mobil', 'motor', 'truk', 'bus']
+            st.success(f"✅ Model YOLO berhasil dimuat dari: {p}")
+            break
+        except Exception as e:
+            st.error(f"⚠️ Gagal memuat model dari {p}: {e}")
 
-try:
-    model = YOLO(str(model_path))
-    model.names = ['mobil', 'motor', 'truk', 'bus']
-except Exception as e:
-    st.error(f"❌ Gagal memuat model YOLO dari {model_path}. Pastikan file 'best.pt' ada di folder model atau di folder utama.")
+if model is None:
+    st.error("❌ Tidak dapat menemukan atau memuat model YOLO. Pastikan file 'best.pt' ada di folder 'model/' atau di folder utama.")
     st.stop()
 
 # ===========================================================
@@ -229,4 +233,5 @@ elif st.session_state.page == "About Project":
 
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('<footer>© 2025 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
