@@ -39,12 +39,8 @@ import streamlit as st
 from PIL import Image
 from ultralytics import YOLO
 import webbrowser
-
-import streamlit as st
-from PIL import Image
-
 # =============================
-# Konfigurasi halaman utama
+# Konfigurasi Halaman
 # =============================
 st.set_page_config(page_title="AI Vehicle Detection", page_icon="🚗", layout="wide")
 
@@ -74,14 +70,11 @@ html, body, [class*="st-"], .main {
     background:white;box-shadow:0 8px 24px rgba(16,24,40,0.08);}
 .feature-card p {font-size:18px;}
 footer {text-align:center;color:#6b7280;margin-top:60px;padding-bottom:20px;font-size:18px;}
-@media (max-width:900px){
-    .hero{flex-direction:column;padding:24px;}
-}
 </style>
 """, unsafe_allow_html=True)
 
 # =============================
-# Navbar
+# Navigasi Halaman
 # =============================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
@@ -95,7 +88,7 @@ with col2:
     for i, p in enumerate(pages):
         with cols[i]:
             active = "active" if st.session_state.page == p else ""
-            if st.button(p, key=f"nav_{p}"):
+            if st.button(p, key=f"nav_{p}", use_container_width=True):
                 st.session_state.page = p
 with col3:
     st.write("")
@@ -103,10 +96,11 @@ with col3:
 st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1px;background:#f3d7e0' />", unsafe_allow_html=True)
 
 # =============================
-# LOAD YOLO MODEL
+# Load YOLO Model
 # =============================
 try:
     model = YOLO("model/best.pt")
+    model.names = ['mobil', 'motor', 'truk', 'bus']
 except Exception as e:
     st.error("❌ Gagal memuat model YOLO. Pastikan file 'model/best.pt' ada di folder 'model/'.")
     st.stop()
@@ -126,14 +120,11 @@ if st.session_state.page == "Home":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Tombol coba sekarang
     col_btn = st.columns([1,1,1])
     with col_btn[1]:
         if st.button("🚗 Coba Sekarang", use_container_width=True):
             st.session_state.page = "Classification"
-            st.experimental_rerun()
 
-    # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="vehicle-grid">
@@ -144,50 +135,51 @@ if st.session_state.page == "Home":
     </div>
     """, unsafe_allow_html=True)
 
-    # Akurasi dan Statistik
-    st.markdown("""
-    <div style="display:flex;justify-content:center;gap:80px;margin-top:60px;text-align:center;">
-        <div><div style="font-weight:800;font-size:40px;color:#e75480;">98.2%</div><div style="font-size:20px;color:#6b7280;">Akurasi Model</div></div>
-        <div><div style="font-weight:800;font-size:40px;color:#e75480;">47ms</div><div style="font-size:20px;color:#6b7280;">Waktu Proses</div></div>
-        <div><div style="font-weight:800;font-size:40px;color:#e75480;">4+</div><div style="font-size:20px;color:#6b7280;">Jenis Kendaraan</div></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Mengapa memilih platform kami
-    st.markdown('<div class="section-title">Mengapa Memilih Platform Kami?</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class="features-grid">
-        <div class="feature-card"><div style="font-size:34px;color:#e75480">🎯</div><h4>Akurasi 98.2%</h4><p>Menggunakan model deep learning terkini dengan hasil prediksi sangat presisi bahkan dalam kondisi lalu lintas padat.</p></div>
-        <div class="feature-card"><div style="font-size:34px;color:#e75480">⚡</div><h4>Pemrosesan Cepat</h4><p>Proses deteksi kendaraan berlangsung hanya dalam hitungan milidetik, efisien untuk penggunaan real-time.</p></div>
-        <div class="feature-card"><div style="font-size:34px;color:#e75480">🔒</div><h4>Keamanan Terjamin</h4><p>Data gambar diproses secara lokal tanpa dikirim ke server eksternal, menjaga privasi pengguna.</p></div>
-        <div class="feature-card"><div style="font-size:34px;color:#e75480">🌐</div><h4>Integrasi Mudah</h4><p>Dapat diintegrasikan dengan sistem smart traffic, CCTV, maupun aplikasi analitik transportasi.</p></div>
-    </div>
-    """, unsafe_allow_html=True)
-
 # ===========================================================
 # ====================== CLASSIFICATION =====================
 # ===========================================================
 elif st.session_state.page == "Classification":
     st.markdown('<h2 style="text-align:center;">🔍 Klasifikasi Kendaraan AI</h2>', unsafe_allow_html=True)
-    left, right = st.columns([1,0.8])
+
+    left, right = st.columns([1,1])
     with left:
         upl = st.file_uploader("Unggah gambar kendaraan", type=["jpg","jpeg","png"])
         if upl:
             img = Image.open(upl).convert("RGB")
             st.image(img, caption="Gambar yang diunggah", use_container_width=True)
-    with right:
-        if upl:
-            with st.spinner("🔎 Mendeteksi kendaraan..."):
+
+            if st.button("🔎 Analisis Gambar", use_container_width=True):
+                start = time.time()
                 results = model.predict(img)
-                names = model.names
+                elapsed = (time.time() - start) * 1000
+
                 if len(results[0].boxes) > 0:
-                    cls_id = int(results[0].boxes.cls[0])
-                    result_label = names[cls_id].capitalize()
-                    st.success(f"Hasil Prediksi: **{result_label} 🚗**")
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    st.success(f"Waktu Proses: **{elapsed:.0f} ms**  |  Model: **YOLOv8**")
+
+                    confs = results[0].boxes.conf.cpu().numpy()
+                    cls_ids = results[0].boxes.cls.cpu().numpy().astype(int)
+                    names = model.names
+
+                    st.subheader("Prediksi Teratas:")
+                    for i in range(len(cls_ids)):
+                        label = names[cls_ids[i]].capitalize()
+                        st.progress(float(confs[i]))
+                        st.write(f"**{label}** — {confs[i]*100:.1f}%")
+
+                    top_idx = np.argmax(confs)
+                    top_label = names[cls_ids[top_idx]]
+                    st.info(f"📊 **Interpretasi Hasil:** Gambar terdeteksi sebagai **{top_label.capitalize()}** dengan tingkat kepercayaan {confs[top_idx]*100:.1f}%.")
                 else:
-                    st.warning("Kendaraan Tidak Dikenali ❓")
-        else:
-            st.info("Hasil prediksi akan muncul di sini setelah kamu upload gambar.")
+                    st.warning("❌ Tidak ada kendaraan terdeteksi dalam gambar.")
+
+    with right:
+        st.markdown("""
+        <div style="background:white;padding:24px;border-radius:20px;box-shadow:0 8px 24px rgba(16,24,40,0.08);text-align:center;">
+            <h3 style="color:#e75480;">Cara Menggunakan</h3>
+            <p>1️⃣ Upload gambar kendaraan<br>2️⃣ Klik tombol <b>Analisis Gambar</b><br>3️⃣ Lihat hasil deteksi dan tingkat kepercayaannya</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ===========================================================
 # ====================== ABOUT PROJECT ======================
@@ -198,29 +190,13 @@ elif st.session_state.page == "About Project":
     st.markdown("""
     <div style="text-align:center;color:#6b7280;font-size:20px;max-width:900px;margin:auto;">
         Sistem deteksi kendaraan berbasis AI ini dikembangkan untuk mendukung analitik transportasi, keamanan lalu lintas,
-        dan sistem transportasi cerdas masa depan. Proyek ini berfokus pada efisiensi, akurasi, serta kemudahan implementasi.
+        dan sistem transportasi cerdas masa depan. 
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Visi & Misi
-    st.markdown("""
-    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:20px;">
-        <div class="feature-card" style="width:400px;">
-            <h3>Misi Kami</h3>
-            <p>Menghadirkan teknologi AI yang mampu mengenali kendaraan secara cepat, akurat, dan efisien,
-            membantu pengambilan keputusan di sektor transportasi modern dengan sistem yang adaptif dan ramah lingkungan.</p>
-        </div>
-        <div class="feature-card" style="width:400px;">
-            <h3>Visi Kami</h3>
-            <p>Menjadi solusi Vision AI terbaik yang terintegrasi dengan sistem smart city, mendorong inovasi dalam
-            pengelolaan lalu lintas dan keselamatan transportasi masa depan.</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # FOTO AGNA
+    # Foto Agna
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;">', unsafe_allow_html=True)
     try:
@@ -233,14 +209,17 @@ elif st.session_state.page == "About Project":
                 untuk menghadirkan pengalaman terbaik bagi pengguna di bidang teknologi deteksi kendaraan.
             </p>
         """, unsafe_allow_html=True)
-        
-        # Tombol Hubungi via WhatsApp
-        wa_url = "https://wa.me/6289669727601"
-        if st.button("💬 Tertarik Berkolaborasi? Hubungi Pengembang", use_container_width=True):
-            st.markdown(f"<meta http-equiv='refresh' content='0; url={wa_url}'>", unsafe_allow_html=True)
 
+        wa_url = "https://wa.me/6289669727601"
+        st.markdown(f"""
+        <a href="{wa_url}" target="_blank">
+            <button style="background:#e75480;color:white;border:none;padding:14px 28px;border-radius:14px;font-size:18px;cursor:pointer;">
+                💬 Tertarik Berkolaborasi? Hubungi Pengembang
+            </button>
+        </a>
+        """, unsafe_allow_html=True)
     except:
         st.warning("⚠️ Foto pengembang tidak ditemukan. Pastikan file '6372789C-781F-4439-AE66-2187B96D6952.jpeg' ada di folder yang sama dengan app.py.")
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<footer>© 2025 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
