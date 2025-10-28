@@ -32,9 +32,10 @@ def load_models():
 
 # ==========================
 # UI
+# Konfigurasi dasar halaman
 st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
-# ====== CUSTOM CSS ======
+# ===== CSS STYLING =====
 st.markdown("""
 <style>
 body {
@@ -42,23 +43,26 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 .navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #f4b6c2;
-    border-radius: 12px;
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 30px;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 40px;
 }
-.navbar a {
-    text-decoration: none;
-    color: #333;
+.nav-item {
+    margin: 0 25px;
     font-weight: 500;
-    padding: 10px 25px;
-    border-radius: 8px;
-    transition: 0.3s;
+    color: #333;
+    text-decoration: none;
 }
-.navbar a:hover, .navbar a.active {
-    background-color: #fff;
+.nav-item:hover {
     color: #000;
+}
+.active {
+    font-weight: 700;
+    border-bottom: 3px solid #e35d88;
 }
 .title {
     font-size: 42px;
@@ -80,6 +84,10 @@ body {
     padding: 10px 25px;
     border-radius: 10px;
     cursor: pointer;
+    font-size: 15px;
+}
+.btn-primary:hover {
+    background-color: #ff6f91;
 }
 .card {
     background-color: white;
@@ -88,44 +96,30 @@ body {
     box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
     text-align: center;
 }
-.metric-box {
-    background-color: white;
-    padding: 20px;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    margin: auto;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# ====== NAVIGATION ======
+# ===== NAVBAR =====
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-def change_page(page_name):
-    st.session_state.page = page_name
+menu = st.radio(
+    "",
+    ["Home", "Classification", "About Project"],
+    horizontal=True,
+    label_visibility="collapsed"
+)
 
-st.markdown("""
-<div class="navbar">
-    <a href="#" onclick="window.location.reload()">Home</a>
-    <a href="#" onclick="window.location.reload()">Classification</a>
-    <a href="#" onclick="window.location.reload()">About Project</a>
-</div>
-""", unsafe_allow_html=True)
-
-# Custom navbar logic (Streamlit way)
-menu = st.radio("", ["Home", "Classification", "About Project"], horizontal=True, label_visibility="collapsed")
-
-# ====== HOME PAGE ======
+# ===== HOME PAGE =====
 if menu == "Home":
-    col1, col2 = st.columns([1,1])
+    col1, col2 = st.columns([1, 1])
+
     with col1:
         st.markdown("<div class='title'>Deteksi Jenis <span class='highlight'>Kendaraan AI</span></div>", unsafe_allow_html=True)
         st.markdown("<div class='subtitle'>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</div>", unsafe_allow_html=True)
-        if st.button("🚗 Coba Sekarang", key="try_btn", use_container_width=False):
+        if st.button("🚗 Coba Sekarang", key="try_now"):
             st.session_state.page = "Classification"
-            st.experimental_rerun()
+            st.session_state["redirect"] = True
 
     with col2:
         st.markdown("""
@@ -159,11 +153,13 @@ if menu == "Home":
         with metrics[i]:
             st.markdown(f"<div class='card'><h2 style='color:#e35d88'>{val}</h2><p>{label}</p></div>", unsafe_allow_html=True)
 
-# ====== CLASSIFICATION PAGE ======
-elif menu == "Classification":
+# ===== CLASSIFICATION PAGE =====
+elif menu == "Classification" or st.session_state.get("page") == "Classification":
+    st.session_state.page = "Classification"
     st.markdown("<h2 style='text-align:center;'>Klasifikasi Gambar AI</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align:center;'>Upload gambar dan biarkan AI mengenali jenis kendaraan.</p>", unsafe_allow_html=True)
-    col1, col2 = st.columns([1,1])
+
+    col1, col2 = st.columns([1, 1])
     with col1:
         st.markdown("<h4>Upload Gambar</h4>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Pilih gambar kendaraan", type=["jpg", "png", "jpeg"])
@@ -175,22 +171,19 @@ elif menu == "Classification":
                     time.sleep(1.5)
                 pred_labels = ["Mobil", "Motor", "Truck", "Bus"]
                 preds = {label: random.randint(70, 99) for label in pred_labels}
-                total = sum(preds.values())
                 preds = {k: round(v, 1) for k, v in preds.items()}
-
                 st.success("Analisis selesai!")
 
                 with col2:
                     st.markdown("<h4>Hasil Klasifikasi</h4>", unsafe_allow_html=True)
                     st.markdown(f"<p>Waktu Proses: <b>{random.randint(40,80)}ms</b></p>", unsafe_allow_html=True)
                     st.markdown(f"<p>Model: <b>VehicleDetect-v1.0</b></p>", unsafe_allow_html=True)
-
                     st.markdown("<h5>Prediksi Teratas</h5>", unsafe_allow_html=True)
                     for label, conf in preds.items():
                         st.progress(conf / 100)
                         st.markdown(f"**{label}** — {conf}%")
 
-# ====== ABOUT PROJECT PAGE ======
+# ===== ABOUT PROJECT =====
 elif menu == "About Project":
     st.markdown("<h2>Tentang Proyek</h2>", unsafe_allow_html=True)
     st.write("""
