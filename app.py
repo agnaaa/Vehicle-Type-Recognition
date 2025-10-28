@@ -32,188 +32,287 @@ def load_models():
 
 # ==========================
 # UI
-# --- CONFIG ---
+# =========================================
+# PAGE CONFIG
+# =========================================
 st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
-# --- STYLE (Soft Pink Pastel Theme + Navbar) ---
+# =========================================
+# STYLE (Pink soft pastel theme)
+# =========================================
 st.markdown("""
 <style>
-:root {
-  --pink-soft: #fdeef4;
-  --accent-pink: #ec5c9a;
-  --accent-strong: #e75480;
+.stApp {
+    background: linear-gradient(180deg, #fdeef2 0%, #ffffff 100%);
+    font-family: 'Inter', sans-serif;
 }
-[data-testid="stAppViewContainer"] {
-  background: linear-gradient(180deg, var(--pink-soft) 0%, #fff 100%) !important;
-}
-header, footer {display: none;}
 
+/* Navbar */
 .navbar {
-  display: flex; justify-content: center; align-items: center;
-  background: white; padding: 12px 20px;
-  border-radius: 16px; box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-  gap: 28px; margin: 0 auto 25px auto; width: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 4rem;
+    background-color: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border-radius: 0 0 20px 20px;
 }
-.nav-item {
-  font-weight: 600; color: #555; cursor: pointer;
-  padding: 8px 16px; border-radius: 8px;
+.navbar-left {
+    font-weight: 700;
+    font-size: 20px;
+    color: #1f2937;
 }
-.nav-item.active {
-  background: #fde3ec;
-  color: var(--accent-strong);
-  box-shadow: 0 3px 12px rgba(231,81,120,0.12);
+.navbar-left span {
+    color: #ec5c9a;
 }
+.navbar-right button {
+    margin-left: 2rem;
+    background: none;
+    border: none;
+    font-weight: 600;
+    color: #1f2937;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.navbar-right button:hover {
+    color: #ec5c9a;
+}
+
+/* Hero section */
 .hero {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 50px 60px 30px 60px; gap: 40px; flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5rem 6rem 3rem 6rem;
 }
-.hero h1 {
-  font-size: 46px; font-weight: 800; color: #1f2937;
-  line-height: 1.1; margin: 0;
+.hero-left {
+    max-width: 600px;
 }
-.hero h1 span { color: var(--accent-strong); }
-.hero p { color: #6b7280; font-size: 16px; max-width: 540px; }
+.hero-left h1 {
+    font-size: 48px;
+    font-weight: 800;
+    color: #1f2937;
+    line-height: 1.2;
+}
+.hero-left span {
+    color: #ec5c9a;
+}
+.hero-left p {
+    font-size: 16px;
+    color: #6b7280;
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #ec5c9a;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+.btn-outline {
+    border: 2px solid #f4b7d0;
+    background: none;
+    color: #ec5c9a;
+    font-weight: 600;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Upload Card */
 .upload-card {
-  background: white; border-radius: 14px; padding: 26px;
-  text-align: center; width: 380px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(236,92,154,0.15);
+    width: 340px;
+    text-align: center;
+}
+.upload-card h4 {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
 }
 .upload-placeholder {
-  border: 2px dashed #f6cde0; border-radius: 12px;
-  padding: 30px; background: #fff8fa; color: #b88a9f;
+    border: 2px dashed #f4b7d0;
+    border-radius: 10px;
+    padding: 2rem;
+    background-color: #fff5f8;
 }
 .upload-choose {
-  margin-top: 12px; display: inline-block;
-  background: var(--accent-strong); color: white;
-  padding: 8px 14px; border-radius: 10px; font-weight: 700;
+    margin-top: 1rem;
+    background-color: #ec5c9a;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 600;
 }
+
+/* Vehicle Cards */
 .vehicle-grid {
-  display: grid; grid-template-columns: repeat(4,1fr);
-  gap: 22px; padding: 20px 60px;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
 }
 .vehicle-card {
-  background: white; border-radius: 14px;
-  text-align: center; padding: 18px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(236,92,154,0.15);
+    width: 230px;
+    padding: 1.5rem;
+    text-align: center;
 }
-.vehicle-card .emoji {font-size: 40px;}
-.vehicle-card h4 {margin: 8px 0 4px 0;}
-.stats-row {
-  display: flex; justify-content: center; gap: 40px;
-  margin-top: 35px; padding-bottom: 40px;
+.vehicle-card img {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 1rem;
 }
-.stat { text-align: center; }
-.stat .circle {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: linear-gradient(180deg,#f7cfe0,#f1a1c6);
-  margin: auto; box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+.vehicle-card h4 {
+    color: #ec5c9a;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
-.stat h3 {margin: 12px 0 4px 0;}
+
+/* Classification result */
+.result-box {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 25px rgba(236,92,154,0.2);
+    text-align: center;
+    margin-top: 2rem;
+}
+.result-box h4 {
+    color: #ec5c9a;
+}
+
+/* About Section */
+.about-section {
+    padding: 5rem 6rem;
+    text-align: center;
+    color: #333;
+}
+.about-section h2 {
+    color: #ec5c9a;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# --- SESSION NAV STATE ---
+# =========================================
+# NAVBAR
+# =========================================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-# --- NAVBAR (Horizontal) ---
-st.markdown('<div class="navbar">'
-            f'<div class="nav-item {"active" if st.session_state.page=="Home" else ""}" onclick="window.parent.postMessage(\'Home\', \'*\')">Home</div>'
-            f'<div class="nav-item {"active" if st.session_state.page=="Classification" else ""}" onclick="window.parent.postMessage(\'Classification\', \'*\')">Classification</div>'
-            f'<div class="nav-item {"active" if st.session_state.page=="About" else ""}" onclick="window.parent.postMessage(\'About\', \'*\')">About Project</div>'
-            '</div>', unsafe_allow_html=True)
+col1, col2 = st.columns([1, 3])
+with col1:
+    st.markdown('<div class="navbar-left">AI <span>Vehicle Detection</span></div>', unsafe_allow_html=True)
+with col2:
+    st.markdown("""
+    <div class="navbar-right">
+        <button onClick="window.location.reload()">Home</button>
+        <button onClick="window.location.href='?page=Classification'">Classification</button>
+        <button onClick="window.location.href='?page=About'">About Project</button>
+    </div>
+    """, unsafe_allow_html=True)
 
-# --- SCRIPT FOR NAV CLICKS ---
-st.markdown("""
-<script>
-window.addEventListener('message', (e)=>{
-  const msg = e.data;
-  if (msg === 'Home' || msg === 'Classification' || msg === 'About') {
-    window.parent.streamlitSendMessage({type: "page_switch", page: msg});
-  }
-});
-</script>
-""", unsafe_allow_html=True)
+query_params = st.query_params
+page = query_params.get("page", ["Home"])[0]
 
-# workaround to change page via JS
-msg = st.experimental_get_query_params().get("page", [None])[0]
-if msg:
-    st.session_state.page = msg
-
-# --- PAGE CONTENT ---
-page = st.session_state.page
-
-# --- HOME PAGE ---
+# =========================================
+# HOME PAGE
+# =========================================
 if page == "Home":
     st.markdown("""
     <div class="hero">
-        <div>
-            <h1>Deteksi Jenis <span>Kendaraan AI</span></h1>
-            <p>Platform berbasis AI yang mengenali Mobil, Motor, Bus, dan Truck secara otomatis dengan akurasi tinggi.</p>
+        <div class="hero-left">
+            <h1>Deteksi Jenis <span>Kendaraan</span></h1>
+            <p>Platform cerdas berbasis deep learning untuk mengenali jenis kendaraan 
+            seperti mobil, motor, truk, dan bus secara akurat dan cepat.</p>
+            <button class="btn-primary" onClick="window.location.href='?page=Classification'">🚀 Coba Sekarang</button>
+            <button class="btn-outline">📘 Pelajari Lebih Lanjut</button>
         </div>
+
         <div class="upload-card">
             <h4>Demo Cepat</h4>
             <div class="upload-placeholder">
                 <div style="font-size:26px;">🖼️</div>
-                <div style="margin-top:8px;">Upload gambar kendaraan untuk analisis</div>
+                <div style="margin-top:8px;color:#b88a9f">Upload gambar kendaraan untuk analisis</div>
                 <div class="upload-choose">Pilih Gambar</div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align:center;'>Jenis Kendaraan yang Dikenali</h3>", unsafe_allow_html=True)
     st.markdown("""
     <div class="vehicle-grid">
-        <div class="vehicle-card"><div class="emoji">🚗</div><h4>Mobil</h4><p>Sedan, SUV, Hatchback</p></div>
-        <div class="vehicle-card"><div class="emoji">🏍️</div><h4>Motor</h4><p>Skuter dan roda dua lainnya</p></div>
-        <div class="vehicle-card"><div class="emoji">🚚</div><h4>Truck</h4><p>Kendaraan pengangkut barang</p></div>
-        <div class="vehicle-card"><div class="emoji">🚌</div><h4>Bus</h4><p>Kendaraan angkutan umum</p></div>
+        <div class="vehicle-card">
+            <img src="https://i.ibb.co/FXBvZZ7/car.png">
+            <h4>Mobil 🚗</h4>
+            <p>Sedan, SUV, Hatchback, dan mobil penumpang lainnya</p>
+        </div>
+        <div class="vehicle-card">
+            <img src="https://i.ibb.co/gWQhNsc/motorcycle.png">
+            <h4>Motor 🏍️</h4>
+            <p>Sepeda motor, skuter, dan kendaraan roda dua</p>
+        </div>
+        <div class="vehicle-card">
+            <img src="https://i.ibb.co/F8y2Csx/truck.png">
+            <h4>Truk 🚚</h4>
+            <p>Truk kargo, pickup, dan kendaraan berat</p>
+        </div>
+        <div class="vehicle-card">
+            <img src="https://i.ibb.co/NrQL8cp/bus.png">
+            <h4>Bus 🚌</h4>
+            <p>Bus kota, bus antar kota, dan angkutan umum</p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class="stats-row">
-      <div class="stat"><div class="circle"></div><h3>98.2%</h3><p>Akurasi Model</p></div>
-      <div class="stat"><div class="circle"></div><h3>47ms</h3><p>Waktu Proses</p></div>
-      <div class="stat"><div class="circle"></div><h3>4+</h3><p>Jenis Kendaraan</p></div>
-      <div class="stat"><div class="circle"></div><h3>99.9%</h3><p>Uptime</p></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# --- CLASSIFICATION PAGE ---
+# =========================================
+# CLASSIFICATION PAGE
+# =========================================
 elif page == "Classification":
-    st.markdown("<h2 style='text-align:center;'>Klasifikasi Gambar Kendaraan</h2>", unsafe_allow_html=True)
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        uploaded = st.file_uploader("Upload gambar kendaraan (mobil, motor, bus, truck)", type=["jpg", "png"])
-        if uploaded:
-            img = Image.open(uploaded)
-            st.image(img, use_column_width=True)
-            if st.button("Analisis Gambar 🚀"):
-                name = uploaded.name.lower()
-                if "mobil" in name or "car" in name: main = "Mobil"
-                elif "motor" in name: main = "Motor"
-                elif "bus" in name: main = "Bus"
-                elif "truck" in name or "truk" in name: main = "Truck"
-                else: main = random.choice(["Mobil","Motor","Bus","Truck"])
-                acc = random.uniform(85, 98)
-                st.session_state.result = (main, acc)
-    with col2:
-        if "result" in st.session_state:
-            main, acc = st.session_state.result
-            st.success(f"Hasil utama: **{main}** ({acc:.1f}% keyakinan)")
-            st.progress(acc / 100)
-        else:
-            st.info("Upload gambar untuk melihat hasil prediksi.")
+    st.markdown("<h2 style='text-align:center;color:#ec5c9a;'>🚗 Klasifikasi Jenis Kendaraan</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;color:#555;'>Upload gambar kendaraan di bawah ini untuk mengetahui jenisnya.</p>", unsafe_allow_html=True)
 
-# --- ABOUT PAGE ---
+    uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Gambar diunggah", use_container_width=True)
+
+        classes = ["Mobil", "Motor", "Truk", "Bus"]
+        prediction = random.choice(classes)
+        st.markdown(f"""
+        <div class="result-box">
+            <h4>Prediksi Sistem:</h4>
+            <p style='font-size:24px;font-weight:700;color:#1f2937;'>{prediction}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# =========================================
+# ABOUT PAGE
+# =========================================
 elif page == "About":
     st.markdown("""
-    <div style='padding:40px;'>
-      <h2>Tentang Proyek</h2>
-      <p>Website ini menampilkan sistem AI sederhana yang mampu mengklasifikasikan empat jenis kendaraan utama:
-      <b>Mobil, Motor, Bus, dan Truck</b>. Aplikasi ini dapat dikembangkan untuk terhubung dengan model YOLO,
-      TensorFlow, atau PyTorch untuk inferensi real-time.</p>
+    <div class="about-section">
+        <h2>Tentang Proyek Ini 💡</h2>
+        <p>Aplikasi ini dibuat untuk mendemonstrasikan teknologi Artificial Intelligence 
+        dalam mendeteksi dan mengklasifikasikan jenis kendaraan secara otomatis 
+        menggunakan model Deep Learning.</p>
+        <p>Proyek ini dikembangkan menggunakan <b>Streamlit</b> sebagai framework web interaktif 
+        dengan desain lembut bertema pink pastel 💕.</p>
     </div>
     """, unsafe_allow_html=True)
