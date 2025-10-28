@@ -11,6 +11,7 @@ import time
 import joblib
 import os
 from streamlit_option_menu import option_menu
+import io
 
 # ==========================
 # Load Models
@@ -30,212 +31,362 @@ def load_models():
 
 # ==========================
 # UI
-# =============================
-# PAGE CONFIG
-# =============================
-st.set_page_config(
-    page_title="AI Image Detection",
-    layout="wide"
-)
+# -------------------------
+# Page config
+# -------------------------
+st.set_page_config(page_title="AI Image Detection", layout="wide")
 
-# =============================
-# CUSTOM CSS
-# =============================
-st.markdown("""
-<style>
-    .stApp {
-        background: linear-gradient(180deg, #fdeef2 0%, #fff 100%);
-        font-family: 'Inter', sans-serif;
+# -------------------------
+# Styles (pink soft pastel + components)
+# -------------------------
+st.markdown(
+    """
+    <style>
+    :root{
+        --pink-soft: #fdeef4;
+        --accent-pink: #ec5c9a;
+        --accent-pink-strong: #e75480;
+        --card-shadow: rgba(16,24,40,0.06);
     }
-
-    /* --- Navbar --- */
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 4rem;
-        background-color: white;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border-radius: 0 0 20px 20px;
-        position: sticky;
-        top: 0;
-        z-index: 100;
+    /* app bg */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(180deg, var(--pink-soft) 0%, #ffffff 100%) !important;
     }
-    .navbar-left {
-        font-weight: 700;
-        font-size: 20px;
-        color: #1f2937;
-    }
-    .navbar-left span {
-        color: #ec5c9a;
-    }
-    .navbar-right a {
-        margin-left: 2rem;
-        text-decoration: none;
-        font-weight: 600;
-        color: #1f2937;
-        transition: 0.3s;
-        padding: 6px 12px;
+    /* header / top spacing removal */
+    header {background: transparent}
+    /* NAVBAR VISUAL */
+    .top-nav {
+        width: 100%;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        background: white;
+        padding: 12px 36px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
         border-radius: 8px;
+        margin-bottom: 18px;
     }
-    .navbar-right a.active {
-        background-color: #fde3ec;
-        color: #ec5c9a;
+    .brand {font-weight:800; color:#222; display:flex; align-items:center; gap:10px}
+    .brand .logo {
+        width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent-pink),var(--accent-pink-strong));
+        display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;
     }
-    .navbar-right a:hover {
-        color: #ec5c9a;
+    .nav-links {display:flex; gap:18px; align-items:center;}
+    .nav-link {
+        padding:8px 14px;border-radius:8px;color:#333;text-decoration:none;font-weight:600;
+    }
+    .nav-link.active {
+        background: linear-gradient(180deg,#fde3ec, #fff);
+        color: var(--accent-pink-strong);
+        box-shadow: 0 4px 14px rgba(231,81,120,0.08);
     }
 
-    /* --- Buttons --- */
-    .btn-primary {
-        background-color: #ec5c9a;
-        border: none;
-        color: white;
-        font-weight: 600;
-        padding: 0.8rem 1.8rem;
-        border-radius: 10px;
-        margin-top: 1.5rem;
-        margin-right: 1rem;
-        cursor: pointer;
+    /* HERO */
+    .hero {
+        display:flex; gap:30px; align-items:center; padding:48px 56px; flex-wrap:wrap;
+    }
+    .hero-left { flex: 1 1 480px; max-width: 680px; }
+    .hero-left h1 { font-size:48px; margin:0; line-height:1; color:#1f2937; font-weight:800;}
+    .hero-left h1 .accent { color: var(--accent-pink-strong); display:block; }
+    .hero-left p { color:#6b7280; margin-top:18px; font-size:16px; line-height:1.6; max-width:520px;}
+    .hero-buttons { margin-top:26px; display:flex; gap:14px; align-items:center; }
+
+    .btn-gradient {
+        background: linear-gradient(90deg, #f07da7, #e86e9a);
+        color: white; padding:12px 22px; border-radius:12px; font-weight:700; border:none; box-shadow: 0 8px 20px rgba(231,81,120,0.12);
     }
     .btn-outline {
-        border: 2px solid #f4b7d0;
-        background: none;
-        color: #ec5c9a;
-        font-weight: 600;
-        padding: 0.8rem 1.8rem;
-        border-radius: 10px;
-        cursor: pointer;
+        border: 2px solid #f6cde0; color: var(--accent-pink-strong); padding:10px 20px; border-radius:12px; background:transparent; font-weight:700;
     }
 
-    /* --- Upload Card --- */
+    /* Upload card on right */
     .upload-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(236,92,154,0.15);
-        width: 340px;
-        text-align: center;
+        background: white; border-radius:14px; padding:26px; width:420px; text-align:center;
+        box-shadow: 0 14px 30px rgba(16,24,40,0.06);
     }
-    .upload-card h4 {
-        font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 1rem;
+    .upload-card h4 { margin:6px 0 12px 0; color:#111; font-weight:700;}
+    .upload-placeholder {
+        border:2px dashed #f6cde0; border-radius:12px; padding:34px; color:#b88a9f; margin:12px 0;
+    }
+    .upload-choose {
+        background: #fdeef8; color: var(--accent-pink-strong); padding:8px 12px; border-radius:8px; display:inline-block; margin-top:8px; font-weight:700;
     }
 
-    /* --- Footer Button --- */
-    .talk-btn {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        background-color: #ec5c9a;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-weight: 600;
-        text-decoration: none;
-        box-shadow: 0 4px 15px rgba(236,92,154,0.4);
+    /* VEHICLE CARDS ROW */
+    .vehicle-row { padding: 48px 64px; }
+    .vehicle-grid { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; }
+    .vehicle-card {
+        background:white; width:260px; border-radius:12px; padding:18px; text-align:center; box-shadow: 0 12px 28px rgba(16,24,40,0.04);
     }
-    .talk-btn:hover {
-        background-color: #e34c8f;
+    .vehicle-card img { width:100%; height:120px; object-fit:cover; border-radius:8px; }
+    .vehicle-card h4 { margin:12px 0 6px 0; color:#222; }
+    .vehicle-card p { color:#6b7280; font-size:14px; margin:0; }
+
+    /* Stats */
+    .stats { display:flex; gap:40px; justify-content:center; padding:36px 0; }
+    .stat { text-align:center; color:#1f2937; }
+    .stat .dot { width:56px;height:56px;border-radius:50%; background: linear-gradient(180deg,#f6cde0,#f2b6d9); margin:auto; box-shadow:0 8px 20px rgba(231,81,120,0.06); }
+    .stat h3 { margin:12px 0 6px 0; font-size:22px; font-weight:800; }
+    .stat p { margin:0; color:#6b7280; }
+
+    /* Features row */
+    .features { padding:48px 64px; text-align:center; }
+    .features-grid { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; }
+    .feature-card { width:260px; background:white; border-radius:12px; padding:22px; text-align:center; box-shadow: 0 12px 28px rgba(16,24,40,0.04); }
+    .feature-card .icon { width:56px;height:56px;border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; background:linear-gradient(180deg,#f7cfe0,#f1a1c6); color:white; font-weight:700; }
+    .feature-card h4 { margin:8px 0; }
+    .feature-card p { color:#6b7280; font-size:14px; }
+
+    /* floating talk */
+    .talk-float { position: fixed; bottom: 24px; right: 24px; background: linear-gradient(135deg,#c2185b,#e91e63); color:white; padding:12px 20px; border-radius:28px; box-shadow:0 10px 30px rgba(0,0,0,0.15); font-weight:700; text-decoration:none; }
+
+    /* hide default Streamlit radio we use for internal navigation */
+    .stRadio { display:none !important; }
+    /* also hide other automatically inserted labels if any */
+    .css-1aumxhk { display:none !important; } /* best-effort fallback */
+
+    /* small responsive */
+    @media (max-width:900px) {
+        .hero { padding:28px 18px; flex-direction:column; align-items:flex-start; }
+        .upload-card { width:100%; max-width:420px; }
+        .top-nav { padding:10px 12px; }
     }
-</style>
-""", unsafe_allow_html=True)
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# =============================
-# NAVBAR (aktif berdasarkan halaman)
-# =============================
-if "page" not in st.session_state:
-    st.session_state.page = "Home"
+# -------------------------
+# Internal navigation control: hidden radio (we'll hide it with CSS)
+# -------------------------
+nav = st.radio("", ["Home", "Classification", "About Project"], index=0, horizontal=True, label_visibility="collapsed")
+st.session_state['page'] = nav  # keep consistent
 
-query_params = st.query_params
-if "page" in query_params:
-    st.session_state.page = query_params["page"].capitalize()
+# -------------------------
+# NAVBAR VISUAL (HTML)
+# -------------------------
+# We display a visual navbar (styled), but navigation logic is controlled by the hidden radio above.
+home_active = "active" if st.session_state['page'] == "Home" else ""
+cls_active = "active" if st.session_state['page'] == "Classification" else ""
+about_active = "active" if st.session_state['page'] == "About Project" else ""
 
-selected_page = st.session_state.page
-
-nav_items = ["Home", "Classification"]
-navbar_html = '<div class="navbar"><div class="navbar-left">AI <span>Image Detection</span></div><div class="navbar-right">'
-for item in nav_items:
-    active_class = "active" if item == selected_page else ""
-    navbar_html += f'<a href="?page={item}" class="{active_class}">{item}</a>'
-navbar_html += "</div></div>"
-st.markdown(navbar_html, unsafe_allow_html=True)
-
-# =============================
-# HALAMAN HOME
-# =============================
-if selected_page == "Home":
-    st.markdown("""
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5rem 6rem 3rem 6rem;">
-        <div style="max-width:600px;">
-            <h1 style="font-size:48px;font-weight:800;color:#1f2937;line-height:1.2;">Deteksi Jenis<br><span style="color:#ec5c9a;">Kendaraan AI</span></h1>
-            <p style="font-size:16px;color:#6b7280;margin-top:1rem;line-height:1.6;">
-                Platform revolusioner yang menggunakan teknologi deep learning
-                untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil,
-                motor, truck, dan bus dengan akurasi tinggi.
-            </p>
-            <button class="btn-primary">🚀 Coba Sekarang</button>
-            <button class="btn-outline">📘 Pelajari Lebih Lanjut</button>
+st.markdown(
+    f"""
+    <div class="top-nav">
+        <div class="brand">
+            <div class="logo">ID</div>
+            <div style="font-weight:800;">AI Image Detection</div>
         </div>
-        <div class="upload-card">
-            <h4>Demo Cepat</h4>
-    """, unsafe_allow_html=True)
-
-    uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar kendaraan diunggah", use_container_width=True)
-        st.success("✅ Gambar berhasil diunggah (Demo).")
-
-    st.markdown("</div></div>", unsafe_allow_html=True)
-
-# =============================
-# HALAMAN CLASSIFICATION
-# =============================
-elif selected_page == "Classification":
-    st.markdown("""
-    <div style="text-align:center;margin-top:3rem;">
-        <h2 style="font-size:36px;font-weight:800;color:#1f2937;">Klasifikasi Gambar AI</h2>
-        <p style="color:#6b7280;font-size:16px;margin-bottom:2rem;">
-            Upload gambar dan biarkan AI kami menganalisis serta mengklasifikasi objek dalam gambar dengan akurasi tinggi.
-        </p>
-    </div>
-
-    <div style="display:flex;justify-content:center;gap:3rem;margin-top:2rem;">
-        <div style="background:white;padding:2rem;border-radius:15px;box-shadow:0 10px 30px rgba(236,92,154,0.15);width:350px;text-align:center;">
-            <h4>Upload Gambar</h4>
-            <p style="color:#6b7280;">Pilih atau Drop Gambar<br><small>Mendukung JPG, PNG, WebP hingga 10MB</small></p>
-        </div>
-
-        <div style="background:white;padding:2rem;border-radius:15px;box-shadow:0 10px 30px rgba(236,92,154,0.15);width:350px;text-align:center;">
-            <h4>Hasil Klasifikasi</h4>
-            <p style="color:#6b7280;">Upload dan analisis gambar untuk melihat hasil klasifikasi</p>
+        <div class="nav-links">
+            <a class="nav-link {home_active}" onclick="document.querySelectorAll('input[type=radio]')[0].click()">Home</a>
+            <a class="nav-link {cls_active}" onclick="document.querySelectorAll('input[type=radio]')[1].click()">Classification</a>
+            <a class="nav-link {about_active}" onclick="document.querySelectorAll('input[type=radio]')[2].click()">About Project</a>
         </div>
     </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-    <div style="text-align:center;margin-top:3rem;">
-        <h4>Coba Gambar Contoh</h4>
-        <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:1.5rem;">
-            <div style="background:white;padding:1rem;border-radius:15px;width:150px;box-shadow:0 5px 15px rgba(236,92,154,0.15);">
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" width="80"><p>Kucing</p>
+# -------------------------
+# PAGE: HOME
+# -------------------------
+if st.session_state['page'] == "Home":
+    # HERO: left text, right upload card
+    st.markdown(
+        """
+        <div class="hero">
+            <div class="hero-left">
+                <h1>Deteksi Jenis <span class="accent">Kendaraan AI</span></h1>
+                <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
+                <div class="hero-buttons">
+                    <a class="btn-gradient" href="javascript:document.querySelectorAll('input[type=radio]')[1].click()">🚀 Coba Sekarang</a>
+                    <a class="btn-outline" href="#features">📘 Pelajari Lebih Lanjut</a>
+                </div>
             </div>
-            <div style="background:white;padding:1rem;border-radius:15px;width:150px;box-shadow:0 5px 15px rgba(236,92,154,0.15);">
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" width="80"><p>Anjing</p>
-            </div>
-            <div style="background:white;padding:1rem;border-radius:15px;width:150px;box-shadow:0 5px 15px rgba(236,92,154,0.15);">
-                <img src="https://cdn-icons-png.flaticon.com/512/2331/2331717.png" width="80"><p>Mobil</p>
-            </div>
-            <div style="background:white;padding:1rem;border-radius:15px;width:150px;box-shadow:0 5px 15px rgba(236,92,154,0.15);">
-                <img src="https://cdn-icons-png.flaticon.com/512/415/415682.png" width="80"><p>Buah</p>
+
+            <div class="upload-card">
+                <h4>Demo Cepat</h4>
+                <div class="upload-placeholder">
+                    <div style="font-size:26px;">🖼️</div>
+                    <div style="margin-top:8px;color:#b88a9f">Upload gambar kendaraan untuk analisis</div>
+                    <div class="upload-choose">Pilih Gambar</div>
+                </div>
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True,
+    )
 
-# =============================
-# FOOTER BUTTON
-# =============================
-st.markdown("""
-<a class="talk-btn" href="#">💬 Talk with Us</a>
-""", unsafe_allow_html=True)
+    # VEHICLE CARDS
+    st.markdown(
+        """
+        <div class="vehicle-row">
+            <h2 style="text-align:center; font-size:28px; margin-bottom:6px;">Jenis Kendaraan yang Dapat Dideteksi</h2>
+            <p style="text-align:center; color:#6b7280; margin-top:0; margin-bottom:24px;">Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>
+
+            <div class="vehicle-grid">
+                <div class="vehicle-card">
+                    <img src="https://i.ibb.co/FXBvZZ7/car.png">
+                    <h4>Mobil</h4>
+                    <p>Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang</p>
+                </div>
+                <div class="vehicle-card">
+                    <img src="https://i.ibb.co/gWQhNsc/motorcycle.png">
+                    <h4>Motor</h4>
+                    <p>Sepeda motor, skuter, dan kendaraan roda dua lainnya</p>
+                </div>
+                <div class="vehicle-card">
+                    <img src="https://i.ibb.co/F8y2Csx/truck.png">
+                    <h4>Truck</h4>
+                    <p>Truk kargo, pickup, dan kendaraan komersial berat</p>
+                </div>
+                <div class="vehicle-card">
+                    <img src="https://i.ibb.co/NrQL8cp/bus.png">
+                    <h4>Bus</h4>
+                    <p>Bus kota, bus antar kota, dan kendaraan angkutan umum</p>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # STATS
+    st.markdown(
+        """
+        <div class="stats">
+            <div class="stat"><div class="dot"></div><h3>98.2%</h3><p>Akurasi Model</p></div>
+            <div class="stat"><div class="dot"></div><h3>47ms</h3><p>Waktu Proses</p></div>
+            <div class="stat"><div class="dot"></div><h3>4+</h3><p>Jenis Kendaraan</p></div>
+            <div class="stat"><div class="dot"></div><h3>99.9%</h3><p>Uptime</p></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # FEATURES
+    st.markdown(
+        """
+        <div id="features" class="features">
+            <h2 style="font-size:28px; margin-bottom:6px;">Mengapa Memilih Platform Kami?</h2>
+            <p style="color:#6b7280; margin-top:0; margin-bottom:20px;">Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h4>Deteksi Akurat</h4>
+                    <p>Akurasi hingga 98.2% dalam mengenali jenis kendaraan dengan teknologi deep learning</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h4>Pemrosesan Cepat</h4>
+                    <p>Identifikasi kendaraan dalam waktu kurang dari 50ms</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔒</div>
+                    <h4>Keamanan Tinggi</h4>
+                    <p>Data gambar kendaraan diproses dengan enkripsi end-to-end</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌐</div>
+                    <h4>API Global</h4>
+                    <p>Akses mudah melalui REST API untuk integrasi sistem traffic management</p>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# -------------------------
+# PAGE: CLASSIFICATION
+# -------------------------
+elif st.session_state['page'] == "Classification":
+    st.markdown(
+        """
+        <div style="text-align:center; margin-top:28px;">
+            <h2 style="font-size:32px; font-weight:800; color:#1f2937;">Klasifikasi Gambar AI</h2>
+            <p style="color:#6b7280; max-width:800px; margin:auto;">Upload gambar dan biarkan AI kami menganalisis serta mengklasifikasikan objek dalam gambar dengan akurasi tinggi</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div style="display:flex; gap:32px; justify-content:center; padding:40px; flex-wrap:wrap;">
+            <div style="width:420px; background:white; border-radius:12px; padding:26px; box-shadow:0 12px 30px rgba(16,24,40,0.06);">
+                <h4 style="margin:0 0 10px 0;">Upload Gambar</h4>
+                <p style="color:#6b7280; margin-top:0;">Pilih atau Drop Gambar (JPG, PNG, WebP hingga 10MB)</p>
+                <!-- using real uploader below in python -->
+                <div style="height:10px"></div>
+            </div>
+
+            <div style="width:420px; background:white; border-radius:12px; padding:26px; box-shadow:0 12px 30px rgba(16,24,40,0.06);">
+                <h4 style="margin:0 0 10px 0;">Hasil Klasifikasi</h4>
+                <p style="color:#6b7280; margin-top:0;">Upload dan analisis gambar untuk melihat hasil klasifikasi</p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # actual python file uploader placed after the static HTML blocks
+    col_left, col_right = st.columns([1, 1])
+    with col_left:
+        uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="cls_upload")
+        if uploaded_file:
+            bytes_data = uploaded_file.getvalue()
+            image = Image.open(io.BytesIO(bytes_data))
+            st.image(image, caption="Gambar yang diunggah", use_column_width=True)
+            # placeholder for classification result
+            st.success("Hasil: Mobil (contoh) — Confidence: 97.8%")
+    with col_right:
+        st.empty()  # keep right column placeholder
+
+    # examples row
+    st.markdown(
+        """
+        <div style="text-align:center; margin-top:30px;">
+            <h4>Coba Gambar Contoh</h4>
+            <div style="display:flex; gap:18px; justify-content:center; margin-top:14px; flex-wrap:wrap;">
+                <div style="width:180px; background:white; border-radius:12px; padding:14px; box-shadow:0 8px 20px rgba(16,24,40,0.04);">
+                    <img src="https://i.ibb.co/zZcdF12/cat.png" width="100%" style="border-radius:8px;">
+                    <p style="margin:8px 0 0 0; font-weight:600;">Kucing</p>
+                </div>
+                <div style="width:180px; background:white; border-radius:12px; padding:14px; box-shadow:0 8px 20px rgba(16,24,40,0.04);">
+                    <img src="https://i.ibb.co/k5XyN2H/dog.png" width="100%" style="border-radius:8px;">
+                    <p style="margin:8px 0 0 0; font-weight:600;">Anjing</p>
+                </div>
+                <div style="width:180px; background:white; border-radius:12px; padding:14px; box-shadow:0 8px 20px rgba(16,24,40,0.04);">
+                    <img src="https://i.ibb.co/FXBvZZ7/car.png" width="100%" style="border-radius:8px;">
+                    <p style="margin:8px 0 0 0; font-weight:600;">Mobil</p>
+                </div>
+                <div style="width:180px; background:white; border-radius:12px; padding:14px; box-shadow:0 8px 20px rgba(16,24,40,0.04);">
+                    <img src="https://i.ibb.co/4VvX8PW/apple.png" width="100%" style="border-radius:8px;">
+                    <p style="margin:8px 0 0 0; font-weight:600;">Buah</p>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# -------------------------
+# PAGE: ABOUT (simple)
+# -------------------------
+else:
+    st.markdown(
+        """
+        <div style="padding:40px;">
+            <h2>About Project</h2>
+            <p>AI Image Detection — demo UI & simple classification front-end. Backend model integration (YOLO/TensorFlow) bisa ditambahkan di bagian Classification untuk memproses gambar yang diupload.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# -------------------------
+# floating talk with us
+# -------------------------
+st.markdown('<a class="talk-float" href="#">💬 Talk with Us</a>', unsafe_allow_html=True)
