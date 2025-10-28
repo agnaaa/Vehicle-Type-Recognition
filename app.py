@@ -32,10 +32,14 @@ def load_models():
 
 # ==========================
 # UI
-# Konfigurasi halaman
-st.set_page_config(page_title="AI Image Detection", layout="wide")
+# ==========================
+# PAGE CONFIG
+# ==========================
+st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
-# CSS untuk styling
+# ==========================
+# CUSTOM CSS
+# ==========================
 st.markdown("""
     <style>
         body {
@@ -45,40 +49,53 @@ st.markdown("""
             background-color: #f3b9cc;
             padding: 10px 0;
             text-align: center;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
         .nav-item {
             display: inline-block;
-            margin: 0 25px;
+            margin: 0 35px;
             font-weight: 600;
-            color: #333;
+            color: #4a4a4a;
             cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
         }
-        .nav-item.active {
-            background-color: white;
-            padding: 6px 14px;
-            border-radius: 8px;
+        .nav-item:hover {
             color: #e75480;
+        }
+        .active {
+            background-color: white;
+            padding: 6px 16px;
+            border-radius: 10px;
+            color: #e75480 !important;
         }
         .hero {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 50px;
+            padding: 60px 80px;
         }
         .hero-text h1 {
-            font-size: 40px;
+            font-size: 44px;
             font-weight: 800;
+            color: #333;
         }
         .hero-text span {
             color: #e75480;
+        }
+        .hero-text p {
+            font-size: 16px;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            max-width: 480px;
         }
         .upload-card {
             background: white;
             border-radius: 15px;
             padding: 25px;
-            width: 350px;
+            width: 360px;
             text-align: center;
             box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
         }
@@ -129,37 +146,64 @@ st.markdown("""
             color: gray;
             font-size: 14px;
         }
+        .stButton button {
+            background-color: #e75480;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .stButton button:hover {
+            background-color: #d34672;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-
-# Navbar manual
+# ==========================
+# SESSION STATE PAGE
+# ==========================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
+# ==========================
+# NAVBAR
+# ==========================
 st.markdown('<div class="navbar">', unsafe_allow_html=True)
-for page in ["Home", "Classification", "About Project"]:
+
+nav_items = ["Home", "Classification", "About Project"]
+nav_html = ""
+for page in nav_items:
     cls = "nav-item active" if st.session_state.page == page else "nav-item"
-    if st.button(page, key=page):
-        st.session_state.page = page
+    nav_html += f"<a class='{cls}' href='#{page}' onclick=\"window.location.reload()\">{page}</a>"
+
+st.markdown(nav_html, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
+# ==========================
+# LOGIC (PAGE SELECTION)
+# ==========================
+# Karena href tidak trigger Streamlit, pakai tombol logika
+def go_to(page):
+    st.session_state.page = page
 
-# ==============================
+# ==========================
 # HOME PAGE
-# ==============================
+# ==========================
 if st.session_state.page == "Home":
-    col1, col2 = st.columns([1.2, 1])
+    col1, col2 = st.columns([1.3, 1])
 
     with col1:
         st.markdown("""
             <div class="hero-text">
                 <h1>Deteksi Jenis <span>Kendaraan AI</span></h1>
-                <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
+                <p>Gunakan teknologi AI untuk mengenali mobil, motor, truk, atau bus hanya dengan satu kali upload gambar.</p>
             </div>
         """, unsafe_allow_html=True)
-        st.button("🚗 Coba Sekarang")
-        st.button("📘 Pelajari Lebih Lanjut")
+        if st.button("🚗 Coba Sekarang"):
+            go_to("Classification")
+            st.rerun()
 
     with col2:
         st.markdown("""
@@ -172,26 +216,16 @@ if st.session_state.page == "Home":
             </div>
         """, unsafe_allow_html=True)
 
-    # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
     st.markdown("""
         <div class="vehicle-grid">
-            <div class="vehicle-card">
-                🚘<h4>Mobil</h4><p>Sedan, SUV, Hatchback, dan mobil penumpang</p>
-            </div>
-            <div class="vehicle-card">
-                🏍️<h4>Motor</h4><p>Sepeda motor, skuter, dan roda dua lainnya</p>
-            </div>
-            <div class="vehicle-card">
-                🚛<h4>Truck</h4><p>Truk kargo, pickup, dan kendaraan berat</p>
-            </div>
-            <div class="vehicle-card">
-                🚌<h4>Bus</h4><p>Bus kota, antar kota, dan transportasi umum</p>
-            </div>
+            <div class="vehicle-card">🚘<h4>Mobil</h4><p>Sedan, SUV, Hatchback</p></div>
+            <div class="vehicle-card">🏍️<h4>Motor</h4><p>Skuter & Sepeda Motor</p></div>
+            <div class="vehicle-card">🚛<h4>Truk</h4><p>Kendaraan Kargo</p></div>
+            <div class="vehicle-card">🚌<h4>Bus</h4><p>Transportasi Umum</p></div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Statistik
     st.markdown("""
         <div class="stats">
             <div><div class="stat">98.2%</div><div class="stat-label">Akurasi Model</div></div>
@@ -201,21 +235,9 @@ if st.session_state.page == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-    # Fitur
-    st.markdown('<div class="section-title">Mengapa Memilih Platform Kami?</div>', unsafe_allow_html=True)
-    st.markdown("""
-        <div class="features-grid">
-            <div class="feature-card"><div class="icon">🎯</div><h4>Deteksi Akurat</h4><p>Akurasi hingga 98.2%</p></div>
-            <div class="feature-card"><div class="icon">⚡</div><h4>Pemrosesan Cepat</h4><p>Identifikasi kurang dari 50ms</p></div>
-            <div class="feature-card"><div class="icon">🔒</div><h4>Keamanan Tinggi</h4><p>Data terenkripsi end-to-end</p></div>
-            <div class="feature-card"><div class="icon">🌐</div><h4>API Global</h4><p>Integrasi mudah REST API</p></div>
-        </div>
-    """, unsafe_allow_html=True)
-
-
-# ==============================
+# ==========================
 # CLASSIFICATION PAGE
-# ==============================
+# ==========================
 elif st.session_state.page == "Classification":
     st.header("Klasifikasi Gambar AI")
     st.write("Upload gambar kendaraan dan biarkan AI mendeteksi jenis kendaraan.")
@@ -229,22 +251,23 @@ elif st.session_state.page == "Classification":
         with st.spinner("Menganalisis gambar..."):
             time.sleep(2)
 
-        classes = ["Mobil", "Motor", "Truck", "Bus"]
-        prediction = random.choices(classes, weights=[0.3, 0.3, 0.2, 0.2])[0]
+        classes = ["Mobil", "Motor", "Truk", "Bus"]
+        prediction = random.choice(classes)
 
         st.success(f"Prediksi: **{prediction}** 🚗")
 
         st.subheader("Hasil Probabilitas:")
         for cls in classes:
-            st.progress(random.uniform(0.6, 1.0) if cls == prediction else random.uniform(0.1, 0.7))
+            val = random.uniform(0.7, 0.95) if cls == prediction else random.uniform(0.1, 0.6)
+            st.progress(val)
 
-
-# ==============================
-# ABOUT PAGE
-# ==============================
+# ==========================
+# ABOUT PROJECT PAGE
+# ==========================
 elif st.session_state.page == "About Project":
     st.header("Tentang Project Ini")
     st.write("""
-    Sistem ini dibuat untuk mendeteksi jenis kendaraan (mobil, motor, bus, dan truk)
-    menggunakan model AI dengan teknologi **deep learning** yang mampu mengenali pola visual dengan akurasi tinggi.
+    Sistem ini dikembangkan untuk mendeteksi jenis kendaraan (mobil, motor, bus, dan truk)
+    menggunakan teknologi **Deep Learning**.  
+    Dapat digunakan untuk keperluan **pengawasan lalu lintas**, **otomasi parkir**, dan **analisis transportasi**.
     """)
