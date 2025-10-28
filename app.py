@@ -43,37 +43,47 @@ st.markdown("""
 html, body, [class*="st-"], .main {
     background-color: #fdeff4 !important;
     font-family: 'Poppins', sans-serif;
+    animation: fadeIn 1s ease-in-out;
 }
-.brand {font-weight:800;font-size:26px;color:#111827;display:flex;align-items:center;gap:10px;}
-.brand .logo {width:38px;height:38px;border-radius:8px;background:linear-gradient(90deg,#f07da7,#e86e9a);
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.brand {font-weight:800;font-size:30px;color:#111827;display:flex;align-items:center;gap:10px;}
+.brand .logo {width:42px;height:42px;border-radius:10px;background:linear-gradient(90deg,#f07da7,#e86e9a);
     display:flex;align-items:center;justify-content:center;color:white;font-weight:800;}
-.nav {display:flex;gap:20px;align-items:center;justify-content:center;}
-.nav button {background:none;border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;color:#374151;font-size:18px;}
-.nav button.active {background:white;color:#e75480;box-shadow:0 8px 20px rgba(231,81,120,0.08);}
-.hero {display:flex;gap:50px;align-items:center;padding:40px 60px;}
-.hero-left h1 {font-size:58px;margin:0;line-height:1.1;font-weight:900;color:#111827;}
+.nav {display:flex;gap:24px;align-items:center;justify-content:center;}
+.nav button {background:none;border:none;padding:14px 24px;border-radius:14px;font-weight:700;cursor:pointer;color:#374151;font-size:20px;}
+.nav button.active {background:white;color:#e75480;box-shadow:0 10px 26px rgba(231,81,120,0.12);}
+.hero {display:flex;gap:60px;align-items:center;padding:50px 80px;}
+.hero-left h1 {font-size:70px;margin:0;line-height:1.1;font-weight:900;color:#111827;}
 .hero-left h1 .accent {color:#e75480;}
-.hero-left p {color:#6b7280;margin-top:18px;font-size:22px;max-width:700px;}
-.btn-primary {background:linear-gradient(90deg,#f07da7,#e86e9a);color:white;padding:14px 32px;
-    border-radius:14px;border:none;font-weight:700;font-size:20px;cursor:pointer;}
-.section-title {text-align:center;font-size:34px;font-weight:800;margin-top:50px;color:#111827;}
-.vehicle-grid, .features-grid {display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:28px;}
-.vehicle-card, .feature-card {width:260px;text-align:center;padding:26px;border-radius:16px;
-    background:white;box-shadow:0 6px 20px rgba(16,24,40,0.05);}
-.vehicle-card h4, .feature-card h4 {margin:10px 0;font-size:20px;}
-.feature-card p {font-size:16px;}
-.classification {display:flex;gap:30px;padding:24px 50px;}
-.left-panel, .right-panel {background:white;border-radius:14px;padding:22px;box-shadow:0 10px 24px rgba(16,24,40,0.05);}
+.hero-left p {color:#6b7280;margin-top:20px;font-size:26px;max-width:800px;}
+.btn-primary {background:linear-gradient(90deg,#f07da7,#e86e9a);color:white;padding:18px 40px;
+    border-radius:16px;border:none;font-weight:700;font-size:24px;cursor:pointer;}
+.section-title {text-align:center;font-size:40px;font-weight:800;margin-top:60px;color:#111827;}
+.vehicle-grid, .features-grid {display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+.vehicle-card, .feature-card {width:280px;text-align:center;padding:30px;border-radius:20px;
+    background:white;box-shadow:0 8px 24px rgba(16,24,40,0.08);}
+.vehicle-card h4, .feature-card h4 {margin:12px 0;font-size:22px;}
+.feature-card p {font-size:18px;}
+.classification {display:flex;gap:40px;padding:30px 70px;}
+.left-panel, .right-panel {background:white;border-radius:16px;padding:26px;box-shadow:0 10px 26px rgba(16,24,40,0.08);}
 .left-panel {flex:1;}
 .right-panel {width:520px;}
-.about-box {background:white;padding:26px;border-radius:14px;box-shadow:0 8px 22px rgba(16,24,40,0.04);margin-bottom:20px;}
-.developer-card {text-align:center;padding:26px;border-radius:16px;background:white;width:380px;margin:40px auto;
-    box-shadow:0 10px 30px rgba(16,24,40,0.08);}
-.developer-card img {width:220px;height:220px;border-radius:50%;object-fit:cover;
-    box-shadow:0 10px 28px rgba(0,0,0,0.1);}
-.developer-card h3 {font-size:24px;margin-top:14px;color:#111827;}
-footer {text-align:center;color:#6b7280;margin-top:40px;padding-bottom:20px;font-size:16px;}
-@media (max-width:900px){.hero{flex-direction:column;padding:24px;}.classification{flex-direction:column;padding:16px;}.right-panel{width:100%;}}
+.about-box {background:white;padding:30px;border-radius:16px;box-shadow:0 8px 22px rgba(16,24,40,0.08);margin-bottom:24px;}
+.developer-card {text-align:center;padding:30px;border-radius:18px;background:white;width:420px;margin:60px auto;
+    box-shadow:0 10px 34px rgba(16,24,40,0.1);}
+.developer-card img {width:270px;height:270px;border-radius:50%;object-fit:cover;
+    box-shadow:0 12px 32px rgba(0,0,0,0.12);}
+.developer-card h3 {font-size:28px;margin-top:18px;color:#111827;}
+footer {text-align:center;color:#6b7280;margin-top:60px;padding-bottom:20px;font-size:18px;}
+@media (max-width:900px){
+    .hero{flex-direction:column;padding:24px;}
+    .classification{flex-direction:column;padding:16px;}
+    .right-panel{width:100%;}
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -94,7 +104,7 @@ with col2:
                 st.session_state.page = p
 with col3:
     st.write("")
-st.markdown("<hr style='margin-top:8px;margin-bottom:20px;border:none;height:1px;background:#f3d7e0' />", unsafe_allow_html=True)
+st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1px;background:#f3d7e0' />", unsafe_allow_html=True)
 
 # ========================= HOME =========================
 if st.session_state.page == "Home":
@@ -113,6 +123,7 @@ if st.session_state.page == "Home":
     with right:
         st.image("https://i.ibb.co/dLcRb8G/train.png", use_container_width=True)
 
+    # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="vehicle-grid">
@@ -123,14 +134,14 @@ if st.session_state.page == "Home":
     </div>
     """, unsafe_allow_html=True)
 
-    # Akurasi dan fitur
+    # Akurasi & Fitur
     st.markdown('<div class="section-title">Mengapa Memilih Platform Kami?</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="features-grid">
-        <div class="feature-card"><div style="font-size:30px;color:#e75480">🎯</div><h4>Akurasi 98.2%</h4><p>Menggunakan model deep learning terkini.</p></div>
-        <div class="feature-card"><div style="font-size:30px;color:#e75480">⚡</div><h4>Pemrosesan Cepat</h4><p>Prediksi dalam hitungan milidetik.</p></div>
-        <div class="feature-card"><div style="font-size:30px;color:#e75480">🔒</div><h4>Keamanan Terjamin</h4><p>Data gambar diproses lokal dan aman.</p></div>
-        <div class="feature-card"><div style="font-size:30px;color:#e75480">🌐</div><h4>Integrasi Mudah</h4><p>Kompatibel dengan berbagai sistem.</p></div>
+        <div class="feature-card"><div style="font-size:34px;color:#e75480">🎯</div><h4>Akurasi 98.2%</h4><p>Menggunakan model deep learning terkini untuk hasil yang akurat dan konsisten.</p></div>
+        <div class="feature-card"><div style="font-size:34px;color:#e75480">⚡</div><h4>Pemrosesan Cepat</h4><p>Prediksi kendaraan hanya dalam hitungan milidetik.</p></div>
+        <div class="feature-card"><div style="font-size:34px;color:#e75480">🔒</div><h4>Keamanan Terjamin</h4><p>Gambar diproses secara lokal, tanpa menyimpan data pengguna.</p></div>
+        <div class="feature-card"><div style="font-size:34px;color:#e75480">🌐</div><h4>Integrasi Mudah</h4><p>Dapat diintegrasikan dengan berbagai sistem transportasi cerdas.</p></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -139,7 +150,7 @@ elif st.session_state.page == "Classification":
     st.markdown('<h2 style="text-align:center;">🔍 Klasifikasi Kendaraan AI</h2>', unsafe_allow_html=True)
     left, right = st.columns([1,0.8])
     with left:
-        upl = st.file_uploader("Pilih gambar kendaraan", type=["jpg","jpeg","png"])
+        upl = st.file_uploader("Unggah gambar kendaraan", type=["jpg","jpeg","png"])
         if upl:
             img = Image.open(upl).convert("RGB")
             st.image(img, caption="Gambar yang diunggah", use_container_width=True)
@@ -158,21 +169,21 @@ elif st.session_state.page == "Classification":
 # ========================= ABOUT PROJECT =========================
 elif st.session_state.page == "About Project":
     st.markdown('<h2 style="text-align:center;">Tentang Proyek AI Vehicle Detection</h2>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align:center;color:#6b7280;font-size:18px;max-width:900px;margin:auto;">Sistem deteksi kendaraan berbasis AI yang dikembangkan untuk mendukung analitik transportasi dan smart traffic.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align:center;color:#6b7280;font-size:20px;max-width:900px;margin:auto;">Sistem deteksi kendaraan berbasis AI yang dikembangkan untuk mendukung analitik transportasi dan smart traffic.</p>', unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="about-box"><h3>Misi Kami</h3><p>Menghadirkan teknologi AI akurat, efisien, dan mudah digunakan untuk mendeteksi kendaraan.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="about-box"><h3>Misi Kami</h3><p>Menghadirkan teknologi AI yang efisien dan akurat untuk mendeteksi kendaraan.</p></div>', unsafe_allow_html=True)
     with c2:
         st.markdown('<div class="about-box"><h3>Visi Kami</h3><p>Menjadi solusi Vision AI terbaik di bidang transportasi cerdas.</p></div>', unsafe_allow_html=True)
 
-    # Foto Agna di tengah ❤️
+    # Foto Agna Balqis ❤️ di tengah, besar, cantik
     st.markdown('<div class="section-title">Tim Pengembang</div>', unsafe_allow_html=True)
     st.markdown('<div class="developer-card">', unsafe_allow_html=True)
-    st.image("6372789C-781F-4439-AE66-2187B96D6952.jpeg", width=220)
+    st.image("6372789C-781F-4439-AE66-2187B96D6952.jpeg", width=270)
     st.markdown('<h3>Agna Balqis</h3>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#e75480;font-weight:600;font-size:18px;">Lead AI Developer</p>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#6b7280;">Mengembangkan model AI dan merancang antarmuka visual proyek ini.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#e75480;font-weight:600;font-size:20px;">Lead AI Developer</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#6b7280;">Mengembangkan model AI dan merancang tampilan visual dari proyek ini dengan penuh dedikasi.</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
