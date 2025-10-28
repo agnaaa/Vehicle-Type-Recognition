@@ -30,6 +30,9 @@ def load_models():
 
 # ==========================
 # UI
+import streamlit as st
+from PIL import Image
+
 # =============================
 # PAGE CONFIG
 # =============================
@@ -39,7 +42,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLE (CSS)
+# CUSTOM CSS
 # =============================
 st.markdown("""
     <style>
@@ -65,25 +68,29 @@ st.markdown("""
     .navbar-left span {
         color: #ec5c9a;
     }
-    .navbar-right a {
-        margin-left: 2rem;
-        text-decoration: none;
+    .navbar-right {
+        display: flex;
+        gap: 2rem;
         font-weight: 600;
-        color: #1f2937;
-        transition: 0.3s;
     }
-    .navbar-right a:hover {
+    .navbar-item {
+        color: #1f2937;
+        text-decoration: none;
+    }
+    .navbar-item.active {
         color: #ec5c9a;
+        border-bottom: 3px solid #ec5c9a;
+        padding-bottom: 4px;
     }
 
-    /* Button style */
+    /* Button */
     .btn-primary {
         background-color: #ec5c9a;
-        border: none;
         color: white;
         font-weight: 600;
         padding: 0.8rem 1.8rem;
         border-radius: 10px;
+        border: none;
         cursor: pointer;
     }
     .btn-outline {
@@ -95,8 +102,6 @@ st.markdown("""
         border-radius: 10px;
         cursor: pointer;
     }
-
-    /* Card style */
     .upload-card, .result-card {
         background: white;
         padding: 2rem;
@@ -105,8 +110,6 @@ st.markdown("""
         width: 100%;
         text-align: center;
     }
-
-    /* Chat Button */
     .talk-btn {
         position: fixed;
         bottom: 25px;
@@ -120,8 +123,6 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(236,92,154,0.4);
     }
     .talk-btn:hover { background-color: #e34c8f; }
-
-    /* Example Image Card */
     .example-card {
         background: white;
         border-radius: 15px;
@@ -133,24 +134,24 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =============================
-# NAVIGATION LOGIC
+# NAVIGATION BAR
 # =============================
-if "page" not in st.session_state:
-    st.session_state.page = "Home"
+menu = st.radio(
+    "",
+    ["Home", "Classification"],
+    horizontal=True,
+    label_visibility="collapsed"
+)
 
-def set_page(page):
-    st.session_state.page = page
-
-# =============================
-# NAVBAR
-# =============================
 st.markdown(f"""
 <div class="navbar">
     <div class="navbar-left">AI <span>Image Detection</span></div>
     <div class="navbar-right">
-        <a href="#" onclick="window.location.reload();">Home</a>
-        <a href="#" style="color:{'#ec5c9a' if st.session_state.page=='Classification' else '#1f2937'};" 
-           onClick="window.parent.streamlitSend({{type:'set_page',page:'Classification'}})">Classification</a>
+        <a class="navbar-item {'active' if menu=='Home' else ''}">Home</a>
+        <a class="navbar-item {'active' if menu=='Classification' else ''}">Classification</a>
+        <a class="navbar-item">Model Performance</a>
+        <a class="navbar-item">Model Info</a>
+        <a class="navbar-item">About Project</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -158,8 +159,7 @@ st.markdown(f"""
 # =============================
 # HOME PAGE
 # =============================
-if st.session_state.page == "Home":
-    # Hero section
+if menu == "Home":
     st.markdown("""
     <div style="display:flex; justify-content:space-between; align-items:center; padding:5rem 6rem 3rem 6rem;">
         <div style="max-width:600px;">
@@ -168,22 +168,19 @@ if st.session_state.page == "Home":
             Platform revolusioner yang menggunakan teknologi deep learning 
             untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, 
             motor, truck, dan bus dengan akurasi tinggi.</p>
-            <button class="btn-primary" onClick="window.parent.streamlitSend({type:'set_page', page:'Classification'})">🚀 Coba Sekarang</button>
-            <button class="btn-outline">📘 Pelajari Lebih Lanjut</button>
         </div>
         <div class="upload-card">
             <h4>Demo Cepat</h4>
     """, unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar kendaraan diunggah", use_container_width=True)
+    if uploaded_file:
+        img = Image.open(uploaded_file)
+        st.image(img, caption="Gambar kendaraan diunggah", use_container_width=True)
         st.success("✅ Gambar berhasil diunggah (Demo).")
 
     st.markdown("</div></div>", unsafe_allow_html=True)
 
-    # Section lainnya (mobil, motor, truck, bus, dsb)
     st.write("---")
     st.markdown("""
         <div style='text-align:center; margin-top:4rem;'>
@@ -193,10 +190,10 @@ if st.session_state.page == "Home":
     """, unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.image("https://i.ibb.co/FXBvZZ7/car.png", use_container_width=True)
-    col2.image("https://i.ibb.co/gWQhNsc/motorcycle.png", use_container_width=True)
-    col3.image("https://i.ibb.co/F8y2Csx/truck.png", use_container_width=True)
-    col4.image("https://i.ibb.co/NrQL8cp/bus.png", use_container_width=True)
+    col1.image("https://i.ibb.co/FXBvZZ7/car.png", caption="Mobil")
+    col2.image("https://i.ibb.co/gWQhNsc/motorcycle.png", caption="Motor")
+    col3.image("https://i.ibb.co/F8y2Csx/truck.png", caption="Truck")
+    col4.image("https://i.ibb.co/NrQL8cp/bus.png", caption="Bus")
 
     st.write("---")
     col_a, col_b, col_c, col_d = st.columns(4)
@@ -205,23 +202,10 @@ if st.session_state.page == "Home":
     col_c.metric("Jenis Kendaraan", "4+")
     col_d.metric("Uptime", "99.9%")
 
-    st.write("---")
-    st.markdown("""
-        <div style='text-align:center; margin-top:3rem;'>
-            <h2>Mengapa Memilih Platform Kami?</h2>
-            <p style='color:#6b7280;'>Teknologi AI terdepan yang dirancang untuk deteksi kendaraan akurat</p>
-        </div>
-    """, unsafe_allow_html=True)
-    colx, coly, colz, colw = st.columns(4)
-    colx.markdown("<div class='example-card'><h4>🎯 Deteksi Akurat</h4><p>Akurasi hingga 98.2%.</p></div>", unsafe_allow_html=True)
-    coly.markdown("<div class='example-card'><h4>⚡ Pemrosesan Cepat</h4><p>Kurang dari 50ms.</p></div>", unsafe_allow_html=True)
-    colz.markdown("<div class='example-card'><h4>🔒 Keamanan Tinggi</h4><p>Data terenkripsi end-to-end.</p></div>", unsafe_allow_html=True)
-    colw.markdown("<div class='example-card'><h4>🌐 API Global</h4><p>Integrasi mudah dengan sistem lain.</p></div>", unsafe_allow_html=True)
-
 # =============================
 # CLASSIFICATION PAGE
 # =============================
-elif st.session_state.page == "Classification":
+elif menu == "Classification":
     st.markdown("""
     <div style='text-align:center; margin-top:2rem;'>
         <h2>Klasifikasi Gambar AI</h2>
@@ -253,6 +237,6 @@ elif st.session_state.page == "Classification":
     c4.image("https://i.ibb.co/4VvX8PW/apple.png", caption="Buah")
 
 # =============================
-# CHAT BUTTON
+# TALK BUTTON
 # =============================
 st.markdown("""<a class="talk-btn" href="#">💬 Talk with Us</a>""", unsafe_allow_html=True)
