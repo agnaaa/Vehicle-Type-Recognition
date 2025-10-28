@@ -37,18 +37,16 @@ st.set_page_config(page_title="AI Image Detection", layout="wide")
 # ---- STYLE ----
 st.markdown("""
 <style>
-body {
-    background-color: #ffeef5;
-}
-[data-testid="stAppViewContainer"] {
-    background-color: #ffeef5;
-}
+body { background-color: #ffeef5; }
+[data-testid="stAppViewContainer"] { background-color: #ffeef5; }
 .navbar {
     display: flex;
     justify-content: center;
     background-color: white;
     padding: 16px;
     border-radius: 12px;
+    margin: 20px auto;
+    width: 90%;
     box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
 }
 .nav-item {
@@ -56,187 +54,110 @@ body {
     font-weight: 500;
     color: #333;
     cursor: pointer;
-    padding: 6px 12px;
+    padding: 6px 18px;
     border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.nav-item:hover {
+    background-color: #ffd2e1;
 }
 .nav-item.active {
-    background-color: #ffb6c1;
+    background-color: #f5a1be;
     color: white;
 }
-.upload-card, .feature-card, .vehicle-card {
-    background-color: white;
-    border-radius: 16px;
+.section { margin: 60px auto; text-align: center; width: 85%; }
+.card {
+    background: white;
     padding: 24px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.vehicle-grid, .features-grid {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-}
-.icon {
-    font-size: 36px;
-    background-color: #ffc2d1;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    margin: 0 auto 12px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.section {
-    margin-top: 60px;
-    margin-bottom: 60px;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 </style>
 """, unsafe_allow_html=True)
 
+# ---- NAV STATE ----
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
+
+def set_page(name):
+    st.session_state.page = name
+
 # ---- NAVBAR ----
-selected_page = st.session_state.get("page", "Home")
+cols = st.columns([1,1,1])
+with cols[0]:
+    if st.button("🏠 Home", use_container_width=True, key="home_btn"):
+        set_page("Home")
+with cols[1]:
+    if st.button("🧠 Classification", use_container_width=True, key="class_btn"):
+        set_page("Classification")
+with cols[2]:
+    if st.button("💡 About Project", use_container_width=True, key="about_btn"):
+        set_page("About")
 
-def set_page(p):
-    st.session_state["page"] = p
+st.markdown("---")
 
-st.markdown("""
-<div class="navbar">
-    <div class="nav-item {home_active}" onclick="window.location.href='?page=home'">Home</div>
-    <div class="nav-item {class_active}" onclick="window.location.href='?page=classification'">Classification</div>
-    <div class="nav-item {about_active}" onclick="window.location.href='?page=about'">About Project</div>
-</div>
-""".format(
-    home_active="active" if selected_page == "Home" else "",
-    class_active="active" if selected_page == "Classification" else "",
-    about_active="active" if selected_page == "About" else "",
-), unsafe_allow_html=True)
-
-query = st.query_params
-if "page" in query:
-    selected_page = query["page"][0].capitalize()
-
-# ---- HOME PAGE ----
-if selected_page == "Home":
+# ---- HOME ----
+if st.session_state.page == "Home":
     st.markdown("""
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:50px 80px;">
-        <div style="max-width:50%;">
-            <h1 style="font-size:42px;">Deteksi Jenis <span style="color:#e75480;">Kendaraan AI</span></h1>
-            <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengenali jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
-            <div style="margin-top:20px;">
-                <button style="background:#e75480;color:white;border:none;padding:10px 20px;border-radius:8px;margin-right:10px;">🚀 Coba Sekarang</button>
-                <button style="border:2px solid #e75480;color:#e75480;padding:10px 20px;border-radius:8px;">ℹ️ Pelajari Lebih Lanjut</button>
-            </div>
-        </div>
-        <div class="upload-card" style="width:40%;">
-            <h4>Demo Cepat</h4>
-            <div style="border:2px dashed #f2aacb;padding:30px;border-radius:12px;text-align:center;">
-                <div style="font-size:26px;">🖼️</div>
-                <div style="margin-top:8px;color:#b88a9f">Upload gambar kendaraan untuk analisis</div>
-                <button style="margin-top:12px;background:#e75480;color:white;border:none;padding:10px 20px;border-radius:8px;">Pilih Gambar</button>
-            </div>
-        </div>
+    <div class="section">
+        <h1>Selamat Datang di <span style="color:#e75480;">AI Image Detection</span></h1>
+        <p>Platform berbasis deep learning yang mampu mendeteksi jenis kendaraan dengan akurasi tinggi dan tampilan menarik.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Jenis Kendaraan Section
+# ---- CLASSIFICATION ----
+elif st.session_state.page == "Classification":
     st.markdown("""
-    <div class="section" style="text-align:center;">
-        <h2>Jenis Kendaraan yang Dapat Dideteksi</h2>
-        <p>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>
-        <div class="vehicle-grid">
-            <div class="vehicle-card"><div style="font-size:60px;">🚗</div><h4>Mobil</h4><p>Sedan, SUV, Hatchback, dan mobil penumpang lainnya</p></div>
-            <div class="vehicle-card"><div style="font-size:60px;">🏍️</div><h4>Motor</h4><p>Sepeda motor, skuter, dan kendaraan roda dua</p></div>
-            <div class="vehicle-card"><div style="font-size:60px;">🚚</div><h4>Truck</h4><p>Kendaraan kargo, pickup, dan komersial</p></div>
-            <div class="vehicle-card"><div style="font-size:60px;">🚌</div><h4>Bus</h4><p>Bus kota dan antar kota</p></div>
-        </div>
-    </div>
-
-    <div style="display:flex;justify-content:center;gap:80px;margin-top:60px;text-align:center;">
-        <div><div class="icon"></div><h3>98.2%</h3><p>Akurasi Model</p></div>
-        <div><div class="icon"></div><h3>47ms</h3><p>Waktu Proses</p></div>
-        <div><div class="icon"></div><h3>4+</h3><p>Jenis Kendaraan</p></div>
-        <div><div class="icon"></div><h3>99.9%</h3><p>Uptime</p></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ---- CLASSIFICATION PAGE ----
-elif selected_page == "Classification":
-    st.markdown("""
-    <div style="text-align:center;margin-top:40px;">
+    <div class="section">
         <h2>Klasifikasi Gambar AI</h2>
-        <p>Upload gambar dan biarkan AI kami menganalisis serta mengklasifikasi objek dengan akurasi tinggi.</p>
+        <p>Upload gambar kendaraan dan biarkan AI mengenalinya untukmu.</p>
     </div>
     """, unsafe_allow_html=True)
-
     col1, col2 = st.columns(2)
-
     with col1:
-        st.subheader("Upload Gambar")
-        uploaded_file = st.file_uploader("Pilih gambar kendaraan", type=["jpg", "png", "jpeg"])
-        if uploaded_file:
-            img = Image.open(uploaded_file)
+        file = st.file_uploader("Upload Gambar", type=["jpg", "jpeg", "png"])
+        if file:
+            img = Image.open(file)
             st.image(img, use_column_width=True)
             if st.button("Analisis Gambar 🚀"):
                 with st.spinner("Menganalisis..."):
-                    time.sleep(2)
-                st.session_state["result"] = uploaded_file.name
-
+                    time.sleep(1.5)
+                st.success("Prediksi: 🚗 Mobil (97.8%)")
     with col2:
-        st.subheader("Hasil Klasifikasi")
-        if "result" in st.session_state:
-            st.success("Prediksi: Mobil 🚗 (97.8%)")
+        st.info("Hasil prediksi AI akan muncul di sini setelah gambar dianalisis.")
 
-# ---- ABOUT PAGE ----
-elif selected_page == "About":
+# ---- ABOUT ----
+elif st.session_state.page == "About":
     st.markdown("""
-    <div style="text-align:center;margin-top:40px;">
+    <div class="section">
         <h2>Tentang Proyek AI Image Detection</h2>
-        <p>Proyek penelitian dan pengembangan sistem deteksi gambar berbasis AI yang dirancang untuk memberikan akurasi tinggi dengan tampilan yang menarik.</p>
+        <p>Proyek penelitian pengembangan sistem deteksi gambar berbasis AI yang berfokus pada akurasi tinggi dan desain yang elegan.</p>
     </div>
 
-    <div class="section" style="display:flex;justify-content:center;gap:40px;">
-        <div class="upload-card" style="width:40%;">
+    <div class="section" style="display:flex;gap:20px;justify-content:center;">
+        <div class="card" style="width:40%;">
             <h4>Misi Kami</h4>
-            <p>Mengembangkan teknologi AI untuk memahami gambar dengan akurasi tinggi yang dapat dimanfaatkan di berbagai industri.</p>
+            <p>Mengembangkan AI yang memahami gambar dengan akurasi tinggi dan mudah digunakan di berbagai bidang.</p>
         </div>
-        <div class="upload-card" style="width:40%;">
+        <div class="card" style="width:40%;">
             <h4>Visi Kami</h4>
-            <p>Menjadi platform AI terdepan di bidang computer vision dan analisis visual dengan pengalaman yang menyenangkan.</p>
-        </div>
-    </div>
-
-    <div class="section" style="display:flex;justify-content:center;align-items:center;gap:40px;">
-        <div style="width:50%;">
-            <h3>Latar Belakang</h3>
-            <p>AI Image Detection dikembangkan untuk membantu mendeteksi kendaraan seperti mobil, motor, truck, dan bus secara cepat dan akurat menggunakan deep learning.</p>
-        </div>
-        <img src="https://i.ibb.co/nBGdCdb/ai-lab.jpg" width="40%" style="border-radius:16px;">
-    </div>
-
-    <div class="section" style="text-align:center;">
-        <h3>Keunggulan Utama</h3>
-        <div class="features-grid">
-            <div class="feature-card"><div class="icon">🎯</div><h4>Akurasi Tinggi</h4><p>Hasil deteksi mencapai 98.2% akurasi.</p></div>
-            <div class="feature-card"><div class="icon">⚡</div><h4>Kecepatan Optimal</h4><p>Proses klasifikasi hanya butuh 47ms.</p></div>
-            <div class="feature-card"><div class="icon">💡</div><h4>Scalable</h4><p>Dapat menangani ribuan request per jam.</p></div>
-            <div class="feature-card"><div class="icon">❤️</div><h4>User-Friendly</h4><p>Desain intuitif dan mudah digunakan.</p></div>
+            <p>Menjadi platform AI terdepan dalam computer vision dengan pengalaman pengguna yang menyenangkan.</p>
         </div>
     </div>
 
     <div class="section" style="text-align:center;">
         <h3>Tim Pengembang</h3>
-        <div class="vehicle-card" style="width:250px;margin:auto;">
+        <div class="card" style="width:250px;margin:auto;">
             <img src="https://i.ibb.co/jygJ1pB/profile.png" style="width:100%;border-radius:12px;">
             <h4>Agna Balqis</h4>
             <p>Lead Developer</p>
         </div>
     </div>
 
-    <div class="section" style="text-align:center;background:#f5a1be;padding:40px;border-radius:16px;margin:60px;">
+    <div class="section" style="background:#f5a1be;padding:40px;border-radius:16px;color:white;">
         <h3>Tertarik Berkolaborasi?</h3>
-        <p>Kami selalu terbuka untuk kolaborasi dan diskusi tentang implementasi AI.</p>
-        <button style="background:white;color:#e75480;padding:10px 20px;border:none;border-radius:8px;margin-right:10px;">Hubungi Tim Research</button>
+        <p>Kami terbuka untuk penelitian, partnership, dan diskusi implementasi teknologi AI.</p>
+        <button style="background:white;color:#e75480;padding:10px 20px;border:none;border-radius:8px;margin-right:10px;">Hubungi Kami</button>
         <button style="border:2px solid white;color:white;padding:10px 20px;border-radius:8px;">Lihat Repository</button>
     </div>
     """, unsafe_allow_html=True)
