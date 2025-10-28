@@ -32,68 +32,96 @@ def load_models():
 
 # ==========================
 # UI
+# ==============================
 # Konfigurasi halaman
+# ==============================
 st.set_page_config(page_title="AI Image Detection", layout="wide")
 
+# ==============================
 # CSS untuk styling
+# ==============================
 st.markdown("""
     <style>
         body {
             background-color: #fdeff4;
         }
+        /* NAVBAR */
         .navbar {
             background-color: #f3b9cc;
-            padding: 10px 0;
+            padding: 12px 0;
             text-align: center;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
         }
         .nav-item {
             display: inline-block;
-            margin: 0 25px;
             font-weight: 600;
             color: #333;
             cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 8px;
+            transition: 0.2s ease;
+        }
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.6);
         }
         .nav-item.active {
             background-color: white;
-            padding: 6px 14px;
-            border-radius: 8px;
             color: #e75480;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
         }
+
+        /* HERO SECTION */
         .hero {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 50px;
+            padding: 60px 80px;
+        }
+        .hero-text {
+            max-width: 600px;
         }
         .hero-text h1 {
-            font-size: 40px;
+            font-size: 46px;
             font-weight: 800;
+            margin-bottom: 16px;
         }
         .hero-text span {
             color: #e75480;
         }
-        .upload-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        .hero-text p {
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
         }
-        .upload-placeholder {
-            border: 2px dashed #f0b6c6;
-            padding: 30px;
+        .btn-primary {
+            background-color: #e75480;
+            color: white;
+            border: none;
+            padding: 12px 22px;
             border-radius: 10px;
-            color: #b88a9f;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .btn-primary:hover {
+            background-color: #d64372;
+        }
+
+        /* SECTION TITLES */
         .section-title {
             text-align: center;
             font-size: 28px;
             font-weight: 700;
             margin-top: 80px;
         }
+
+        /* GRID STYLE */
         .vehicle-grid, .features-grid {
             display: flex;
             justify-content: center;
@@ -114,6 +142,8 @@ st.markdown("""
             margin-bottom: 10px;
             color: #e75480;
         }
+
+        /* STATS */
         .stats {
             display: flex;
             justify-content: center;
@@ -132,45 +162,39 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
-# Navbar manual
+# ==============================
+# Navbar interaktif
+# ==============================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-st.markdown('<div class="navbar">', unsafe_allow_html=True)
+st.markdown('<div class="navbar"><div class="nav-container">', unsafe_allow_html=True)
 for page in ["Home", "Classification", "About Project"]:
-    cls = "nav-item active" if st.session_state.page == page else "nav-item"
+    active_class = "nav-item active" if st.session_state.page == page else "nav-item"
     if st.button(page, key=page):
         st.session_state.page = page
-st.markdown('</div>', unsafe_allow_html=True)
-
+st.markdown('</div></div>', unsafe_allow_html=True)
 
 # ==============================
 # HOME PAGE
 # ==============================
 if st.session_state.page == "Home":
-    col1, col2 = st.columns([1.2, 1])
+    col1, col2 = st.columns([1.3, 1])
 
     with col1:
         st.markdown("""
             <div class="hero-text">
                 <h1>Deteksi Jenis <span>Kendaraan AI</span></h1>
-                <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</p>
+                <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, motor, truk, dan bus dengan akurasi tinggi.</p>
             </div>
         """, unsafe_allow_html=True)
-        st.button("🚗 Coba Sekarang")
-        st.button("📘 Pelajari Lebih Lanjut")
+
+        if st.button("🚗 Coba Sekarang"):
+            st.session_state.page = "Classification"
+            st.rerun()
 
     with col2:
-        st.markdown("""
-            <div class="upload-card">
-                <h4>Demo Cepat</h4>
-                <div class="upload-placeholder">
-                    🖼️<br><br>
-                    Upload gambar kendaraan untuk analisis
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.image("https://cdn-icons-png.flaticon.com/512/3075/3075977.png", width=300)
 
     # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
@@ -212,7 +236,6 @@ if st.session_state.page == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-
 # ==============================
 # CLASSIFICATION PAGE
 # ==============================
@@ -238,7 +261,6 @@ elif st.session_state.page == "Classification":
         for cls in classes:
             st.progress(random.uniform(0.6, 1.0) if cls == prediction else random.uniform(0.1, 0.7))
 
-
 # ==============================
 # ABOUT PAGE
 # ==============================
@@ -247,5 +269,5 @@ elif st.session_state.page == "About Project":
     st.write("""
     Sistem ini dibuat untuk mendeteksi jenis kendaraan (mobil, motor, bus, dan truk)
     menggunakan model AI dengan teknologi **deep learning** yang mampu mengenali pola visual dengan akurasi tinggi.
+    Tampilan antarmuka ini didesain lembut dengan nuansa pink pastel.
     """)
-
