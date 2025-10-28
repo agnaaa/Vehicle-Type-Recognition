@@ -189,13 +189,18 @@ elif st.session_state.page == "About Project":
     with c2:
         st.markdown('<div class="about-box"><h3>Visi Kami</h3><p>Menjadi solusi Vision AI terbaik di bidang transportasi cerdas.</p></div>', unsafe_allow_html=True)
 
-    # Foto Agna di tengah, besar
-    st.markdown('<div class="section-title">Tim Pengembang</div>', unsafe_allow_html=True)
-    st.markdown('<div class="developer-card">', unsafe_allow_html=True)
-    st.image("6372789C-781F-4439-AE66-2187B96D6952.jpeg", width=330)
-    st.markdown('<h3>Agna Balqis</h3>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#e75480;font-weight:600;font-size:20px;">Lead AI Developer</p>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#6b7280;">Mengembangkan model AI dan merancang tampilan visual proyek ini dengan penuh dedikasi.</p>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # ==================== Bagian Pengembang ====================
+    st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:40px;">
+        <img src="1A6E5775-CBC8-4F64-BF37-F0803031F8CF.jpeg" 
+             style="width:330px;height:330px;border-radius:50%;object-fit:cover;
+             box-shadow:0 12px 32px rgba(0,0,0,0.12);margin-bottom:20px;">
+        <h3 style="font-size:30px;margin:0;color:#111827;">Agna Balqis</h3>
+        <p style="color:#e75480;font-weight:600;font-size:20px;margin:4px 0;">Lead AI Developer</p>
+        <p style="color:#6b7280;max-width:600px;">Mengembangkan model AI dan merancang tampilan visual proyek ini dengan penuh dedikasi.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
