@@ -35,7 +35,7 @@ def load_models():
 # --- KONFIGURASI HALAMAN ---
 st.set_page_config(page_title="Vehicle Classification", layout="wide")
 
-# --- CSS UNTUK DESAIN PINK SOFT PASTEL ---
+# --- CSS DESAIN PASTEL ---
 st.markdown("""
 <style>
 body {
@@ -52,7 +52,7 @@ body {
     margin-bottom: 20px;
 }
 .nav-item {
-    margin: 0 25px;
+    margin: 0 30px;
     font-weight: 600;
     color: #4a4a4a;
     cursor: pointer;
@@ -117,39 +117,32 @@ body {
 </style>
 """, unsafe_allow_html=True)
 
-# --- NAVBAR STATE ---
+# --- NAVBAR INTERAKTIF ---
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-def set_page(p):
-    st.session_state.page = p
-
-# --- NAVBAR ---
-st.markdown("""
-<div class="navbar">
-    <span class="nav-item" onClick="window.parent.location.href='/?page=Home'">Home</span>
-    <span class="nav-item" onClick="window.parent.location.href='/?page=Classification'">Classification</span>
-    <span class="nav-item" onClick="window.parent.location.href='/?page=About'">About Project</span>
-</div>
-""", unsafe_allow_html=True)
-
-# --- LOGIKA HALAMAN ---
-query_params = st.query_params
-page = query_params.get("page", ["Home"])[0]
+cols = st.columns(3)
+with cols[0]:
+    if st.button("Home"):
+        st.session_state.page = "Home"
+with cols[1]:
+    if st.button("Classification"):
+        st.session_state.page = "Classification"
+with cols[2]:
+    if st.button("About Project"):
+        st.session_state.page = "About"
 
 # ================== HALAMAN HOME ==================
-if page == "Home":
-    st.markdown('<div class="hero">', unsafe_allow_html=True)
-
+if st.session_state.page == "Home":
     col1, col2 = st.columns([1.2, 1])
     with col1:
         st.markdown("""
         <div class="hero-left">
             <h1>🚗 Vehicle Classification System</h1>
             <p>
-            Aplikasi ini mampu mengklasifikasikan berbagai jenis kendaraan seperti mobil, motor, truk, dan bus secara otomatis menggunakan teknologi AI modern.
+            Sistem AI untuk mendeteksi jenis kendaraan secara otomatis seperti mobil, motor, truk, dan bus.
             <br><br>
-            Coba unggah gambar kendaraanmu dan lihat hasil deteksinya!
+            Unggah gambar kendaraanmu dan lihat hasil klasifikasinya secara instan!
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -160,48 +153,45 @@ if page == "Home":
             <p style="color:#b88a9f;">Upload gambar kendaraan untuk analisis</p>
         </div>
         """, unsafe_allow_html=True)
-        uploaded_file = st.file_uploader("Pilih gambar kendaraan", type=["jpg","png","jpeg"], label_visibility="collapsed")
+        uploaded_file = st.file_uploader("Pilih gambar kendaraan", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
         if uploaded_file:
             img = Image.open(uploaded_file)
             st.image(img, use_container_width=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # VEHICLE GRID
     st.markdown("""
     <div class="vehicle-grid">
         <div class="vehicle-card">
             <img src="https://i.ibb.co/FXBvZZ7/car.png">
             <h4>🚙 Mobil</h4>
-            <p>Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang</p>
+            <p>Sedan, SUV, Hatchback, dan mobil penumpang</p>
         </div>
         <div class="vehicle-card">
             <img src="https://i.ibb.co/gWQhNsc/motorcycle.png">
             <h4>🏍️ Motor</h4>
-            <p>Sepeda motor, skuter, dan kendaraan roda dua lainnya</p>
+            <p>Sepeda motor dan skuter roda dua</p>
         </div>
         <div class="vehicle-card">
             <img src="https://i.ibb.co/F8y2Csx/truck.png">
             <h4>🚚 Truk</h4>
-            <p>Truk kargo, pickup, dan kendaraan komersial berat</p>
+            <p>Truk barang, pickup, dan kendaraan berat</p>
         </div>
         <div class="vehicle-card">
             <img src="https://i.ibb.co/NrQL8cp/bus.png">
             <h4>🚌 Bus</h4>
-            <p>Bus kota, bus antar kota, dan kendaraan angkutan umum</p>
+            <p>Bus kota dan antar kota</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 # ================== HALAMAN CLASSIFICATION ==================
-elif page == "Classification":
+elif st.session_state.page == "Classification":
     st.markdown("<h2 style='color:#880e4f;text-align:center;'>🔍 Klasifikasi Kendaraan</h2>", unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg","png","jpeg"])
     if uploaded_file:
         img = Image.open(uploaded_file)
         st.image(img, caption="Gambar yang diunggah", use_container_width=True)
         st.markdown("<br>", unsafe_allow_html=True)
-        # Prediksi Dummy
+        # Dummy prediction
         labels = ["Mobil 🚗", "Motor 🏍️", "Truk 🚚", "Bus 🚌"]
         pred = random.choice(labels)
         st.markdown(f"""
@@ -213,11 +203,10 @@ elif page == "Classification":
         """, unsafe_allow_html=True)
 
 # ================== HALAMAN ABOUT PROJECT ==================
-elif page == "About":
+elif st.session_state.page == "About":
     st.markdown("<h2 style='color:#880e4f;text-align:center;'>📘 Tentang Proyek</h2>", unsafe_allow_html=True)
     st.write("""
-    Proyek ini bertujuan untuk mengembangkan sistem klasifikasi kendaraan berbasis kecerdasan buatan (AI)
-    yang mampu mengidentifikasi jenis kendaraan dari gambar. 
-    Sistem ini dikembangkan menggunakan framework Streamlit dan akan diintegrasikan dengan model deep learning.
+    Proyek ini bertujuan mengembangkan sistem klasifikasi kendaraan berbasis kecerdasan buatan (AI)
+    untuk mengenali jenis kendaraan dari gambar.  
+    Dibangun dengan Streamlit, sistem ini akan dihubungkan dengan model deep learning untuk prediksi nyata.
     """)
-
