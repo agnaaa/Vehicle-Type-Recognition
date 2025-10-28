@@ -34,6 +34,9 @@ def load_models():
 
 # ==========================
 # UI
+import streamlit as st
+from PIL import Image
+
 # =============================
 # Konfigurasi halaman utama
 # =============================
@@ -64,11 +67,6 @@ html, body, [class*="st-"], .main {
 .vehicle-card, .feature-card {width:280px;text-align:center;padding:30px;border-radius:20px;
     background:white;box-shadow:0 8px 24px rgba(16,24,40,0.08);}
 .feature-card p {font-size:18px;}
-.developer-card {text-align:center;padding:30px;border-radius:18px;background:white;width:500px;margin:60px auto;
-    box-shadow:0 10px 34px rgba(16,24,40,0.1);}
-.developer-card img {width:330px;height:330px;border-radius:50%;object-fit:cover;
-    box-shadow:0 12px 32px rgba(0,0,0,0.12);}
-.developer-card h3 {font-size:30px;margin-top:18px;color:#111827;}
 footer {text-align:center;color:#6b7280;margin-top:60px;padding-bottom:20px;font-size:18px;}
 @media (max-width:900px){
     .hero{flex-direction:column;padding:24px;}
@@ -102,7 +100,6 @@ st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1p
 # ========================= HOME ============================
 # ===========================================================
 if st.session_state.page == "Home":
-    # Hero Section
     st.markdown("""
         <div style="text-align:center;">
             <h1 style="font-size:70px;font-weight:900;color:#111827;">Deteksi <span style="color:#e75480;">Kendaraan AI</span></h1>
@@ -190,7 +187,7 @@ elif st.session_state.page == "About Project":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Visi & Misi di tengah
+    # Visi & Misi
     st.markdown("""
     <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:20px;">
         <div class="feature-card" style="width:400px;">
@@ -206,19 +203,21 @@ elif st.session_state.page == "About Project":
     </div>
     """, unsafe_allow_html=True)
 
-    # Foto Pengembang
+    # FOTO AGNA (pakai st.image agar tampil)
     st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div style="text-align:center;">
-        <img src="6372789C-781F-4439-AE66-2187B96D6952.jpeg" width="260"
-            style="border-radius:50%;box-shadow:0 10px 34px rgba(0,0,0,0.15);">
-        <h3 style="margin-top:16px;color:#111827;">Agna Balqis</h3>
-        <p style="color:#e75480;font-weight:600;font-size:20px;">Pengembang</p>
-        <p style="color:#6b7280;max-width:700px;margin:auto;">
-            Bertanggung jawab atas pengembangan sistem AI dan antarmuka pengguna dengan dedikasi tinggi untuk
-            menghadirkan pengalaman terbaik bagi pengguna di bidang teknologi deteksi kendaraan.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;">', unsafe_allow_html=True)
+    try:
+        img_agna = Image.open("6372789C-781F-4439-AE66-2187B96D6952.jpeg")
+        st.image(img_agna, width=280, caption="Agna Balqis", use_container_width=False)
+        st.markdown("""
+            <p style="color:#e75480;font-weight:600;font-size:20px;">Pengembang</p>
+            <p style="color:#6b7280;max-width:700px;margin:auto;">
+                Bertanggung jawab atas pengembangan sistem AI dan antarmuka pengguna dengan dedikasi tinggi
+                untuk menghadirkan pengalaman terbaik bagi pengguna di bidang teknologi deteksi kendaraan.
+            </p>
+        """, unsafe_allow_html=True)
+    except:
+        st.warning("⚠️ Foto pengembang tidak ditemukan. Pastikan file '6372789C-781F-4439-AE66-2187B96D6952.jpeg' ada di folder yang sama dengan app.py.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
