@@ -37,7 +37,7 @@ def load_models():
 st.set_page_config(page_title="AI Image Detection", layout="wide")
 
 # =============================
-# CSS STYLE (pink soft pastel)
+# CSS STYLE (pink pastel)
 # =============================
 st.markdown("""
 <style>
@@ -45,7 +45,8 @@ st.markdown("""
         background: linear-gradient(180deg, #fdeef2 0%, #ffffff 100%);
         font-family: 'Inter', sans-serif;
     }
-    /* --- Navbar --- */
+
+    /* Navbar */
     .navbar {
         display: flex;
         justify-content: space-between;
@@ -81,7 +82,7 @@ st.markdown("""
         text-decoration: underline;
     }
 
-    /* --- Hero Section --- */
+    /* Hero */
     .hero {
         display: flex;
         justify-content: space-between;
@@ -118,7 +119,7 @@ st.markdown("""
         cursor: pointer;
     }
 
-    /* --- Upload Card --- */
+    /* Upload Card */
     .upload-card {
         background: white;
         padding: 2rem;
@@ -148,7 +149,7 @@ st.markdown("""
         display: inline-block;
     }
 
-    /* --- Vehicle Section --- */
+    /* Vehicle Section */
     .vehicle-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -167,7 +168,7 @@ st.markdown("""
         transform: translateY(-5px);
     }
     .vehicle-card img {
-        width: 80px;
+        width: 90px;
         margin-bottom: 1rem;
     }
     .vehicle-card h4 {
@@ -180,7 +181,41 @@ st.markdown("""
         font-size: 14px;
     }
 
-    /* --- Feature Section --- */
+    /* Stats Section */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        text-align: center;
+        padding: 3rem 6rem;
+    }
+    .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .stat-circle {
+        width: 70px;
+        height: 70px;
+        background: radial-gradient(circle at top left, #f7b7d7, #ec5c9a);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    .stat h3 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        color: #1f2937;
+    }
+    .stat p {
+        color: #6b7280;
+        margin-top: 0.3rem;
+    }
+
+    /* Features */
     .features-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -198,20 +233,11 @@ st.markdown("""
         font-size: 28px;
         margin-bottom: 1rem;
     }
-    .feature-card h4 {
-        color: #1f2937;
-        font-weight: 700;
-    }
-    .feature-card p {
-        color: #6b7280;
-        font-size: 14px;
-        margin-top: 0.5rem;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # =============================
-# SESSION STATE NAVIGATION
+# STATE NAVIGATION
 # =============================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
@@ -226,23 +252,18 @@ col1, col2 = st.columns([1, 3])
 with col1:
     st.markdown('<div class="navbar-left">AI <span>Image Detection</span></div>', unsafe_allow_html=True)
 with col2:
-    st.markdown(
-        f"""
-        <div class="navbar-right">
-            <button class="{'active' if st.session_state.page=='Home' else ''}" onclick="window.location.reload()">Home</button>
-            <button class="{'active' if st.session_state.page=='Classification' else ''}" onclick="window.location.reload()">Classification</button>
-            <button class="{'active' if st.session_state.page=='About' else ''}" onclick="window.location.reload()">About Project</button>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    cols = st.columns(3)
+    if cols[0].button("Home"):
+        st.session_state.page = "Home"
+    if cols[1].button("Classification"):
+        st.session_state.page = "Classification"
+    if cols[2].button("About Project"):
+        st.session_state.page = "About"
 
 # =============================
 # PAGE CONTENT
 # =============================
-
 if st.session_state.page == "Home":
-    # Hero section
     st.markdown("""
     <div class="hero">
         <div class="hero-left">
@@ -261,61 +282,66 @@ if st.session_state.page == "Home":
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
 
-    st.markdown("""
     <div style="text-align:center; margin-top:4rem;">
         <h2 style="color:#1f2937;">Jenis Kendaraan yang Dapat Dideteksi</h2>
     </div>
 
     <div class="vehicle-grid">
         <div class="vehicle-card">
-            <img src="https://i.ibb.co/FXBvZZ7/car.png">
+            🚗
             <h4>Mobil</h4>
             <p>Sedan, SUV, Hatchback, dan berbagai jenis mobil penumpang</p>
         </div>
         <div class="vehicle-card">
-            <img src="https://i.ibb.co/gWQhNsc/motorcycle.png">
+            🏍️
             <h4>Motor</h4>
             <p>Sepeda motor, skuter, dan kendaraan roda dua lainnya</p>
         </div>
         <div class="vehicle-card">
-            <img src="https://i.ibb.co/F8y2Csx/truck.png">
+            🚛
             <h4>Truck</h4>
             <p>Truk kargo, pickup, dan kendaraan komersial berat</p>
         </div>
         <div class="vehicle-card">
-            <img src="https://i.ibb.co/NrQL8cp/bus.png">
+            🚌
             <h4>Bus</h4>
             <p>Bus kota, bus antar kota, dan kendaraan angkutan umum</p>
         </div>
     </div>
 
-    <div style="text-align:center; margin-top:4rem;">
+    <div class="stats-grid">
+        <div class="stat">
+            <div class="stat-circle"></div>
+            <h3>98.2%</h3>
+            <p>Akurasi Model</p>
+        </div>
+        <div class="stat">
+            <div class="stat-circle"></div>
+            <h3>47ms</h3>
+            <p>Waktu Proses</p>
+        </div>
+        <div class="stat">
+            <div class="stat-circle"></div>
+            <h3>4+</h3>
+            <p>Jenis Kendaraan</p>
+        </div>
+        <div class="stat">
+            <div class="stat-circle"></div>
+            <h3>99.9%</h3>
+            <p>Uptime</p>
+        </div>
+    </div>
+
+    <div style="text-align:center; margin-top:2rem;">
         <h2 style="color:#1f2937;">Mengapa Memilih Platform Kami?</h2>
     </div>
 
     <div class="features-grid">
-        <div class="feature-card">
-            <div class="icon">🎯</div>
-            <h4>Deteksi Akurat</h4>
-            <p>Akurasi hingga 98.2% dalam mengenali jenis kendaraan dengan teknologi deep learning</p>
-        </div>
-        <div class="feature-card">
-            <div class="icon">⚡</div>
-            <h4>Pemrosesan Cepat</h4>
-            <p>Identifikasi kendaraan dalam waktu kurang dari 50ms</p>
-        </div>
-        <div class="feature-card">
-            <div class="icon">🔒</div>
-            <h4>Keamanan Tinggi</h4>
-            <p>Data gambar kendaraan diproses dengan enkripsi end-to-end</p>
-        </div>
-        <div class="feature-card">
-            <div class="icon">🌐</div>
-            <h4>API Global</h4>
-            <p>Akses mudah melalui REST API untuk integrasi sistem traffic management</p>
-        </div>
+        <div class="feature-card"><div class="icon">🎯</div><h4>Deteksi Akurat</h4><p>Akurasi tinggi dengan deep learning</p></div>
+        <div class="feature-card"><div class="icon">⚡</div><h4>Pemrosesan Cepat</h4><p>Identifikasi kendaraan <50ms</p></div>
+        <div class="feature-card"><div class="icon">🔒</div><h4>Keamanan Tinggi</h4><p>Enkripsi data end-to-end</p></div>
+        <div class="feature-card"><div class="icon">🌐</div><h4>API Global</h4><p>Akses mudah REST API</p></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -330,6 +356,8 @@ elif st.session_state.page == "Classification":
 elif st.session_state.page == "About":
     st.markdown("<h2 style='text-align:center; color:#ec5c9a;'>Tentang Proyek Ini</h2>", unsafe_allow_html=True)
     st.write("""
-    Proyek ini dikembangkan untuk mendeteksi jenis kendaraan menggunakan kombinasi model YOLO dan CNN.
-    Sistem ini memanfaatkan teknologi *Deep Learning* untuk menganalisis gambar kendaraan secara real-time.
+    Proyek ini menggunakan model deep learning untuk mendeteksi jenis kendaraan 
+    (mobil, motor, truk, bus) secara otomatis.  
+    Dikembangkan dengan Streamlit dan TensorFlow, sistem ini mendukung klasifikasi real-time 
+    dengan akurasi tinggi dan pemrosesan cepat.
     """)
