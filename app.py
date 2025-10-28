@@ -233,9 +233,3 @@ elif st.session_state.page == "About Project":
     Model ini mampu mengenali gambar kendaraan dengan tingkat akurasi tinggi.  
     Tampilan didesain dengan warna **pink soft pastel** agar terlihat lembut, bersih, dan profesional. 💗
     """)
-
----
-
-💗 **Coba jalankan ini:**
-```bash
-streamlit run app.py
