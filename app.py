@@ -215,7 +215,7 @@ elif st.session_state.page == "About Project":
 
     st.markdown(f"""
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:40px;">
-        <img src="4DEAC639-DF5E-40E2-8595-6FCF9CD1B8F6.jpeg"
+        <img src="6372789C-781F-4439-AE66-2187B96D6952.jpeg"
              style="width:330px;height:330px;border-radius:50%;object-fit:cover;
              box-shadow:0 12px 32px rgba(0,0,0,0.12);margin-bottom:20px;">
         <h3 style="font-size:30px;margin:0;color:#111827;">Agna Balqis</h3>
