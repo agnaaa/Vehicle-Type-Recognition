@@ -16,6 +16,8 @@ import random
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions
 import base64
+from pathlib import Path
+
 
 # ==========================
 # Load Models
@@ -233,5 +235,6 @@ elif st.session_state.page == "About Project":
 
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('<footer>© 2025 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
 
