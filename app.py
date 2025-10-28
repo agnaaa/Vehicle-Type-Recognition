@@ -31,7 +31,7 @@ def load_models():
 # ==========================
 # UI
 # ---------------------------
-# Konfigurasi halaman
+# Konfigurasi Halaman
 # ---------------------------
 st.set_page_config(page_title="AI Image Detection", layout="wide")
 
@@ -40,12 +40,12 @@ st.set_page_config(page_title="AI Image Detection", layout="wide")
 # ---------------------------
 st.markdown("""
     <style>
-        body {
+        /* Warna dasar */
+        body, .main {
             background-color: #fdeff5;
         }
-        .main {
-            background-color: #fdeff5;
-        }
+
+        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -61,36 +61,15 @@ st.markdown("""
             text-decoration: none;
             color: black;
             font-weight: 500;
+            cursor: pointer;
         }
         .nav-links a.active {
             color: #ff4081;
             border-bottom: 2px solid #ff4081;
             padding-bottom: 4px;
         }
-        .title-section {
-            padding: 4rem 6rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .left-section {
-            width: 50%;
-        }
-        .right-section {
-            width: 40%;
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .card-section {
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+
+        /* Tombol */
         .pink-btn {
             background-color: #ff4081;
             color: white;
@@ -118,6 +97,26 @@ st.markdown("""
             font-weight: 600;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+
+        /* Section umum */
+        .title-section {
+            padding: 4rem 6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-section {
+            width: 50%;
+        }
+        .right-section {
+            width: 40%;
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
         .feature-card {
             background-color: white;
             border-radius: 15px;
@@ -125,11 +124,19 @@ st.markdown("""
             text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
+
+        .card-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------
-# Navbar
+# Navbar Manual
 # ---------------------------
 st.markdown("""
 <div class="navbar">
@@ -137,24 +144,36 @@ st.markdown("""
         <h3 style="color:#333;">🧠 <b>AI Image Detection</b></h3>
     </div>
     <div class="nav-links">
-        <a href="?page=home" class="{home_active}">Home</a>
-        <a href="?page=classification" class="{class_active}">Classification</a>
-        <a href="?page=about" class="{about_active}">About Project</a>
+        <a id="home-link" class="active">Home</a>
+        <a id="class-link">Classification</a>
+        <a id="about-link">About Project</a>
     </div>
 </div>
-""".format(
-    home_active="active" if "page" not in st.query_params or st.query_params.get("page") == "home" else "",
-    class_active="active" if st.query_params.get("page") == "classification" else "",
-    about_active="active" if st.query_params.get("page") == "about" else ""
-), unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ---------------------------
-# Konten Halaman
+# Simulasi Navigasi dengan st.session_state
 # ---------------------------
-page = st.query_params.get("page", "home")
+if "page" not in st.session_state:
+    st.session_state.page = "home"
 
-# ======== HOME PAGE ========
-if page == "home":
+col_home, col_class, col_about = st.columns(3)
+with col_home:
+    if st.button("🏠 Home", use_container_width=True):
+        st.session_state.page = "home"
+with col_class:
+    if st.button("📷 Classification", use_container_width=True):
+        st.session_state.page = "classification"
+with col_about:
+    if st.button("ℹ️ About Project", use_container_width=True):
+        st.session_state.page = "about"
+
+st.markdown("<hr style='margin-top:-10px;'>", unsafe_allow_html=True)
+
+# ======================================================
+# HALAMAN HOME
+# ======================================================
+if st.session_state.page == "home":
     st.markdown("""
         <div class="title-section">
             <div class="left-section">
@@ -176,27 +195,25 @@ if page == "home":
         </div>
     """, unsafe_allow_html=True)
 
-    # Bagian Jenis Kendaraan
+    # Bagian kendaraan
     st.markdown("""
         <h2 style="text-align:center;">Jenis Kendaraan yang Dapat Dideteksi</h2>
         <p style="text-align:center;">Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>
     """, unsafe_allow_html=True)
-
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.image("https://i.ibb.co/VVR8BdT/car.png", use_container_width=True)
-        st.markdown("<h4 style='text-align:center;'>Mobil</h4><p style='text-align:center;'>Sedan, SUV, dan Hatchback</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align:center;'>Mobil</h4>", unsafe_allow_html=True)
     with col2:
         st.image("https://i.ibb.co/qdsv07J/motor.png", use_container_width=True)
-        st.markdown("<h4 style='text-align:center;'>Motor</h4><p style='text-align:center;'>Sepeda motor dan skuter</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align:center;'>Motor</h4>", unsafe_allow_html=True)
     with col3:
         st.image("https://i.ibb.co/Kw26rvS/truck.png", use_container_width=True)
-        st.markdown("<h4 style='text-align:center;'>Truck</h4><p style='text-align:center;'>Truk kargo dan pickup</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align:center;'>Truck</h4>", unsafe_allow_html=True)
     with col4:
         st.image("https://i.ibb.co/f16XpRM/bus.png", use_container_width=True)
-        st.markdown("<h4 style='text-align:center;'>Bus</h4><p style='text-align:center;'>Bus kota dan antar kota</p>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align:center;'>Bus</h4>", unsafe_allow_html=True)
 
-    # Statistik
     st.markdown("""
         <div style="text-align:center; margin-top:2rem;">
             <div style="display:flex; justify-content:center; gap:50px;">
@@ -208,24 +225,21 @@ if page == "home":
         </div>
     """, unsafe_allow_html=True)
 
-    # Fitur tambahan
-    st.markdown("""
-        <h3 style="text-align:center; margin-top:3rem;">Mengapa Memilih Platform Kami?</h3>
-        <p style="text-align:center;">Teknologi AI terdepan yang dirancang khusus untuk deteksi kendaraan dengan akurasi tinggi</p>
-    """, unsafe_allow_html=True)
     feat1, feat2, feat3, feat4 = st.columns(4)
     feat1.markdown("<div class='feature-card'><h4>Deteksi Akurat</h4><p>Akurasi hingga 98.2%</p></div>", unsafe_allow_html=True)
     feat2.markdown("<div class='feature-card'><h4>Pemrosesan Cepat</h4><p>Analisis gambar <50ms</p></div>", unsafe_allow_html=True)
     feat3.markdown("<div class='feature-card'><h4>Keamanan Tinggi</h4><p>Enkripsi end-to-end</p></div>", unsafe_allow_html=True)
     feat4.markdown("<div class='feature-card'><h4>API Global</h4><p>Integrasi sistem mudah</p></div>", unsafe_allow_html=True)
 
-# ======== CLASSIFICATION PAGE ========
-elif page == "classification":
+# ======================================================
+# HALAMAN CLASSIFICATION
+# ======================================================
+elif st.session_state.page == "classification":
     st.markdown("""
         <h2 style="text-align:center;">Klasifikasi Gambar AI</h2>
         <p style="text-align:center;">Upload gambar dan biarkan AI menganalisis serta mengklasifikasikan objek dalam gambar</p>
     """, unsafe_allow_html=True)
-    
+
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<div class='card-section'><h4>Upload Gambar</h4><p>Pilih atau Drop Gambar (JPG, PNG, WebP hingga 10MB)</p></div>", unsafe_allow_html=True)
@@ -239,10 +253,11 @@ elif page == "classification":
     c3.image("https://i.ibb.co/VVR8BdT/car.png", caption="Mobil", use_container_width=True)
     c4.image("https://i.ibb.co/yNcnDqH/apple.png", caption="Buah", use_container_width=True)
 
-# ======== ABOUT PAGE ========
-elif page == "about":
+# ======================================================
+# HALAMAN ABOUT PROJECT
+# ======================================================
+else:
     st.title("Tentang Project")
     st.write("AI Image Detection adalah sistem deteksi kendaraan berbasis deep learning yang dirancang untuk mengidentifikasi berbagai jenis kendaraan dengan cepat dan akurat.")
 
-# Tombol chat
 st.markdown("""<button class="footer-btn">💬 Talk with Us</button>""", unsafe_allow_html=True)
