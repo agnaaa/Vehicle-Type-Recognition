@@ -173,7 +173,7 @@ elif st.session_state.page == "Classification":
             st.info("Hasil prediksi akan muncul di sini setelah kamu upload gambar.")
 
 # ===============================
-# BAGIAN ABOUT PROJECT (Final, tested)
+# BAGIAN ABOUT PROJECT (FINAL FIX - FOTO MUNCUL)
 # ===============================
 elif st.session_state.page == "About Project":
     st.markdown('<h2 style="text-align:center;">Tentang Proyek AI Vehicle Detection</h2>', unsafe_allow_html=True)
@@ -190,13 +190,13 @@ elif st.session_state.page == "About Project":
     # VISI & MISI
     st.markdown("""
     <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:20px;">
-        <div class="feature-card" style="width:400px;">
-            <h3>Misi Kami</h3>
+        <div style="background:white;padding:25px;border-radius:15px;box-shadow:0 2px 10px rgba(0,0,0,0.1);width:400px;">
+            <h3 style="color:#e75480;">Misi Kami</h3>
             <p>Menghadirkan teknologi AI yang mampu mengenali kendaraan secara cepat, akurat, dan efisien,
             membantu pengambilan keputusan di sektor transportasi modern dengan sistem yang adaptif dan ramah lingkungan.</p>
         </div>
-        <div class="feature-card" style="width:400px;">
-            <h3>Visi Kami</h3>
+        <div style="background:white;padding:25px;border-radius:15px;box-shadow:0 2px 10px rgba(0,0,0,0.1);width:400px;">
+            <h3 style="color:#e75480;">Visi Kami</h3>
             <p>Menjadi solusi Vision AI terbaik yang terintegrasi dengan sistem smart city, mendorong inovasi dalam
             pengelolaan lalu lintas dan keselamatan transportasi masa depan.</p>
         </div>
@@ -204,36 +204,41 @@ elif st.session_state.page == "About Project":
     """, unsafe_allow_html=True)
 
     # ======================================
-    # PENGEMBANG (foto muncul di kiri)
+    # PENGEMBANG (FOTO MUNCUL)
     # ======================================
-    st.markdown('<div class="section-title">Pengembang</div>', unsafe_allow_html=True)
+    st.markdown('<h2 style="text-align:center;margin-top:60px;">Pengembang</h2>', unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div style="display:flex;align-items:center;justify-content:center;gap:50px;flex-wrap:wrap;margin-top:30px;">
-        <div>
-            <img src="app/static/6372789C-781F-4439-AE66-2187B96D6952.jpeg" 
-                 style="width:260px;height:260px;border-radius:50%;object-fit:cover;
-                        box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+    # Pastikan path file valid
+    image_path = "app/static/6372789C-781F-4439-AE66-2187B96D6952.jpeg"
+    try:
+        st.markdown(f"""
+        <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:30px;">
+            <div>
+                <img src="{image_path}" 
+                     style="width:240px;height:240px;border-radius:50%;object-fit:cover;
+                            box-shadow:0 8px 25px rgba(0,0,0,0.2);">
+            </div>
+            <div style="max-width:500px;text-align:left;">
+                <h3 style="font-size:28px;margin-bottom:5px;color:#111827;">Agna Balqis</h3>
+                <p style="color:#e75480;font-weight:600;font-size:18px;margin-bottom:10px;">Lead AI Developer</p>
+                <p style="color:#6b7280;font-size:16px;">
+                    Membangun sistem AI dan antarmuka pengguna dengan fokus pada akurasi, efisiensi, serta kemudahan penggunaan.
+                    Menggabungkan teknologi modern untuk menciptakan pengalaman deteksi kendaraan yang cerdas dan interaktif.
+                </p>
+                <br>
+                <a href="https://wa.me/6289669727601" target="_blank"
+                   style="background:#e75480;color:white;font-weight:600;padding:12px 22px;
+                          border-radius:10px;text-decoration:none;font-size:16px;">
+                    💬 Hubungi Agna
+                </a>
+            </div>
         </div>
-        <div style="max-width:500px;text-align:left;">
-            <h3 style="font-size:30px;margin-bottom:5px;color:#111827;">Agna Balqis</h3>
-            <p style="color:#e75480;font-weight:600;font-size:20px;margin-bottom:10px;">Lead AI Developer</p>
-            <p style="color:#6b7280;font-size:18px;">
-                Membangun sistem AI dan antarmuka pengguna dengan fokus pada akurasi, efisiensi, serta kemudahan penggunaan.
-                Menggabungkan teknologi modern untuk menciptakan pengalaman deteksi kendaraan yang cerdas dan interaktif.
-            </p>
-            <br>
-            <a href="https://wa.me/6289669727601" target="_blank"
-               style="background:#e75480;color:white;font-weight:600;padding:12px 22px;
-                      border-radius:10px;text-decoration:none;font-size:16px;">
-                💬 Hubungi Agna
-            </a>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    except Exception as e:
+        st.error(f"Gagal menampilkan foto: {e}")
 
     # ======================================
-    # BAGIAN KOLABORASI (tanpa "lihat repository")
+    # BAGIAN KOLABORASI (TANPA 'LIHAT REPOSITORY')
     # ======================================
     st.markdown("""
     <div style="background:linear-gradient(90deg,#f8a8c2,#f07da7);padding:40px;border-radius:25px;
