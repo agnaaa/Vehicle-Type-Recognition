@@ -18,24 +18,14 @@ from streamlit_option_menu import option_menu
 @st.cache_resource
 def load_models():
     from ultralytics import YOLO
-    import tensorflow as tf
-
     yolo_model = YOLO("best.pt")
 
     try:
-        classifier = tf.keras.models.load_model("model/classifier_model.h5", compile=False)
-
-        # FIX: Kalau model punya 2 input tensor, kita pakai cuma 1
-        if isinstance(classifier.input, (list, tuple)) and len(classifier.input) > 1:
-            st.warning("⚠️ Model classifier memiliki 2 input, hanya digunakan input pertama agar tidak error.")
-            classifier = tf.keras.Model(
-                inputs=classifier.input[0],
-                outputs=classifier.output
-            )
-
+        # classifier = tf.keras.models.load_model("model/classifier_model.h5")
+        classifier = None  # disable sementara
     except Exception as e:
         st.warning(f"⚠️ Gagal memuat classifier model: {e}")
-        classifier = None  # biar app tetap jalan meskipun model gagal dimuat
+        classifier = None
 
     return yolo_model, classifier
 
@@ -179,3 +169,4 @@ with col2:
 # Footer
 # ==========================
 st.markdown("<div class='footer'>💬 Talk with Us</div>", unsafe_allow_html=True)
+
