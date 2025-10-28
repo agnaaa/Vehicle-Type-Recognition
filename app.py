@@ -47,6 +47,7 @@ st.markdown("""
         background: linear-gradient(180deg, #fdeef2 0%, #ffffff 100%);
         font-family: 'Inter', sans-serif;
     }
+
     /* Navbar */
     .navbar {
         display: flex;
@@ -56,6 +57,9 @@ st.markdown("""
         background-color: white;
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         border-radius: 0 0 20px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 999;
     }
     .navbar-left {
         font-weight: 700;
@@ -73,6 +77,10 @@ st.markdown("""
     .navbar-item {
         color: #1f2937;
         text-decoration: none;
+        transition: 0.3s;
+    }
+    .navbar-item:hover {
+        color: #ec5c9a;
     }
     .navbar-item.active {
         color: #ec5c9a;
@@ -115,24 +123,24 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =============================
-# NAVIGATION BAR
+# NAVIGATION STATE
 # =============================
-menu = st.radio(
-    "",
-    ["Home", "Classification"],
-    horizontal=True,
-    label_visibility="collapsed"
-)
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
 
+def switch_page(page):
+    st.session_state.page = page
+
+# =============================
+# NAVBAR HTML
+# =============================
 st.markdown(f"""
 <div class="navbar">
     <div class="navbar-left">AI <span>Image Detection</span></div>
     <div class="navbar-right">
-        <a class="navbar-item {'active' if menu=='Home' else ''}">Home</a>
-        <a class="navbar-item {'active' if menu=='Classification' else ''}">Classification</a>
-        <a class="navbar-item">Model Performance</a>
-        <a class="navbar-item">Model Info</a>
-        <a class="navbar-item">About Project</a>
+        <a href="#" class="navbar-item {'active' if st.session_state.page == 'Home' else ''}" onClick="window.parent.postMessage({{type: 'streamlit:setSessionState', key: 'page', value: 'Home'}}, '*')">Home</a>
+        <a href="#" class="navbar-item {'active' if st.session_state.page == 'Classification' else ''}" onClick="window.parent.postMessage({{type: 'streamlit:setSessionState', key: 'page', value: 'Classification'}}, '*')">Classification</a>
+        <a href="#" class="navbar-item {'active' if st.session_state.page == 'About Project' else ''}" onClick="window.parent.postMessage({{type: 'streamlit:setSessionState', key: 'page', value: 'About Project'}}, '*')">About Project</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -140,8 +148,7 @@ st.markdown(f"""
 # =============================
 # HOME PAGE
 # =============================
-if menu == "Home":
-    # Hero Section
+if st.session_state.page == "Home":
     col1, col2 = st.columns([1.2, 1])
     with col1:
         st.markdown("""
@@ -167,34 +174,23 @@ if menu == "Home":
             st.info("Silakan upload gambar kendaraan (JPG/PNG) untuk demo deteksi.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # Divider
     st.write("---")
-
-    # Vehicle Detection Section
     st.markdown("""
         <div style='text-align:center; margin-top:4rem;'>
             <h2 style="color:#1f2937;">Jenis Kendaraan yang Dapat Dideteksi</h2>
             <p style='color:#6b7280;'>Sistem AI kami dapat mengenali berbagai jenis kendaraan dengan akurasi tinggi</p>
         </div>
     """, unsafe_allow_html=True)
-
     col1, col2, col3, col4 = st.columns(4)
     col1.image("https://i.ibb.co/FXBvZZ7/car.png", caption="Mobil", use_container_width=True)
     col2.image("https://i.ibb.co/gWQhNsc/motorcycle.png", caption="Motor", use_container_width=True)
     col3.image("https://i.ibb.co/F8y2Csx/truck.png", caption="Truk", use_container_width=True)
     col4.image("https://i.ibb.co/NrQL8cp/bus.png", caption="Bus", use_container_width=True)
 
-    st.write("---")
-    col_a, col_b, col_c, col_d = st.columns(4)
-    col_a.metric("Akurasi Model", "98.2%")
-    col_b.metric("Waktu Proses", "47ms")
-    col_c.metric("Jenis Kendaraan", "4+")
-    col_d.metric("Uptime", "99.9%")
-
 # =============================
 # CLASSIFICATION PAGE
 # =============================
-elif menu == "Classification":
+elif st.session_state.page == "Classification":
     st.markdown("""
     <div style='text-align:center; margin-top:2rem;'>
         <h2 style="color:#1f2937;">Klasifikasi Gambar AI</h2>
@@ -224,6 +220,20 @@ elif menu == "Classification":
     c2.image("https://i.ibb.co/k5XyN2H/dog.png", caption="Anjing")
     c3.image("https://i.ibb.co/FXBvZZ7/car.png", caption="Mobil")
     c4.image("https://i.ibb.co/4VvX8PW/apple.png", caption="Buah")
+
+# =============================
+# ABOUT PAGE
+# =============================
+elif st.session_state.page == "About Project":
+    st.markdown("""
+    <div style='text-align:center; margin-top:4rem;'>
+        <h2 style="color:#1f2937;">Tentang Project Ini</h2>
+        <p style='color:#6b7280; max-width:700px; margin:auto;'>
+            Sistem ini dikembangkan menggunakan model deep learning untuk mendeteksi dan mengklasifikasi jenis kendaraan. 
+            Dibangun menggunakan <b>TensorFlow</b> dan <b>Streamlit</b> sebagai antarmuka pengguna.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =============================
 # FLOATING TALK BUTTON
