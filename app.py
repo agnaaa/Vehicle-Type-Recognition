@@ -130,18 +130,17 @@ if st.session_state.page == "Home":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-  # Tombol coba sekarang
+     # Tombol coba sekarang
     col_btn = st.columns([1,1,1])
     with col_btn[1]:
-       if st.button("🚗 Coba Sekarang", use_container_width=True):
-    st.session_state.page = "Classification"
-    try:
-        st.rerun()
-    except AttributeError:
-        # Jika st.rerun() tidak tersedia di versi Streamlit lama,
-        # kita cukup ubah session_state dan biarkan UI refresh saat ada interaksi berikutnya.
-        pass
-
+        if st.button("🚗 Coba Sekarang", use_container_width=True):
+            st.session_state.page = "Classification"
+            try:
+                st.rerun()
+            except AttributeError:
+                # Jika st.rerun() tidak tersedia di versi Streamlit lama,
+                # biarkan UI refresh otomatis setelah interaksi berikutnya.
+                pass
 
     # Jenis kendaraan
     st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
@@ -270,6 +269,7 @@ elif st.session_state.page == "About Project":
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
 
 
