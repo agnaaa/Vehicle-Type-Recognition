@@ -88,16 +88,6 @@ with col3:
 
 st.markdown("<hr style='margin-top:10px;margin-bottom:24px;border:none;height:1px;background:#f3d7e0' />", unsafe_allow_html=True)
 
-# =============================
-# LOAD YOLO MODEL
-# =============================
-model_path = Path("model/best.pt")
-if not model_path.exists():
-    st.error("❌ Gagal memuat model YOLO. Pastikan file 'model/best.pt' ada di folder 'model/'.")
-    st.stop()
-
-model = YOLO(str(model_path))
-model.names = ['mobil', 'motor', 'truk', 'bus']
 
 # ===========================================================
 # ========================= HOME ============================
@@ -128,6 +118,28 @@ if st.session_state.page == "Home":
     </div>
     """, unsafe_allow_html=True)
 
+# =============================
+# LOAD YOLO MODEL (fix)
+# =============================
+model_path = Path("model/best.pt")
+if not model_path.exists():
+    st.error("❌ Gagal memuat model YOLO. Pastikan file 'model/best.pt' ada di folder 'model/'.")
+    st.stop()
+
+try:
+    model = YOLO(str(model_path))
+except Exception as e:
+    st.error(f"❌ Model gagal dimuat: {e}")
+    st.stop()
+
+# Buat mapping label (kalau mau ganti tampilan nama)
+custom_labels = {
+    'car': 'Mobil',
+    'motorcycle': 'Motor',
+    'truck': 'Truk',
+    'bus': 'Bus'
+}
+
 # ===========================================================
 # ====================== CLASSIFICATION =====================
 # ===========================================================
@@ -146,9 +158,13 @@ elif st.session_state.page == "Classification":
                 results = model.predict(img)
                 if results and len(results[0].boxes) > 0:
                     cls_id = int(results[0].boxes.cls[0])
-                    names = model.names
-                    result_label = names[cls_id].capitalize()
-                    st.success(f"Hasil Prediksi: **{result_label}** ✅")
+                    names = model.names  # ambil nama asli dari model
+                    detected_label = names[cls_id]
+
+                    # Ubah ke label custom (misal bahasa Indonesia)
+                    result_label = custom_labels.get(detected_label.lower(), detected_label)
+
+                    st.success(f"Hasil Prediksi: **{result_label} ✅**")
                 else:
                     st.warning("Kendaraan Tidak Dikenali ❓")
         else:
@@ -187,4 +203,5 @@ elif st.session_state.page == "About Project":
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
