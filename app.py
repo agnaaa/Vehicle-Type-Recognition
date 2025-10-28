@@ -122,6 +122,7 @@ if st.session_state.page == "Home":
     st.session_state.page = "Classification"
     st.rerun()
 
+
     with right:
         st.image("https://i.ibb.co/dLcRb8G/train.png", use_container_width=True)
 
@@ -226,4 +227,5 @@ elif st.session_state.page == "About Project":
     """, unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
