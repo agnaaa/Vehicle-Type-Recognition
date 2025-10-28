@@ -118,7 +118,10 @@ if st.session_state.page == "Home":
             <p>Platform cerdas berbasis deep learning untuk mengenali dan mengklasifikasikan kendaraan seperti mobil, motor, truk, dan bus secara akurat dan cepat.</p>
         </div>
         """, unsafe_allow_html=True)
-       if st.button("🚗 Coba Sekarang"):
+       # (blok sebelumnya)
+st.write("Selamat datang di halaman utama!")
+
+if st.button("🚗 Coba Sekarang"):
     st.session_state.page = "Classification"
     st.experimental_rerun()
 
@@ -226,6 +229,7 @@ elif st.session_state.page == "About Project":
     """, unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
 
 
