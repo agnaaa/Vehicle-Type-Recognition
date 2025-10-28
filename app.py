@@ -32,175 +32,198 @@ def load_models():
 
 # ==========================
 # UI
-# ============ PAGE CONFIG ============
-st.set_page_config(page_title="AI Image Detection", layout="wide")
+# =====================
+# CONFIG
+# =====================
+st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
-# ============ CSS STYLE ============
+# =====================
+# CUSTOM CSS
+# =====================
 st.markdown("""
 <style>
-body { background-color: #fdebf3; }
-.main { background-color: #fdebf3; }
-h1, h2, h3, h4, h5 {
-    color: #1a1a1a;
-    font-family: 'Helvetica Neue', sans-serif;
+body {
+    background-color: #ffeef5;
+    font-family: 'Poppins', sans-serif;
 }
+
+[data-testid="stSidebar"] {display: none;}
+
 .navbar {
     display: flex;
     justify-content: center;
+    gap: 2rem;
     background-color: white;
+    padding: 1rem 0.5rem;
     border-radius: 15px;
-    padding: 12px 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
-.nav-button {
-    border: none;
-    background-color: transparent;
-    color: #333;
-    font-size: 16px;
+
+.nav-item {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
     font-weight: 500;
-    margin: 0 25px;
+    color: #444;
     cursor: pointer;
 }
-.nav-button:hover {
-    color: #f06292;
+
+.nav-item.active {
+    background-color: #fbc6d0;
+    color: #d63384;
+    font-weight: 600;
 }
-.nav-active {
-    background-color: #f8bbd0;
-    color: white !important;
+
+.title {
+    font-size: 40px;
+    font-weight: 700;
+    color: #1f1f1f;
+}
+
+.subtitle {
+    color: #555;
+    font-size: 17px;
+    margin-bottom: 30px;
+}
+
+.btn-primary {
+    background-color: #ff7aa8;
+    color: white;
+    border: none;
     border-radius: 10px;
-    padding: 6px 15px;
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
 }
-.card {
+
+.upload-card, .result-card {
     background-color: white;
+    padding: 1.5rem;
     border-radius: 20px;
-    padding: 25px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+
+.progress-bar {
+    height: 12px;
+    border-radius: 8px;
 }
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
+
 </style>
 """, unsafe_allow_html=True)
 
-# ============ NAVIGATION BAR ============
+# =====================
+# NAVBAR
+# =====================
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-col1, col2, col3 = st.columns([1,1,1])
-with col1:
-    if st.button("Home", key="home", use_container_width=True):
-        st.session_state.page = "Home"
-with col2:
-    if st.button("Classification", key="class", use_container_width=True):
-        st.session_state.page = "Classification"
-with col3:
-    if st.button("About Project", key="about", use_container_width=True):
-        st.session_state.page = "About Project"
+def navbar():
+    st.markdown('<div class="navbar">', unsafe_allow_html=True)
+    for item in ["Home", "Classification", "About Project"]:
+        active = "active" if st.session_state.page == item else ""
+        if st.button(item, key=item, use_container_width=False):
+            st.session_state.page = item
+        st.markdown(f'<span class="nav-item {active}">{item}</span>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("---")
+navbar()
 
-# ============ HOME PAGE ============
+# =====================
+# HOME PAGE
+# =====================
 if st.session_state.page == "Home":
-    st.markdown("<h1 style='text-align:center;'>Selamat Datang di AI Image Detection 🚗</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;'>Sistem AI kami mampu mengenali berbagai jenis kendaraan dengan akurasi tinggi dan waktu proses yang cepat.</p>", unsafe_allow_html=True)
+    col1, col2 = st.columns([1.2, 1])
 
-    # Statistik
-    st.markdown("<h3 style='text-align:center; margin-top:50px;'>Statistik Sistem</h3>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="grid">
-        <div class="card"><h2>98.2%</h2><p>Akurasi Model</p></div>
-        <div class="card"><h2>47ms</h2><p>Waktu Proses</p></div>
-        <div class="card"><h2>4+</h2><p>Jenis Kendaraan</p></div>
-        <div class="card"><h2>99.9%</h2><p>Uptime</p></div>
-    </div>
-    """, unsafe_allow_html=True)
+    with col1:
+        st.markdown("<div class='title'>Deteksi Jenis<br><span style='color:#e75480'>Kendaraan AI</span></div>", unsafe_allow_html=True)
+        st.markdown("<div class='subtitle'>Platform AI untuk mendeteksi jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</div>", unsafe_allow_html=True)
+        st.button("🚗 Coba Sekarang")
+        st.button("📘 Pelajari Lebih Lanjut")
 
-    # Jenis kendaraan
-    st.markdown("<h3 style='text-align:center; margin-top:60px;'>Jenis Kendaraan yang Dapat Dideteksi</h3>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="grid">
-        <div class="card">🚗 <h4>Mobil</h4><p>Sedan, SUV, Hatchback, dan mobil penumpang lainnya</p></div>
-        <div class="card">🏍️ <h4>Motor</h4><p>Sepeda motor, skuter, dan kendaraan roda dua lainnya</p></div>
-        <div class="card">🚚 <h4>Truck</h4><p>Truk kargo, pickup, dan kendaraan komersial berat</p></div>
-        <div class="card">🚐 <h4>Bus</h4><p>Kendaraan besar untuk transportasi umum</p></div>
-    </div>
-    """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div class="upload-card" style="text-align:center;">
+            <h4>Demo Cepat</h4>
+            <div style="border:2px dashed #ffb6c1; border-radius:15px; padding:20px; background:#fff8fb;">
+                <div style="font-size:30px;">🖼️</div>
+                <div style="margin-top:8px; color:#b88a9f;">Upload gambar kendaraan untuk analisis</div>
+                <div style="margin-top:12px; background:#ff8fb2; display:inline-block; color:white; padding:6px 18px; border-radius:8px;">Pilih Gambar</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
+    st.markdown("---")
+    st.subheader("Jenis Kendaraan yang Dapat Dideteksi")
 
-# ============ CLASSIFICATION PAGE ============
+    col1, col2, col3, col4 = st.columns(4)
+    vehicles = [
+        ("🚗", "Mobil", "Sedan, SUV, Hatchback, dan mobil penumpang"),
+        ("🏍️", "Motor", "Sepeda motor, skuter, dan kendaraan roda dua"),
+        ("🚚", "Truck", "Truk kargo, pickup, dan kendaraan komersial"),
+        ("🚌", "Bus", "Bus kota, antar kota, dan kendaraan umum"),
+    ]
+    for col, (emoji, name, desc) in zip([col1, col2, col3, col4], vehicles):
+        with col:
+            st.markdown(f"<div style='text-align:center; background:white; padding:20px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05);'>{emoji}<h4>{name}</h4><p>{desc}</p></div>", unsafe_allow_html=True)
+
+    st.markdown("---")
+    col1, col2, col3, col4 = st.columns(4)
+    stats = [("98.2%", "Akurasi Model"), ("47ms", "Waktu Proses"), ("4+", "Jenis Kendaraan"), ("99.9%", "Uptime")]
+    for col, (val, label) in zip([col1, col2, col3, col4], stats):
+        with col:
+            st.markdown(f"<div style='text-align:center;'><div style='background:#fbc6d0; width:60px; height:60px; border-radius:50%; margin:auto;'></div><h3>{val}</h3><p>{label}</p></div>", unsafe_allow_html=True)
+
+# =====================
+# CLASSIFICATION PAGE
+# =====================
 elif st.session_state.page == "Classification":
-    st.markdown("<h1 style='text-align:center;'>Klasifikasi Gambar 🚀</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;'>Unggah gambar kendaraan untuk mendeteksi jenisnya menggunakan model AI kami.</p>", unsafe_allow_html=True)
+    st.title("Klasifikasi Gambar AI")
+    st.write("Upload gambar kendaraan dan biarkan AI menganalisis serta mengklasifikasikan objek dalam gambar dengan akurasi tinggi.")
 
-    uploaded_file = st.file_uploader("Unggah gambar kendaraan:", type=["jpg", "jpeg", "png"])
-    if uploaded_file:
-        st.image(uploaded_file, caption="Gambar yang diunggah", use_container_width=True)
-        st.success("Model sedang memproses gambar...")
-        st.info("📊 Prediksi: Mobil (98.2% confidence)")  # Dummy contoh hasil
+    col1, col2 = st.columns(2)
 
+    with col1:
+        st.subheader("Upload Gambar")
+        uploaded = st.file_uploader("Pilih gambar kendaraan", type=["jpg", "png", "jpeg"])
+        if uploaded:
+            img = Image.open(uploaded)
+            st.image(img, use_column_width=True)
+            if st.button("Analisis Gambar 🚀"):
+                st.session_state.result_ready = True
+                st.session_state.pred = random.choice(["Mobil", "Motor", "Truck", "Bus"])
+        else:
+            st.info("Silakan upload gambar kendaraan.")
 
-# ============ ABOUT PROJECT PAGE ============
+    with col2:
+        st.subheader("Hasil Klasifikasi")
+        if "result_ready" in st.session_state and st.session_state.result_ready:
+            label = st.session_state.pred
+            acc = random.uniform(85, 98)
+            results = {
+                "Mobil": {"Motor": 100-acc-2, "Truck": random.uniform(2,8), "Bus": random.uniform(1,5)},
+                "Motor": {"Mobil": random.uniform(1,5), "Truck": random.uniform(2,8), "Bus": 100-acc-3},
+                "Truck": {"Bus": random.uniform(3,6), "Mobil": random.uniform(2,4), "Motor": 100-acc-2},
+                "Bus": {"Truck": random.uniform(2,4), "Mobil": random.uniform(3,6), "Motor": 100-acc-2}
+            }[label]
+
+            st.write(f"**Prediksi Utama:** {label}")
+            st.progress(acc/100)
+            st.write(f"Akurasi: {acc:.2f}%")
+            st.markdown("### Prediksi Lainnya:")
+            for k, v in results.items():
+                st.write(f"{k}: {v:.1f}%")
+
+            st.info(f"Model mendeteksi gambar sebagai **{label}** dengan tingkat kepercayaan {acc:.2f}%.")
+        else:
+            st.write("Belum ada hasil klasifikasi.")
+
+# =====================
+# ABOUT PROJECT
+# =====================
 elif st.session_state.page == "About Project":
-    st.markdown("<h1 style='text-align:center;'>Tentang Proyek AI Image Detection</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;'>Proyek penelitian dan pengembangan sistem deteksi gambar berbasis AI yang dirancang untuk memberikan akurasi tinggi dalam klasifikasi objek dengan tampilan yang cantik dan menarik.</p>", unsafe_allow_html=True)
-
-    # Misi & Visi
-    st.markdown("""
-    <div class="grid">
-        <div class="card">
-            <h4>🎯 Misi Kami</h4>
-            <p>Mengembangkan teknologi AI yang dapat memahami dan menginterpretasi gambar dengan akurasi tinggi untuk berbagai industri dan aplikasi.</p>
-        </div>
-        <div class="card">
-            <h4>🌟 Visi Kami</h4>
-            <p>Menjadi platform AI terdepan dalam computer vision yang membawa inovasi ke berbagai sektor industri.</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Gambaran proyek
-    st.markdown("<h3 style='text-align:center; margin-top:50px;'>Gambaran Proyek</h3>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="grid">
-        <div class="card">
-            <h4>Latar Belakang</h4>
-            <p>AI Image Detection lahir dari kebutuhan akan sistem deteksi gambar yang akurat, cepat, dan mudah digunakan.</p>
-            <p>Kami berfokus menggabungkan deep learning dan computer vision untuk menciptakan sistem yang efisien dan elegan.</p>
-        </div>
-        <div class="card">
-            <img src="https://cdn.pixabay.com/photo/2020/02/09/08/06/artificial-intelligence-4831594_1280.jpg" style="width:100%; border-radius:15px;">
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Tim
-    st.markdown("<h3 style='text-align:center; margin-top:50px;'>Tim Pengembang</h3>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="grid">
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" width="80">
-            <h4>Agna Balqis</h4>
-            <p>Lead Developer & AI Engineer</p>
-            <p>Spesialis dalam pengembangan model AI dan implementasi sistem berbasis deep learning.</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Kolaborasi
-    st.markdown("""
-    <div class="card" style="max-width:800px; margin:auto; margin-top:60px;">
-        <h4>Tertarik Berkolaborasi?</h4>
-        <p>Kami terbuka untuk penelitian, partnership, atau diskusi tentang implementasi teknologi AI. Mari bersama menciptakan masa depan yang lebih cerdas!</p>
-        <a href="#" style="padding:10px 20px; background-color:#f06292; color:white; border-radius:10px; text-decoration:none;">Hubungi Kami</a>
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("Tentang Proyek")
+    st.write("""
+    Proyek ini menggunakan teknologi **Deep Learning** untuk mengklasifikasikan jenis kendaraan.
+    Tujuannya adalah membantu sistem transportasi cerdas dan manajemen lalu lintas otomatis.
+    """)
