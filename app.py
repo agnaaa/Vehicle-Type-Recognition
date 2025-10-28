@@ -20,10 +20,11 @@ def load_models():
     from ultralytics import YOLO
     yolo_model = YOLO("best.pt")
 
-    # Nonaktifkan sementara classifier yang rusak
+    # Nonaktifkan classifier sementara
     classifier = None
 
     return yolo_model, classifier
+
 # ==========================
 # UI
 # ==========================
@@ -164,5 +165,6 @@ with col2:
 # Footer
 # ==========================
 st.markdown("<div class='footer'>💬 Talk with Us</div>", unsafe_allow_html=True)
+
 
 
