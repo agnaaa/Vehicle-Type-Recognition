@@ -108,12 +108,12 @@ if st.session_state.page == "Home":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-   # Tombol coba sekarang
-col_btn = st.columns([1,1,1])
-with col_btn[1]:
-    if st.button("🚗 Coba Sekarang", use_container_width=True):
-        st.session_state.page = "Classification"
-        st.rerun()
+  # Tombol coba sekarang
+    col_btn = st.columns([1,1,1])
+    with col_btn[1]:
+        if st.button("🚗 Coba Sekarang", use_container_width=True):
+            st.session_state.page = "Classification"
+            st.experimental_rerun()
 
 
     # Jenis kendaraan
@@ -225,4 +225,5 @@ elif st.session_state.page == "About Project":
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
 
