@@ -20,8 +20,11 @@ def load_models():
     from ultralytics import YOLO
     yolo_model = YOLO("best.pt")
 
-    # Nonaktifkan classifier sementara
-    classifier = None
+    try:
+        classifier = tf.keras.models.load_model("model/classifier_model.h5")
+    except Exception as e:
+        st.warning(f"⚠️ Gagal memuat classifier model: {e}")
+        classifier = None  # supaya app tetap jalan
 
     return yolo_model, classifier
 
@@ -208,3 +211,4 @@ st.markdown("""
 st.markdown("""
 <a class="talk-btn" href="#">💬 Talk with Us</a>
 """, unsafe_allow_html=True)
+
