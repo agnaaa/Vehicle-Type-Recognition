@@ -48,35 +48,34 @@ st.markdown("""
 }
 * { font-family: 'Inter', sans-serif; }
 
+/* NAVBAR */
 .navbar {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; justify-content: space-between; align-items: center;
   padding: 14px 40px; background: white; border-radius: 10px;
   box-shadow: 0 6px 18px rgba(16,24,40,0.06);
   margin: 10px 30px 30px 30px;
 }
-.nav-left { display:flex; align-items:center; gap:10px; font-weight:700; color:#111827; }
+.nav-left { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #111827; }
 .logo-box {
-  width:36px; height:36px; border-radius:8px;
+  width: 36px; height: 36px; border-radius: 8px;
   background: linear-gradient(180deg,#f07da7,#e86e9a);
-  display:flex; align-items:center; justify-content:center;
-  color:white; font-weight:800;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800;
 }
-.nav-center { display:flex; gap:22px; align-items:center; }
-.nav-link {
-  padding:8px 14px; border-radius:8px; font-weight:600;
-  color:#374151; cursor:pointer;
+.nav-center { display: flex; gap: 18px; align-items: center; }
+.nav-btn {
+  background: none; border: none; padding: 8px 16px;
+  font-weight: 600; color: #374151; cursor: pointer;
+  border-radius: 8px; transition: all 0.2s ease-in-out;
 }
-.nav-link.active {
+.nav-btn:hover {
+  background: rgba(231,81,120,0.06);
+  color: #e75480;
+}
+.nav-btn.active {
   background: rgba(231,81,120,0.08);
-  color:#e75480;
+  color: #e75480;
   box-shadow: 0 4px 14px rgba(231,81,120,0.08);
-}
-.fade {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(10px);}
-  to {opacity: 1; transform: translateY(0);}
 }
 
 /* HERO */
@@ -105,32 +104,13 @@ st.markdown("""
   border: 1px dashed #f6cde0; border-radius:10px; padding:28px; color:#b88a9f;
 }
 
-/* VEHICLE GRID */
-.vehicle-grid {
-  display:flex; gap:22px; justify-content:center; margin:48px 80px;
-  flex-wrap:wrap;
+/* FADE */
+.fade {
+  animation: fadeIn 0.5s ease-in-out;
 }
-.vehicle-card {
-  width: 240px; background:white; border-radius:12px; padding:18px; text-align:center;
-  box-shadow: 0 8px 20px rgba(16,24,40,0.04);
-}
-.vehicle-card img { width:100%; height:110px; object-fit:contain; border-radius:8px; margin-bottom:10px; }
-
-/* CLASSIFICATION */
-.classification {
-  display:flex; gap:32px; padding:36px 80px;
-}
-.left-card, .right-card {
-  background:white; border-radius:14px; padding:22px; box-shadow: 0 12px 40px rgba(16,24,40,0.06);
-}
-.left-card { flex:1; min-height:420px; }
-.right-card { width:520px; }
-.pred-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-.progress-wrap { flex:1; height:12px; background:#f3f4f6; border-radius:8px; overflow:hidden; }
-.progress-bar { height:100%; border-radius:8px; }
-
-.info-box {
-  background:#f3f6ff; padding:12px; border-radius:10px; color:#065f46; margin-top:18px;
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 </style>
 """, unsafe_allow_html=True)
@@ -142,98 +122,96 @@ if "page" not in st.session_state:
     st.session_state.page = "Home"
 
 # ==============================
-# NAVBAR (klik = ubah session_state)
+# NAVBAR STREAMLIT
 # ==============================
-col1, col2, col3 = st.columns([1,2,1])
-st.markdown(
-    f"""
-    <div class="navbar">
-      <div class="nav-left">
-        <div class="logo-box">AI</div>
-        <div>AI Image Detection</div>
-      </div>
-      <div class="nav-center">
-        <span class="nav-link {'active' if st.session_state.page=='Home' else ''}" onClick="window.parent.postMessage({{'page':'Home'}}, '*')">Home</span>
-        <span class="nav-link {'active' if st.session_state.page=='Classification' else ''}" onClick="window.parent.postMessage({{'page':'Classification'}}, '*')">Classification</span>
-        <span class="nav-link {'active' if st.session_state.page=='About' else ''}" onClick="window.parent.postMessage({{'page':'About'}}, '*')">About Project</span>
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# Listener JS buat update state tanpa reload
-st.markdown("""
-<script>
-window.addEventListener('message', (event) => {
-    if (event.data.page) {
-        window.parent.postMessage({ type: 'streamlit:setComponentValue', key: 'nav_page', value: event.data.page }, '*');
-    }
-});
-</script>
-""", unsafe_allow_html=True)
-
-# Streamlit hack agar bisa handle postMessage event
-nav_page = st.session_state.page
-if "nav_page" in st.session_state:
-    nav_page = st.session_state.nav_page
-
-# ==============================
-# LOGIKA GANTI PAGE
-# ==============================
-if nav_page != st.session_state.page:
-    st.session_state.page = nav_page
-
-# ==============================
-# PAGE: HOME
-# ==============================
-if st.session_state.page == "Home":
-    st.markdown('<div class="fade">', unsafe_allow_html=True)
+nav_col1, nav_col2, nav_col3 = st.columns([1, 2, 1])
+with nav_col2:
+    st.markdown('<div class="navbar">', unsafe_allow_html=True)
     st.markdown("""
-    <div class="hero">
-      <div class="hero-left">
-        <h1>Deteksi Jenis <span class="accent">Kendaraan AI</span></h1>
-        <p>Platform revolusioner yang menggunakan teknologi deep learning untuk mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truk, dan bus dengan akurasi tinggi.</p>
-        """, unsafe_allow_html=True)
-    if st.button("🚀 Coba Sekarang"):
-        st.session_state.page = "Classification"
-        st.rerun()
-    st.markdown("""
-      </div>
-      <div class="upload-card">
-        <h4>Demo Cepat</h4>
-        <div class="upload-placeholder">🖼️<br><br>Upload gambar kendaraan untuk analisis</div>
-      </div>
+    <div class="nav-left">
+      <div class="logo-box">AI</div>
+      <div>AI Image Detection</div>
     </div>
     """, unsafe_allow_html=True)
+
+    nav_home, nav_class, nav_about = st.columns(3)
+    with nav_home:
+        if st.button("🏠 Home", key="nav_home",
+                     use_container_width=True,
+                     type="secondary" if st.session_state.page == "Home" else "primary"):
+            st.session_state.page = "Home"
+            st.rerun()
+
+    with nav_class:
+        if st.button("🧠 Classification", key="nav_class",
+                     use_container_width=True,
+                     type="secondary" if st.session_state.page == "Classification" else "primary"):
+            st.session_state.page = "Classification"
+            st.rerun()
+
+    with nav_about:
+        if st.button("ℹ️ About", key="nav_about",
+                     use_container_width=True,
+                     type="secondary" if st.session_state.page == "About" else "primary"):
+            st.session_state.page = "About"
+            st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================
-# PAGE: CLASSIFICATION
+# HALAMAN: HOME
+# ==============================
+if st.session_state.page == "Home":
+    st.markdown('<div class="fade">', unsafe_allow_html=True)
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown("""
+        <div class="hero-left">
+          <h1>Deteksi Jenis <span class="accent">Kendaraan AI</span></h1>
+          <p>Gunakan teknologi AI canggih untuk mengenali jenis kendaraan seperti mobil, motor, bus, dan truk secara akurat dan cepat.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("🚀 Coba Sekarang", key="btn_home"):
+            st.session_state.page = "Classification"
+            st.rerun()
+    with col2:
+        st.markdown("""
+        <div class="upload-card">
+          <h4>Demo Cepat</h4>
+          <div class="upload-placeholder">🖼️<br><br>Upload gambar kendaraan untuk analisis</div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ==============================
+# HALAMAN: CLASSIFICATION
 # ==============================
 elif st.session_state.page == "Classification":
     st.markdown('<div class="fade">', unsafe_allow_html=True)
-    st.title("Klasifikasi Gambar AI")
+    st.title("🔍 Klasifikasi Gambar AI")
     uploaded = st.file_uploader("Upload gambar kendaraan", type=["jpg", "jpeg", "png"])
     if uploaded:
         img = Image.open(uploaded)
         st.image(img, use_column_width=True)
-    if st.button("🔍 Analisis Gambar"):
+    if st.button("Analisis Sekarang"):
         if uploaded:
             with st.spinner("Menganalisis..."):
                 time.sleep(1)
             jenis = random.choice(["Mobil", "Motor", "Truk", "Bus"])
             confidence = random.uniform(0.8, 0.98)
-            st.success(f"🚗 Teridentifikasi sebagai **{jenis}** dengan akurasi {confidence*100:.1f}%")
+            st.success(f"✅ Teridentifikasi sebagai **{jenis}** dengan akurasi {confidence*100:.1f}%")
         else:
-            st.warning("Silakan upload gambar terlebih dahulu.")
+            st.warning("⚠️ Upload gambar terlebih dahulu.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================
-# PAGE: ABOUT
+# HALAMAN: ABOUT
 # ==============================
 elif st.session_state.page == "About":
     st.markdown('<div class="fade">', unsafe_allow_html=True)
     st.header("Tentang Project")
-    st.write("Aplikasi ini adalah demo deteksi jenis kendaraan menggunakan AI. Prediksi saat ini masih dummy, namun UI sudah menyerupai sistem nyata.")
+    st.write("""
+    Aplikasi ini adalah prototipe sistem deteksi kendaraan berbasis kecerdasan buatan (AI).  
+    Modelnya menggunakan deep learning untuk mengenali jenis kendaraan seperti mobil, motor, truk, dan bus.  
+    Tampilan dibuat interaktif dan lembut dengan nuansa pink pastel 🌸.
+    """)
     st.markdown('</div>', unsafe_allow_html=True)
