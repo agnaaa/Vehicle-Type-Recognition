@@ -27,144 +27,184 @@ def load_models():
 
 # ==========================
 # UI
-# ==========================
-# Konfigurasi Halaman
-# ==========================
+# =============================
+# PAGE CONFIG
+# =============================
 st.set_page_config(
     page_title="AI Image Detection",
-    page_icon="🚗",
     layout="wide"
 )
 
-# ==========================
-# CSS Custom Styling
-# ==========================
+# =============================
+# CUSTOM CSS STYLE
+# =============================
 st.markdown("""
     <style>
-    body {
-        background-color: #fff5f8;
+    /* --- Main background --- */
+    .stApp {
+        background: linear-gradient(180deg, #fdeef2 0%, #ffffff 100%);
         font-family: 'Inter', sans-serif;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+
+    /* --- Navbar --- */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 4rem;
+        background-color: white;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border-radius: 0 0 20px 20px;
     }
-    .title {
+    .navbar-left {
+        font-weight: 700;
+        font-size: 20px;
+        color: #1f2937;
+    }
+    .navbar-left span {
+        color: #ec5c9a;
+    }
+    .navbar-right a {
+        margin-left: 2rem;
+        text-decoration: none;
+        font-weight: 600;
+        color: #1f2937;
+        transition: 0.3s;
+    }
+    .navbar-right a:hover {
+        color: #ec5c9a;
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5rem 6rem 3rem 6rem;
+    }
+    .hero-left {
+        max-width: 600px;
+    }
+    .hero-left h1 {
         font-size: 48px;
         font-weight: 800;
-        color: #111827;
+        color: #1f2937;
+        line-height: 1.2;
     }
-    .highlight {
-        color: #e86e9a;
+    .hero-left span {
+        color: #ec5c9a;
     }
-    .subtitle {
-        font-size: 18px;
+    .hero-left p {
+        font-size: 16px;
         color: #6b7280;
-        margin-top: -10px;
-        margin-bottom: 30px;
+        margin-top: 1rem;
+        line-height: 1.6;
     }
-    .button-primary {
-        background: linear-gradient(90deg, #f07da7, #e86e9a);
-        color: white;
+
+    /* --- Buttons --- */
+    .btn-primary {
+        background-color: #ec5c9a;
         border: none;
-        border-radius: 10px;
-        padding: 12px 28px;
+        color: white;
         font-weight: 600;
-        font-size: 16px;
+        padding: 0.8rem 1.8rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+        margin-right: 1rem;
         cursor: pointer;
     }
-    .button-outline {
-        border: 2px solid #f07da7;
-        background-color: transparent;
-        color: #f07da7;
-        border-radius: 10px;
-        padding: 12px 28px;
+    .btn-outline {
+        border: 2px solid #f4b7d0;
+        background: none;
+        color: #ec5c9a;
         font-weight: 600;
-        font-size: 16px;
+        padding: 0.8rem 1.8rem;
+        border-radius: 10px;
         cursor: pointer;
     }
-    .demo-box {
+
+    /* --- Upload Card --- */
+    .upload-card {
         background: white;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(236,92,154,0.15);
+        width: 340px;
         text-align: center;
     }
-    .demo-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 20px;
+    .upload-card h4 {
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1rem;
     }
-    .upload-text {
-        color: #6b7280;
-        font-size: 15px;
-    }
-    .footer {
+
+    /* --- Footer Button --- */
+    .talk-btn {
         position: fixed;
-        right: 30px;
-        bottom: 20px;
-        background: #e86e9a;
+        bottom: 25px;
+        right: 25px;
+        background-color: #ec5c9a;
         color: white;
-        padding: 12px 20px;
+        padding: 12px 24px;
         border-radius: 30px;
         font-weight: 600;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(236,92,154,0.4);
+    }
+    .talk-btn:hover {
+        background-color: #e34c8f;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# ==========================
-# Header dan Navigasi
-# ==========================
-st.markdown(
-    """
-    <div style='display:flex; justify-content:space-between; align-items:center;'>
-        <h3 style='color:#e86e9a; font-weight:700;'>🚗 AI Image Detection</h3>
-        <div style='display:flex; gap:25px;'>
-            <a href='#' style='color:#e86e9a; text-decoration:none; font-weight:600;'>Home</a>
-            <a href='#' style='color:#6b7280; text-decoration:none;'>Classification</a>
-            <a href='#' style='color:#6b7280; text-decoration:none;'>Model Performance</a>
-            <a href='#' style='color:#6b7280; text-decoration:none;'>Model Info</a>
-            <a href='#' style='color:#6b7280; text-decoration:none;'>About Project</a>
-        </div>
+# =============================
+# NAVBAR
+# =============================
+st.markdown("""
+<div class="navbar">
+    <div class="navbar-left">AI <span>Image Detection</span></div>
+    <div class="navbar-right">
+        <a href="#">Home</a>
+        <a href="#">Classification</a>
+        <a href="#">Model Performance</a>
+        <a href="#">Model Info</a>
+        <a href="#">About Project</a>
     </div>
-    <hr style='margin-top:10px;'>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
-# ==========================
-# Konten Utama
-# ==========================
-col1, col2 = st.columns([1.2, 1])
+# =============================
+# HERO SECTION
+# =============================
+st.markdown("""
+<div class="hero">
+    <div class="hero-left">
+        <h1>Deteksi Jenis <br><span>Kendaraan AI</span></h1>
+        <p>Platform revolusioner yang menggunakan teknologi deep learning 
+        untuk mengidentifikasi dan mengklasifikasi jenis kendaraan seperti mobil, 
+        motor, truck, dan bus dengan akurasi tinggi.</p>
+        <button class="btn-primary">🚀 Coba Sekarang</button>
+        <button class="btn-outline">📘 Pelajari Lebih Lanjut</button>
+    </div>
 
-with col1:
-    st.markdown("<div class='title'>Deteksi Jenis <span class='highlight'>Kendaraan AI</span></div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div class='subtitle'>Platform revolusioner yang menggunakan teknologi deep learning untuk "
-        "mengidentifikasi dan mengklasifikasikan jenis kendaraan seperti mobil, motor, truck, dan bus dengan akurasi tinggi.</div>",
-        unsafe_allow_html=True
-    )
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown("<button class='button-primary'>🚀 Coba Sekarang</button>", unsafe_allow_html=True)
-    with c2:
-        st.markdown("<button class='button-outline'>📘 Pelajari Lebih Lanjut</button>", unsafe_allow_html=True)
+    <div class="upload-card">
+        <h4>Demo Cepat</h4>
+""", unsafe_allow_html=True)
 
-with col2:
-    st.markdown("<div class='demo-box'>", unsafe_allow_html=True)
-    st.markdown("<div class='demo-title'>Demo Cepat</div>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar kendaraan diunggah", use_container_width=True)
-        st.success("✅ Gambar berhasil diunggah! Model siap menganalisis.")
-    st.markdown("</div>", unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Upload gambar kendaraan untuk analisis", type=["jpg", "jpeg", "png"])
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Gambar kendaraan diunggah", use_container_width=True)
+    st.success("✅ Gambar berhasil diunggah (Demo).")
 
-# ==========================
-# Footer
-# ==========================
-st.markdown("<div class='footer'>💬 Talk with Us</div>", unsafe_allow_html=True)
+st.markdown("""
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-
-
+# =============================
+# FOOTER BUTTON
+# =============================
+st.markdown("""
+<a class="talk-btn" href="#">💬 Talk with Us</a>
+""", unsafe_allow_html=True)
