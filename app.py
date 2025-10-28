@@ -233,113 +233,117 @@ if st.session_state.page == "Home":
     """, unsafe_allow_html=True)
 
 # =======================
-# CLASSIFICATION PAGE (heuristik OpenCV)
+# CLASSIFICATION PAGE (menggunakan MobileNetV2 + mapping ImageNet -> kelas kendaraan)
 # =======================
 elif st.session_state.page == "Classification":
-    st.header("🔍 Klasifikasi Kendaraan AI (Heuristik Sederhana)")
-    st.write("Upload gambar kendaraan — app akan mencoba menebak jenisnya dengan metode kontur sederhana.")
+    st.header("🔍 Klasifikasi Kendaraan AI (MobileNetV2 → mapping ImageNet)")
+    st.write("Upload gambar kendaraan. Kami memakai MobileNetV2 (pretrained on ImageNet) dan mapping label ImageNet ke kelas kendaraan untuk prediksi yang lebih masuk akal.")
 
     col1, col2 = st.columns([1, 1])
 
-    def heuristic_classify_pil(pil_img):
+    # load model (cached)
+    with st.spinner("Memuat model (MobileNetV2) — ini hanya dilakukan sekali..."):
+        model = load_imagenet_model()
+
+    def predict_vehicle_with_imagenet(pil_img, model):
         """
-        Heuristik sederhana:
-        - konversi ke grayscale, blur, canny edge
-        - cari kontur terbesar
-        - hitung rasio area kontur terbesar terhadap area gambar
-        - hitung bounding rect aspect ratio (w/h)
-        Aturan sederhana:
-          - jika kontur besar dan aspect ratio > 1.4 -> kemungkinan Truck
-          - jika aspect ratio sekitar 0.8-1.4 dan area sedang -> Mobil
-          - jika gambar terlihat tinggi/slim atau kecil objek -> Motor
-          - jika banyak area tinggi dan box besar tapi pendek -> Bus (opsional)
+        1) Resize & preprocess image sesuai MobileNetV2 input
+        2) Prediksi top-k ImageNet labels
+        3) Map ImageNet labels -> {Mobil, Motor, Truck, Bus} via keyword matching
+        4) Normalize & return probabilities
         """
-        # convert PIL -> OpenCV (numpy BGR)
-        img = np.array(pil_img.convert("RGB"))[:, :, ::-1].copy()
-        h, w = img.shape[:2]
-        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_blur = cv2.GaussianBlur(img_gray, (5,5), 0)
-        edges = cv2.Canny(img_blur, 50, 150)
+        # preprocessing untuk MobileNetV2: 224x224
+        input_size = (224, 224)
+        img = pil_img.convert("RGB").resize(input_size)
+        x = keras_image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = mobilenet_v2.preprocess_input(x)  # preprocessing MobileNetV2
 
-        # dilate to close gaps
-        kernel = np.ones((5,5), np.uint8)
-        edges = cv2.dilate(edges, kernel, iterations=1)
+        preds = model.predict(x)  # shape (1,1000)
+        decoded = decode_predictions(preds, top=7)[0]  # list of (wnid, label, prob)
 
-        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if not contours:
-            return "Tidak Terdeteksi", {}
+        # mapping keywords (label names are like 'sports_car', 'cab', 'minivan', 'moped', 'tow_truck', 'school_bus', etc.)
+        mapping = {
+            "Mobil": ["car", "cab", "convertible", "sports_car", "limousine", "minivan", "jeep", "racer", "tow_truck", "pickup"],
+            "Motor": ["motorcycle", "motorbike", "moped", "scooter", "motor_scooter", "flotilla"],  # include potential tokens
+            "Truck": ["truck", "lorry", "moving_van", "trailer", "tow_truck", "garbage_truck", "tractor", "semi"],
+            "Bus": ["bus", "minibus", "school_bus", "double-decker"]
+        }
 
-        # ambil kontur terbesar
-        max_cnt = max(contours, key=cv2.contourArea)
-        cnt_area = cv2.contourArea(max_cnt)
-        area_ratio = cnt_area / (w * h)
-
-        x,y,ww,hh = cv2.boundingRect(max_cnt)
-        aspect = ww / float(hh + 1e-6)
-
-        # hitungan sederhana: skor per kelas
+        # Initialize scores
         scores = {"Mobil": 0.0, "Motor": 0.0, "Truck": 0.0, "Bus": 0.0}
 
-        # rule: jika area kontur relatif besar -> besar kemungkinan kendaraan besar (truck/bus)
-        if area_ratio > 0.20:
-            # choose truck or bus by aspect (truck cenderung panjang/lebih 'wide')
-            if aspect > 1.6:
-                scores["Truck"] += 0.8
-            else:
-                scores["Bus"] += 0.7
-        elif area_ratio > 0.07:
-            # kemungkinan mobil
-            scores["Mobil"] += 0.6
-            # aspect tinggi -> motor
-            if aspect < 1.0:
-                scores["Motor"] += 0.4
-        else:
-            # objek kecil -> motor (mis. motor jarak jauh)
-            scores["Motor"] += 0.7
+        # For each ImageNet top prediction, try to match label tokens to our mapping
+        for wnid, label, prob in decoded:
+            lab = label.lower().replace(" ", "_")
+            # check each mapping category
+            matched = False
+            for cls, keywords in mapping.items():
+                for kw in keywords:
+                    if kw in lab:
+                        scores[cls] += float(prob)
+                        matched = True
+                        break
+                if matched:
+                    break
+            # If no mapping matched, optionally try fuzzy heuristics:
+            if not matched:
+                # fallback heuristics: labels containing 'vehicle' / 'wheeled' etc.
+                if "vehicle" in lab or "wheeled" in lab or "motor" in lab:
+                    # small boost to Mobil by default
+                    scores["Mobil"] += float(prob) * 0.4
 
-        # adjust with aspect heuristics
-        if aspect > 2.0:
-            scores["Truck"] += 0.2
-        if aspect < 0.8:
-            scores["Motor"] += 0.2
-
-        # normalize to probabilities
+        # If all zero (no hits), fallback: derive from some simple heuristics from decoded top label words
         total = sum(scores.values())
-        if total <= 0:
-            # fallback random deterministic-ish by area/aspect
-            if aspect > 1.6:
-                return "Truck", {"Truck": 0.9}
+        if total == 0:
+            # use top label words: attempt simple token mapping
+            top_label = decoded[0][1].lower()
+            if any(k in top_label for k in ["truck","lorry","trailer","semi","tractor"]):
+                scores["Truck"] = 1.0
+            elif any(k in top_label for k in ["bus","minibus","coach"]):
+                scores["Bus"] = 1.0
+            elif any(k in top_label for k in ["motorcycle","moped","scooter"]):
+                scores["Motor"] = 1.0
             else:
-                return "Mobil", {"Mobil": 0.9}
+                scores["Mobil"] = 1.0
+            total = sum(scores.values())
 
-        probs = {k: v/total for k,v in scores.items()}
+        # Normalize to probabilities
+        probs = {k: v / total for k, v in scores.items()}
+        # choose best
         pred = max(probs, key=probs.get)
-        return pred, probs
+        return pred, probs, decoded  # also return decoded for debug/view
 
     with col1:
-        uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg","jpeg","png"])
+        uploaded_file = st.file_uploader("Upload gambar kendaraan (jpg/jpeg/png)", type=["jpg", "jpeg", "png"])
         if uploaded_file:
             image = Image.open(uploaded_file)
             st.image(image, caption="Gambar yang diupload", use_container_width=True)
 
-            # run heuristic
-            pred_label, probs = heuristic_classify_pil(image)
-            # simpan ke session supaya bisa ditampilkan di kolom kanan
-            st.session_state["last_prediction"] = (pred_label, probs)
+            with st.spinner("🔎 Menganalisis gambar dengan MobileNetV2..."):
+                pred_label, probs, decoded = predict_vehicle_with_imagenet(image, model)
+                # simpan hasil
+                st.session_state["last_prediction"] = (pred_label, probs, decoded)
         else:
             st.session_state["last_prediction"] = None
 
     with col2:
         if st.session_state.get("last_prediction"):
-            pred_label, probs = st.session_state["last_prediction"]
-            # tampilkan hasil deterministik
+            pred_label, probs, decoded = st.session_state["last_prediction"]
             st.success(f"Hasil Prediksi: **{pred_label}** ✅")
+
             st.subheader("📊 Probabilitas Kelas:")
-            # urutkan tampilkan
+            # tampilkan dalam urutan preferensi
             for cls in ["Mobil", "Motor", "Truck", "Bus"]:
                 p = probs.get(cls, 0.0)
                 st.write(f"{cls} — {p:.2f}")
                 st.progress(p)
+
+            st.markdown("---")
+            st.subheader("📝 Top ImageNet matches (debug):")
+            # tampilkan label ImageNet top-k (bisa membantu lihat mengapa model memutuskan)
+            for wnid, label, prob in decoded:
+                st.write(f"{label} — {prob:.3f}")
         else:
             st.info("📷 Upload gambar terlebih dahulu untuk melihat hasil prediksi.")
 
@@ -353,4 +357,5 @@ elif st.session_state.page == "About Project":
     yang mampu mengenali berbagai jenis kendaraan dari gambar dengan akurasi tinggi.  
     Desain lembut dengan tema **pink pastel** agar nyaman dilihat 🌸.
     """)
+
 
