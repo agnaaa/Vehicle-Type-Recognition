@@ -133,46 +133,27 @@ if st.session_state.page == "Home":
 # ===========================================================
 elif st.session_state.page == "Classification":
     st.markdown('<h2 style="text-align:center;">🔍 Klasifikasi Kendaraan AI</h2>', unsafe_allow_html=True)
-
-    left, right = st.columns([1,1])
+    left, right = st.columns([1,0.8])
     with left:
-        upl = st.file_uploader("Unggah gambar kendaraan", type=["jpg","jpeg","png"])
+        upl = st.file_uploader("Unggah gambar kendaraan", type=["jpg", "jpeg", "png"])
         if upl:
             img = Image.open(upl).convert("RGB")
             st.image(img, caption="Gambar yang diunggah", use_container_width=True)
 
-            if st.button("🔎 Analisis Gambar", use_container_width=True):
-                start = time.time()
-                results = model.predict(img)
-                elapsed = (time.time() - start) * 1000
-
-                if len(results[0].boxes) > 0:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    st.success(f"Waktu Proses: **{elapsed:.0f} ms**  |  Model: **YOLOv8**")
-
-                    confs = results[0].boxes.conf.cpu().numpy()
-                    cls_ids = results[0].boxes.cls.cpu().numpy().astype(int)
-                    names = model.names
-
-                    st.subheader("Prediksi Teratas:")
-                    for i in range(len(cls_ids)):
-                        label = names[cls_ids[i]].capitalize()
-                        st.progress(float(confs[i]))
-                        st.write(f"**{label}** — {confs[i]*100:.1f}%")
-
-                    top_idx = np.argmax(confs)
-                    top_label = names[cls_ids[top_idx]]
-                    st.info(f"📊 **Interpretasi Hasil:** Gambar terdeteksi sebagai **{top_label.capitalize()}** dengan tingkat kepercayaan {confs[top_idx]*100:.1f}%.")
-                else:
-                    st.warning("❌ Tidak ada kendaraan terdeteksi dalam gambar.")
-
     with right:
-        st.markdown("""
-        <div style="background:white;padding:24px;border-radius:20px;box-shadow:0 8px 24px rgba(16,24,40,0.08);text-align:center;">
-            <h3 style="color:#e75480;">Cara Menggunakan</h3>
-            <p>1️⃣ Upload gambar kendaraan<br>2️⃣ Klik tombol <b>Analisis Gambar</b><br>3️⃣ Lihat hasil deteksi dan tingkat kepercayaannya</p>
-        </div>
-        """, unsafe_allow_html=True)
+        if upl:
+            with st.spinner("🔎 Mendeteksi kendaraan..."):
+                results = model.predict(img)
+                if results and len(results[0].boxes) > 0:
+                    cls_id = int(results[0].boxes.cls[0])
+                    names = model.names
+                    result_label = names[cls_id].capitalize()
+                    st.success(f"Hasil Prediksi: **{result_label}** ✅")
+                else:
+                    st.warning("Kendaraan Tidak Dikenali ❓")
+        else:
+            st.info("Hasil prediksi akan muncul di sini setelah kamu upload gambar.")
+
 # ===========================================================
 # ====================== ABOUT PROJECT ======================
 # ===========================================================
@@ -206,3 +187,4 @@ elif st.session_state.page == "About Project":
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<footer>© 2024 AI Vehicle Detection. All rights reserved.</footer>', unsafe_allow_html=True)
+
