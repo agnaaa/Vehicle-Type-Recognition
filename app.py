@@ -233,42 +233,113 @@ if st.session_state.page == "Home":
     """, unsafe_allow_html=True)
 
 # =======================
-# CLASSIFICATION PAGE
+# CLASSIFICATION PAGE (heuristik OpenCV)
 # =======================
 elif st.session_state.page == "Classification":
-    st.header("🔍 Klasifikasi Kendaraan AI")
-    st.write("Upload gambar kendaraan dan biarkan AI mengenali jenisnya secara otomatis.")
+    st.header("🔍 Klasifikasi Kendaraan AI (Heuristik Sederhana)")
+    st.write("Upload gambar kendaraan — app akan mencoba menebak jenisnya dengan metode kontur sederhana.")
 
     col1, col2 = st.columns([1, 1])
 
-    with col1:
-        uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg", "jpeg", "png"])
+    def heuristic_classify_pil(pil_img):
+        """
+        Heuristik sederhana:
+        - konversi ke grayscale, blur, canny edge
+        - cari kontur terbesar
+        - hitung rasio area kontur terbesar terhadap area gambar
+        - hitung bounding rect aspect ratio (w/h)
+        Aturan sederhana:
+          - jika kontur besar dan aspect ratio > 1.4 -> kemungkinan Truck
+          - jika aspect ratio sekitar 0.8-1.4 dan area sedang -> Mobil
+          - jika gambar terlihat tinggi/slim atau kecil objek -> Motor
+          - jika banyak area tinggi dan box besar tapi pendek -> Bus (opsional)
+        """
+        # convert PIL -> OpenCV (numpy BGR)
+        img = np.array(pil_img.convert("RGB"))[:, :, ::-1].copy()
+        h, w = img.shape[:2]
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img_blur = cv2.GaussianBlur(img_gray, (5,5), 0)
+        edges = cv2.Canny(img_blur, 50, 150)
 
+        # dilate to close gaps
+        kernel = np.ones((5,5), np.uint8)
+        edges = cv2.dilate(edges, kernel, iterations=1)
+
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if not contours:
+            return "Tidak Terdeteksi", {}
+
+        # ambil kontur terbesar
+        max_cnt = max(contours, key=cv2.contourArea)
+        cnt_area = cv2.contourArea(max_cnt)
+        area_ratio = cnt_area / (w * h)
+
+        x,y,ww,hh = cv2.boundingRect(max_cnt)
+        aspect = ww / float(hh + 1e-6)
+
+        # hitungan sederhana: skor per kelas
+        scores = {"Mobil": 0.0, "Motor": 0.0, "Truck": 0.0, "Bus": 0.0}
+
+        # rule: jika area kontur relatif besar -> besar kemungkinan kendaraan besar (truck/bus)
+        if area_ratio > 0.20:
+            # choose truck or bus by aspect (truck cenderung panjang/lebih 'wide')
+            if aspect > 1.6:
+                scores["Truck"] += 0.8
+            else:
+                scores["Bus"] += 0.7
+        elif area_ratio > 0.07:
+            # kemungkinan mobil
+            scores["Mobil"] += 0.6
+            # aspect tinggi -> motor
+            if aspect < 1.0:
+                scores["Motor"] += 0.4
+        else:
+            # objek kecil -> motor (mis. motor jarak jauh)
+            scores["Motor"] += 0.7
+
+        # adjust with aspect heuristics
+        if aspect > 2.0:
+            scores["Truck"] += 0.2
+        if aspect < 0.8:
+            scores["Motor"] += 0.2
+
+        # normalize to probabilities
+        total = sum(scores.values())
+        if total <= 0:
+            # fallback random deterministic-ish by area/aspect
+            if aspect > 1.6:
+                return "Truck", {"Truck": 0.9}
+            else:
+                return "Mobil", {"Mobil": 0.9}
+
+        probs = {k: v/total for k,v in scores.items()}
+        pred = max(probs, key=probs.get)
+        return pred, probs
+
+    with col1:
+        uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg","jpeg","png"])
         if uploaded_file:
             image = Image.open(uploaded_file)
             st.image(image, caption="Gambar yang diupload", use_container_width=True)
 
-            with st.spinner("🔎 Menganalisis gambar..."):
-                time.sleep(2)
-
-            classes = ["Mobil", "Motor", "Truck", "Bus"]
-            prediction = random.choice(classes)
-
-            st.session_state.prediction = prediction
+            # run heuristic
+            pred_label, probs = heuristic_classify_pil(image)
+            # simpan ke session supaya bisa ditampilkan di kolom kanan
+            st.session_state["last_prediction"] = (pred_label, probs)
         else:
-            st.session_state.prediction = None
+            st.session_state["last_prediction"] = None
 
     with col2:
-        if st.session_state.get("prediction"):
-            prediction = st.session_state.prediction
-            st.success(f"Hasil Prediksi: **{prediction}** ✅")
-
+        if st.session_state.get("last_prediction"):
+            pred_label, probs = st.session_state["last_prediction"]
+            # tampilkan hasil deterministik
+            st.success(f"Hasil Prediksi: **{pred_label}** ✅")
             st.subheader("📊 Probabilitas Kelas:")
-            classes = ["Mobil", "Motor", "Truck", "Bus"]
-            for cls in classes:
-                val = random.uniform(0.7, 1.0) if cls == prediction else random.uniform(0.1, 0.6)
-                st.write(f"{cls} — {val:.2f}")
-                st.progress(val)
+            # urutkan tampilkan
+            for cls in ["Mobil", "Motor", "Truck", "Bus"]:
+                p = probs.get(cls, 0.0)
+                st.write(f"{cls} — {p:.2f}")
+                st.progress(p)
         else:
             st.info("📷 Upload gambar terlebih dahulu untuk melihat hasil prediksi.")
 
@@ -282,3 +353,4 @@ elif st.session_state.page == "About Project":
     yang mampu mengenali berbagai jenis kendaraan dari gambar dengan akurasi tinggi.  
     Desain lembut dengan tema **pink pastel** agar nyaman dilihat 🌸.
     """)
+
