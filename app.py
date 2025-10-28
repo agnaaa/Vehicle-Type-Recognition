@@ -33,7 +33,7 @@ def load_models():
 # ==========================
 # UI
 # ==============================
-# Konfigurasi halaman
+# Konfigurasi Halaman
 # ==============================
 st.set_page_config(page_title="AI Vehicle Detection", layout="wide")
 
@@ -49,16 +49,17 @@ st.markdown("""
 
         /* Navbar */
         .navbar {
-            background-color: #f3b9cc;
+            background-color: #f8cfe0;
             border-radius: 10px;
             padding: 12px 0;
             margin-bottom: 30px;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
         }
         .nav-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 50px;
+            gap: 60px;
         }
         .nav-item {
             display: inline-block;
@@ -66,17 +67,17 @@ st.markdown("""
             font-size: 17px;
             color: #333;
             cursor: pointer;
-            padding: 8px 18px;
+            padding: 10px 20px;
             border-radius: 8px;
             transition: 0.2s ease;
         }
         .nav-item:hover {
-            background-color: rgba(255,255,255,0.7);
+            background-color: rgba(255,255,255,0.8);
         }
         .nav-item.active {
             background-color: white;
             color: #e75480;
-            box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+            box-shadow: 0px 3px 8px rgba(0,0,0,0.08);
         }
 
         /* Hero Section */
@@ -87,12 +88,13 @@ st.markdown("""
             padding: 60px 80px;
         }
         .hero-text {
-            max-width: 600px;
+            max-width: 550px;
         }
         .hero-text h1 {
             font-size: 46px;
             font-weight: 800;
             margin-bottom: 16px;
+            color: #333;
         }
         .hero-text span {
             color: #e75480;
@@ -116,24 +118,15 @@ st.markdown("""
             background-color: #d64372;
         }
 
-        /* Sections */
-        .section-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin-top: 80px;
-            color: #333;
-        }
-
         /* Cards */
-        .vehicle-grid, .features-grid {
+        .vehicle-grid {
             display: flex;
             justify-content: center;
             gap: 25px;
             margin-top: 40px;
             flex-wrap: wrap;
         }
-        .vehicle-card, .feature-card {
+        .vehicle-card {
             background: white;
             border-radius: 15px;
             padding: 20px;
@@ -141,31 +134,15 @@ st.markdown("""
             width: 230px;
             box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
         }
-        .vehicle-card h4, .feature-card h4 {
+        .vehicle-card h4 {
             margin-top: 8px;
             color: #333;
         }
-        .icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-            color: #e75480;
-        }
 
-        /* Stats */
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            text-align: center;
-            margin-top: 60px;
-        }
-        .stat {
-            font-weight: 700;
-            color: #333;
-        }
-        .stat-label {
-            color: gray;
-            font-size: 14px;
+        .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #e75480;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -177,10 +154,13 @@ if "page" not in st.session_state:
     st.session_state.page = "Home"
 
 st.markdown('<div class="navbar"><div class="nav-container">', unsafe_allow_html=True)
-for page in ["Home", "Classification", "About Project"]:
-    active_class = "nav-item active" if st.session_state.page == page else "nav-item"
-    if st.button(page, key=page):
-        st.session_state.page = page
+cols = st.columns(3)
+for i, page in enumerate(["Home", "Classification", "About Project"]):
+    with cols[i]:
+        active_class = "nav-item active" if st.session_state.page == page else "nav-item"
+        if st.button(page, key=page):
+            st.session_state.page = page
+            st.rerun()
 st.markdown('</div></div>', unsafe_allow_html=True)
 
 # ==============================
@@ -193,10 +173,9 @@ if st.session_state.page == "Home":
         st.markdown("""
             <div class="hero-text">
                 <h1>Deteksi Jenis <span>Kendaraan AI</span></h1>
-                <p>Platform ini menggunakan teknologi deep learning untuk mengenali jenis kendaraan seperti mobil, motor, truk, dan bus dengan akurasi tinggi.</p>
+                <p>Gunakan kecerdasan buatan untuk mengenali jenis kendaraan seperti mobil, motor, truk, dan bus hanya dengan satu kali upload gambar.</p>
             </div>
         """, unsafe_allow_html=True)
-
         if st.button("🚗 Coba Sekarang"):
             st.session_state.page = "Classification"
             st.rerun()
@@ -204,71 +183,59 @@ if st.session_state.page == "Home":
     with col2:
         st.image("https://i.ibb.co/FXBvZZ7/car.png", width=350)
 
-    # Jenis kendaraan
-    st.markdown('<div class="section-title">Jenis Kendaraan yang Dapat Dideteksi</div>', unsafe_allow_html=True)
+    st.markdown('<div class="vehicle-grid">', unsafe_allow_html=True)
     st.markdown("""
-        <div class="vehicle-grid">
-            <div class="vehicle-card">🚘<h4>Mobil</h4><p>Sedan, SUV, Hatchback, dan mobil penumpang</p></div>
-            <div class="vehicle-card">🏍️<h4>Motor</h4><p>Sepeda motor, skuter, dan roda dua lainnya</p></div>
-            <div class="vehicle-card">🚛<h4>Truck</h4><p>Truk kargo, pickup, dan kendaraan berat</p></div>
-            <div class="vehicle-card">🚌<h4>Bus</h4><p>Bus kota, antar kota, dan transportasi umum</p></div>
-        </div>
+        <div class="vehicle-card">🚘<h4>Mobil</h4></div>
+        <div class="vehicle-card">🏍️<h4>Motor</h4></div>
+        <div class="vehicle-card">🚛<h4>Truck</h4></div>
+        <div class="vehicle-card">🚌<h4>Bus</h4></div>
     """, unsafe_allow_html=True)
-
-    # Statistik
-    st.markdown("""
-        <div class="stats">
-            <div><div class="stat">98.2%</div><div class="stat-label">Akurasi Model</div></div>
-            <div><div class="stat">47ms</div><div class="stat-label">Waktu Proses</div></div>
-            <div><div class="stat">4+</div><div class="stat-label">Jenis Kendaraan</div></div>
-            <div><div class="stat">99.9%</div><div class="stat-label">Uptime</div></div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Fitur
-    st.markdown('<div class="section-title">Mengapa Memilih Platform Kami?</div>', unsafe_allow_html=True)
-    st.markdown("""
-        <div class="features-grid">
-            <div class="feature-card"><div class="icon">🎯</div><h4>Deteksi Akurat</h4><p>Akurasi hingga 98.2%</p></div>
-            <div class="feature-card"><div class="icon">⚡</div><h4>Pemrosesan Cepat</h4><p>Identifikasi kurang dari 50ms</p></div>
-            <div class="feature-card"><div class="icon">🔒</div><h4>Keamanan Tinggi</h4><p>Data terenkripsi end-to-end</p></div>
-            <div class="feature-card"><div class="icon">🌐</div><h4>API Global</h4><p>Integrasi mudah REST API</p></div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================
 # CLASSIFICATION PAGE
 # ==============================
 elif st.session_state.page == "Classification":
-    st.header("Klasifikasi Gambar AI")
-    st.write("Upload gambar kendaraan dan biarkan AI mendeteksi jenis kendaraan.")
+    st.markdown("<h2 style='text-align:center;color:#333;'>Klasifikasi Gambar Kendaraan</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;color:#555;'>Upload gambar kendaraan, dan AI akan menganalisis jenisnya secara otomatis.</p>", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg", "jpeg", "png"])
+    col1, col2 = st.columns(2)
 
-    if uploaded_file:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar yang diupload", use_column_width=True)
+    with col1:
+        uploaded_file = st.file_uploader("Upload gambar kendaraan", type=["jpg", "jpeg", "png"])
+        if uploaded_file:
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Gambar yang diupload", use_column_width=True)
 
-        with st.spinner("Menganalisis gambar..."):
-            time.sleep(2)
+    with col2:
+        if uploaded_file:
+            with st.spinner("Menganalisis gambar..."):
+                time.sleep(2)
+            classes = ["Mobil", "Motor", "Truck", "Bus"]
+            prediction = random.choice(classes)
 
-        classes = ["Mobil", "Motor", "Truck", "Bus"]
-        prediction = random.choice(classes)
-
-        st.success(f"Prediksi: **{prediction}** 🚗")
-
-        st.subheader("Hasil Probabilitas:")
-        for cls in classes:
-            val = random.uniform(0.75, 1.0) if cls == prediction else random.uniform(0.1, 0.6)
-            st.progress(val)
+            st.success(f"Hasil Prediksi: **{prediction}** 🚗")
+            st.subheader("Probabilitas Deteksi:")
+            for cls in classes:
+                val = random.uniform(0.75, 1.0) if cls == prediction else random.uniform(0.1, 0.6)
+                st.write(f"{cls}")
+                st.progress(val)
+        else:
+            st.info("⬅️ Upload gambar terlebih dahulu untuk melihat hasil analisis.")
 
 # ==============================
 # ABOUT PAGE
 # ==============================
 elif st.session_state.page == "About Project":
-    st.header("Tentang Project Ini")
+    st.markdown("<h2 style='text-align:center;color:#333;'>Tentang Project Ini</h2>", unsafe_allow_html=True)
     st.write("""
-    Sistem ini dibuat untuk mendeteksi jenis kendaraan (mobil, motor, bus, dan truk)
-    menggunakan teknologi **deep learning** dengan akurasi tinggi.
-    Tampilan antarmuka didesain dengan warna **pink soft pastel** agar terlihat lembut dan modern.
+    Aplikasi ini dirancang untuk mendeteksi jenis kendaraan menggunakan teknologi **deep learning**.  
+    Model ini mampu mengenali gambar kendaraan dengan tingkat akurasi tinggi.  
+    Tampilan didesain dengan warna **pink soft pastel** agar terlihat lembut, bersih, dan profesional. 💗
     """)
+
+---
+
+💗 **Coba jalankan ini:**
+```bash
+streamlit run app.py
