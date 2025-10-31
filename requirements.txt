@@ -8,3 +8,6 @@ pillow
 joblib
 streamlit-option-menu
 plotly
+torch
+torchvision
+
