@@ -1,5 +1,5 @@
 streamlit
-ultralytics==8.3.2
+ultralytics==8.2.103
 tensorflow
 opencv-python-headless==4.8.1.78
 numpy
@@ -8,5 +8,6 @@ pillow
 joblib
 streamlit-option-menu
 plotly
-torch==2.3.0
-torchvision==0.18.0
+torch==2.2.2
+torchvision==0.17.2
+
